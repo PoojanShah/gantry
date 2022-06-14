@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Linq;
+using UnityEngine.Video;
 
 public class Projection : Singleton<Projection>
 {
@@ -54,13 +55,15 @@ public class Projection : Singleton<Projection>
     {
         get
         {
-            foreach (var screen in screens)
-            {
-                if (screen.activeSelf && (screen.GetComponent<Renderer>().material.mainTexture as MovieTexture) != null)
-                {
-                    return (screen.GetComponent<Renderer>().material.mainTexture as MovieTexture).name;
-                }
-            }
+            Debug.Log("Removed code");
+
+            //foreach (var screen in screens)
+            //{
+            //    if (screen.activeSelf && (screen.GetComponent<Renderer>().material.mainTexture as VideoPlayer) != null)
+            //    {
+            //        return (screen.GetComponent<Renderer>().material.mainTexture as VideoPlayer).name;
+            //    }
+            //}
 
             return "";
         }
@@ -75,11 +78,13 @@ public class Projection : Singleton<Projection>
 
     public static void StopAllMovies()
     {
-        for (int i = 0; i < instance.screens.Length; i++)
-        {
-            MovieTexture mt = instance.screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture;
-            if (mt != null) mt.Stop();
-        }
+	    Debug.Log("Removed code");
+
+        //for (int i = 0; i < instance.screens.Length; i++)
+        //{
+        //    MovieTexture mt = instance.screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture;
+        //    if (mt != null) mt.Stop();
+        //}
     }
 
     public bool Playing(int screenNum)
@@ -94,7 +99,9 @@ public class Projection : Singleton<Projection>
 
     public string PlayingMovieName(int screenNum)
     {
-        return Playing(screenNum) ? (screens[0].GetComponent<Renderer>().material.mainTexture as MovieTexture).name : "";
+        Debug.Log("Removed code");
+        return string.Empty;
+        //return Playing(screenNum) ? (screens[0].GetComponent<Renderer>().material.mainTexture as MovieTexture).name : "";
     }
 
     private void Awake()
@@ -232,7 +239,9 @@ public class Projection : Singleton<Projection>
                 //return false;
             }
             if (Regex.IsMatch(fullPath, "\\.ogg$")) slide = -1;//Catch-all for if it ended ogg already.
-            if (slide == -1) while (!w.GetMovieTexture().isReadyToPlay) yield return 0;
+            Debug.Log("Removed code");
+
+	        //if (slide == -1) while (!w.GetMovieTexture().isReadyToPlay) yield return 0;
             Debug.Log("=== numScreens: " + numScreens + ", screenNum: " + screenNum + " === fullPath settled on: \"" + fullPath + "\"");
             if (thisLoop != currentSlideLoop) break;//Catch race condition in case we stopped it while loading.
             for (int i = 0; i < numScreens; i++) if (i == screenNum || screenNum >= numScreens)
@@ -253,8 +262,10 @@ public class Projection : Singleton<Projection>
                     if (slide == -1)
                     {//movie
                         screens[i].GetComponent<Renderer>().material.mainTexture = w.GetMovieTexture();
-                        (screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture).loop = true;
-                        (screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture).Play();
+                        Debug.Log("Removed code");
+
+                        //(screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture).loop = true;
+                        //(screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture).Play();
                     }
                     else
                     {//Photo slide
@@ -264,7 +275,9 @@ public class Projection : Singleton<Projection>
                     if (slide < 0 && Settings.sound)
                     {
                         Debug.Log("Replacing Sound.");
-                        GetComponent<AudioSource>().clip = (screens[i].GetComponent<Renderer>().material.mainTexture as MovieTexture).audioClip;
+                        Debug.Log("Removed code");
+
+                        //GetComponent<AudioSource>().clip = (screens[i].GetComponent<Renderer>().material.mainTexture as VideoPlayer).audioClip;
                     }
                 Debug.Log("-" + i + "-NACH pos: " + screens[i].transform.position + ", scale: " + screens[i].transform.localScale + ", bounds: " + screens[i].GetComponent<Renderer>().bounds.size);
             }
@@ -298,8 +311,10 @@ public class Projection : Singleton<Projection>
         }
 
         GameObject screen = screens[screenNum];
-        if ((screen.GetComponent<Renderer>().material.mainTexture as MovieTexture) != null)
-            (screen.GetComponent<Renderer>().material.mainTexture as MovieTexture).Stop();
+        Debug.Log("Removed code");
+
+        //if ((screen.GetComponent<Renderer>().material.mainTexture as MovieTexture) != null)
+        //    (screen.GetComponent<Renderer>().material.mainTexture as MovieTexture).Stop();
         screen.GetComponent<Renderer>().material.mainTexture = Menu.instance.blankScreen;
         if (Settings.sound) GetComponent<AudioSource>().Stop();
     }

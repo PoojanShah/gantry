@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using Debug = UnityEngine.Debug;
 using Object = System.Object;
 
@@ -53,7 +54,7 @@ public class Menu : Singleton<Menu>
     public GameObject menuBackground;
     public GUISkin gantrySkin;
     public Texture2D illuminationsHeader, categoryFooter, mediaFooter, backArrow, blankScreen, adminButton;
-    public MovieTexture[] testMovies;
+    public VideoPlayer[] testMovies;
     public AudioClip testAudioClip;
     public Texture2D exitButton;
     public static Rect windowPosition;
@@ -181,7 +182,7 @@ public class Menu : Singleton<Menu>
             instance.DestroyPreviews();
             instance.projection.gameObject.SetActive(false);
             Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
-            FindObjectsOfType(typeof(MovieTexture)).ToList().ForEach((mto) => { Debug.Log("Stopping \"" + mto.name + "\"."); (mto as MovieTexture).Stop(); });
+            FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) => { Debug.Log("Stopping \"" + mto.name + "\"."); (mto as VideoPlayer).Stop(); });
             Settings.ShowCursor();
             //Displayer = () => EditContour(0);
             //superPass = "";
@@ -676,7 +677,7 @@ public class Menu : Singleton<Menu>
         instance.DestroyPreviews();
         instance.projection.gameObject.SetActive(false);
         Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
-        FindObjectsOfType(typeof(MovieTexture)).ToList().ForEach((mto) => { Debug.Log("Stopping \"" + mto.name + "\"."); (mto as MovieTexture).Stop(); });
+        FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) => { Debug.Log("Stopping \"" + mto.name + "\"."); (mto as VideoPlayer).Stop(); });
         Settings.ShowCursor();
 
         instance.transform.DestroyChildren();

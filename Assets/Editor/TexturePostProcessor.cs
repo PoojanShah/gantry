@@ -4,7 +4,7 @@
  public class TexturePostProcessor:AssetPostprocessor{
      void OnPreprocessTexture(){
          if(assetPath.Contains("DirectoryOfInterest")){
-            MovieImporter importer=assetImporter as MovieImporter;
+            VideoClipImporter importer=assetImporter as VideoClipImporter;
             Debug.LogWarning("Quality vor: "+importer.quality+" auf "+assetPath);
             importer.quality=1;
          }
