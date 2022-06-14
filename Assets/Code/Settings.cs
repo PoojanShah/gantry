@@ -245,6 +245,8 @@ public static class Settings
 
     private static Dictionary<string, string> LoadMovieColors(string movieColorFile)
     {
+	    Debug.Log("Removed code LoadMovieColors");
+
         Debug.Log("LoadMovieColors(\"" + movieColorFile + "\")");
         string line;
         StreamReader reader;
@@ -255,7 +257,7 @@ public static class Settings
             int c = 0;
             while ((line = reader.ReadLine()) != null)
             {
-                Debug.Log("Line " + (c++) + ": \"" + line + "\", movieColors: " + movieColors.Stringify());
+                //Debug.Log("Line " + (c++) + ": \"" + line + "\", movieColors: " + movieColors.Stringify());
                 string[] mc = line.Trim().Split(":"[0]);//Should be moviename:colorname
                 if (mc.Length != 2)
                 {

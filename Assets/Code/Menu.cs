@@ -7,24 +7,24 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using Debug = UnityEngine.Debug;
-using Object = System.Object;
 
 public class Menu : Singleton<Menu>
 {
     public static KeyValuePair<GUIContent, Action>[] mainMenu = {
-            new KeyValuePair<GUIContent,Action>(new GUIContent("Play"),()=>SetMenu(categoryMenu,null,instance.categoryFooter,instance.gantrySkin.customStyles[1])),
-            new KeyValuePair<GUIContent,Action>(new GUIContent("Edit Contour Map"),()=>EditContour(0)),
-            new KeyValuePair<GUIContent,Action>(new GUIContent(Projection.numScreens>1?"Edit Wall Map":"Disabled"),()=>EditContour(1)),
-            new KeyValuePair<GUIContent,Action>(new GUIContent("Options"),()=>{superPass="";Displayer=OptionsMenu;}),
-            new KeyValuePair<GUIContent,Action>(new GUIContent("Library"),()=>{
+            new(new GUIContent("Play"),()=>SetMenu(categoryMenu,null,instance.categoryFooter,instance.gantrySkin.customStyles[1])),
+            new(new GUIContent("Edit Contour Map"),()=>EditContour(0)),
+            new(new GUIContent(Projection.numScreens>1?"Edit Wall Map":"Disabled"),()=>EditContour(1)),
+            new(new GUIContent("Options"),()=>{superPass=string.Empty;Displayer=OptionsMenu;}),
+            new(new GUIContent("Library"),()=>{
                 //RefreshLibrary();
                 //instance.StartCoroutine(LoadThumbs());
                 //Displayer=LibraryMenu;mainMenu
             }),
-            new KeyValuePair<GUIContent,Action>(new GUIContent("Exit"),()=>{
+            new(new GUIContent("Exit"),()=>{
                 Application.Quit();
             }),
         }, categoryMenu;
@@ -64,7 +64,7 @@ public class Menu : Singleton<Menu>
 
     public static bool DraggingWindow
     {
-        get { return windowDragOffset != -Vector2.one; }
+        get => windowDragOffset != -Vector2.one;
         set
         {
             windowDragOffset = value ? (Vector2) SRSUtilities.adjustedFlipped - windowPosition.position : -Vector2.one;
@@ -72,37 +72,40 @@ public class Menu : Singleton<Menu>
         }
     }
 
-    private static Rect BackButtonRect
-    {
-        get { return new Rect(backButtonMargin, Settings.ScreenH - 56 - backButtonMargin, 96, 56); }
-    }
+    private static Rect BackButtonRect => new Rect(backButtonMargin, Settings.ScreenH - 56 - backButtonMargin, 96, 56);
 
     private void Awake()
     {
 #if UNITY_EDITOR
-        //Nate: Added this so saving and video playback works on my local machine. 
-        //Settings.libraryDir = Settings.GetVideoFolder();
-        //Settings.appDir = Application.persistentDataPath;
-        //Settings.noPersistFile = Settings.appDir + SRSUtilities.slashChar + "halt.motions";
+		//Nate: Added this so saving and video playback works on my local machine. 
+
+		// Settings.libraryDir = Settings.GetVideoFolder();
+		Settings.appDir = Application.persistentDataPath;
+		Settings.noPersistFile = Settings.appDir + SRSUtilities.slashChar + "halt.motions";
 #endif
-        foreach (Func<IEnumerator> f in new Func<IEnumerator>[] { UpdateCheck, DongleCheck }) StartCoroutine(f());
+		foreach (Func<IEnumerator> f in new Func<IEnumerator>[] { UpdateCheck, DongleCheck }) StartCoroutine(f());
         Settings.Load();
         Settings.LoadLibraryAndCategories();
         Settings.initialScreenWidth = Screen.currentResolution.width;//Screen.width;
-                                                                     //Settings.dongleKeys=new string[]{"DE2E19C984E2925D","D85D6EA1539B7493"};
+        //Settings.dongleKeys=new string[]{"DE2E19C984E2925D","D85D6EA1539B7493"};
+        
         Debug.Log("Initial ScreenWidth: " + Settings.initialScreenWidth);
         (projection = projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
-        Texture2D[] categoryTextures = Resources.LoadAll<Texture2D>("categories");
-        List<KeyValuePair<GUIContent, Action>> catList = new List<KeyValuePair<GUIContent, Action>>();
-        for (int i = 0; i < categoryTextures.Length; i++)
+        
+        var categoryTextures = Resources.LoadAll<Texture2D>("categories");
+        var catList = new List<KeyValuePair<GUIContent, Action>>();
+        
+        for (var i = 0; i < categoryTextures.Length; i++)
         {
-            int _i = i;
+            var _i = i;
+
             catList.Add(new KeyValuePair<GUIContent, Action>(new GUIContent(categoryTextures[i]), () =>
             {
                 LoadCategoryMenu(_i);
                 Displayer = ShowPlayer;
             }));
         }
+
         categoryMenu = catList.ToArray();
 
         //Nate: I'm guessing this is here to call the awake function for Projection.
@@ -118,9 +121,10 @@ public class Menu : Singleton<Menu>
         if (File.Exists(Settings.configFile))
         {//Format: variable name on the left, followed by "=", followed by value.
             Debug.Log("Config file \"" + Settings.configFile + "\" found.");
-            StreamReader reader = new StreamReader(Settings.configFile);
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            
+            var reader = new StreamReader(Settings.configFile);
+
+            while (reader.ReadLine() is { } line)
             {
                 if (line.Trim().StartsWith("#")) continue;
                 if (!line.Contains("=") || line.Split("="[0])[1].Trim().Length < 1)
@@ -162,10 +166,14 @@ public class Menu : Singleton<Menu>
 
     private void OnGUI()
     {
-        if (!_drawUI) return;
+        if (!_drawUI)
+	        return;
+
         GUI.skin = gantrySkin;
+
         Settings.NormalizeGUIMatrix();
-        if (Displayer != null) Displayer();
+
+        Displayer?.Invoke();
     }
 
     private void Update()
@@ -185,46 +193,36 @@ public class Menu : Singleton<Menu>
             FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) => { Debug.Log("Stopping \"" + mto.name + "\"."); (mto as VideoPlayer).Stop(); });
             Settings.ShowCursor();
             //Displayer = () => EditContour(0);
-            //superPass = "";
+            //superPass = string.Empty;
             //Displayer = OptionsMenu;
         }
 
         if (DraggingWindow) windowPosition.position = (Vector2) SRSUtilities.adjustedFlipped - windowDragOffset;
     }
 
-    public void AdministratorLogin()
-    {
-        AdminLogin.SetActive(true);
-    }
-
-    public void ShowQuitUI()
-    {
-        QuitConfirmation.SetActive(true);
-    }
-
-    public void QuitApplication()
-    {
-        Application.Quit();
-    }
-
-    public void AdminPassChanged(string pass)
-    {
-        adminPass = pass;
-    }
+    public void AdministratorLogin() => AdminLogin.SetActive(true);
+    public void ShowQuitUI() => QuitConfirmation.SetActive(true);
+    public void QuitApplication() => Application.Quit();
+    public void AdminPassChanged(string pass) => adminPass = pass;
 
     public void OnAdminLogin()
     {
-        if (adminPass != correctAdminPass) return;
+        if (adminPass != correctAdminPass) 
+	        return;
+
         AdminMenu.SetActive(true);
         AdminLogin.SetActive(false);
-        PassInputField.text = "";
-        adminPass = "";
+
+        PassInputField.text = string.Empty;
+        adminPass = string.Empty;
     }
 
     public void ShowLibrary()
     {
         LibMenu.gameObject.SetActive(true);
+
         Settings.LoadLibraryAndCategories();
+
         LibMenu.ShowLibraryOptions();
     }
 
@@ -233,66 +231,78 @@ public class Menu : Singleton<Menu>
         if (ContourEditor.HideOldUI)
         {
             ContourUI.OnDisplayContourEditor();
+
             //EditContour(0);
             Displayer = () => EditContour(0);
+
             _drawUI = true;
         }
         else
         {
             Displayer = () => EditContour(0);
+
             _drawUI = true;
+
             UIObject.SetActive(false);
         }
     }
 
     public void ShowOptions()
     {
-        superPass = "";
+        superPass = string.Empty;
         Displayer = OptionsMenu;
         UIObject.SetActive(false);
         _drawUI = true;
     }
 
-    public void QuitPressed()
-    {
-        Application.Quit();
-    }
-
     public static void ResetWindowPosition()
     {
-        Debug.Log("Menu.ResetWindowPosition() Settings.menuScreenW: " + Settings.menuScreenW + ", saveWindowSize.x: " + saveWindowSize.x);
-        windowPosition = new Rect(Settings.menuScreenW * 0.5f - saveWindowSize.x * 0.5f, Screen.height * 0.5f - saveWindowSize.y * 0.5f, saveWindowSize.x, saveWindowSize.y);
+	    Debug.Log("Menu.ResetWindowPosition() Settings.menuScreenW: " + Settings.menuScreenW + ", saveWindowSize.x: " +
+	              saveWindowSize.x);
+
+	    windowPosition = new Rect(Settings.menuScreenW * 0.5f - saveWindowSize.x * 0.5f,
+		    Screen.height * 0.5f - saveWindowSize.y * 0.5f, saveWindowSize.x, saveWindowSize.y);
     }
 
     private static string[][] ReadConfigFile(string fileName)
     {
         Debug.Log("ReadConfigFile(" + fileName + ")");
+
         if (!File.Exists(fileName))
         {//Format: variable name on the left, followed by "=", followed by value.
             Debug.LogWarning("Config file \"" + fileName + "\" not found.");
             return null;
         }
-        string[][] ergebnis = new string[4][];
-        StreamReader reader = new StreamReader(fileName);
-        string line;
-        int l = 0;
-        while ((line = reader.ReadLine()) != null)
+
+        var ergebnis = new string[4][];
+        var reader = new StreamReader(fileName);
+        var l = 0;
+
+        while (reader.ReadLine() is { } line)
         {
             if (line.Trim().StartsWith("#")) continue;
             ergebnis[l++] = line.Split(","[0]);
         }
+
         reader.Close();
-        if (l != 4) Debug.LogWarning("Category file is corrupt with " + l + " lines.");
+
+        if (l != 4) 
+	        Debug.LogWarning("Category file is corrupt with " + l + " lines.");
+
         return ergebnis;
     }
 
     private static bool WriteConfigFile(string fileName, string[][] data)
     {
         Debug.Log("WriteConfigFile(" + fileName + ")");
+
         try
         {
-            StreamWriter sw = new StreamWriter(fileName);
-            for (int i = 0; i < data.Length; i++) sw.WriteLine(string.Join(",", data[i]));
+            var sw = new StreamWriter(fileName);
+
+            foreach (var dataSnipped in data)
+	            sw.WriteLine(string.Join(",", dataSnipped));
+
             sw.Close();
         }
         catch (Exception e)
@@ -300,6 +310,7 @@ public class Menu : Singleton<Menu>
             Debug.LogError("Error writing to file " + fileName + ": " + e.Message);
             return false;
         }
+
         return true;
     }
 
@@ -377,23 +388,28 @@ public class Menu : Singleton<Menu>
     private static IEnumerator UpdateVersion(int toVersion)
     {
         Debug.Log("Menu.Update(" + toVersion + ")");
-        string bkpPath = Settings.binaryPath + ".bkp";
+
+        var bkpPath = Settings.binaryPath + ".bkp";
+
         while (File.Exists(bkpPath)) bkpPath += "I";
         //PlayerPrefs.SetInt("Version",toVersion);
         Settings.version = toVersion;
         //Process.Start(Settings.binaryPath);
-        WWW w = new WWW(Settings.newBinaryURL);
-        yield return w;
+        var w = new UnityWebRequest(Settings.newBinaryURL);
+
+        yield return w.SendWebRequest();
+
         Debug.Log("Downloaded. Moving: " + Settings.binaryPath + " to " + bkpPath);
+
         File.Move(Settings.binaryPath, bkpPath);
-        File.WriteAllBytes(Settings.binaryPath, w.bytes);
+        File.WriteAllBytes(Settings.binaryPath, w.downloadHandler.data);
         Process.Start(Settings.binaryPath);
         Application.Quit();
     }
 
     private IEnumerator DongleCheck()
     {//Security feature
-        Process p = new Process
+        var p = new Process
         {
             StartInfo = new ProcessStartInfo
             {
@@ -424,7 +440,7 @@ public class Menu : Singleton<Menu>
 
             while (!p.StandardOutput.EndOfStream)
             {
-                string line = p.StandardOutput.ReadLine();//alternative: string output=p.StandardOutput.ReadToEnd();p.WaitForExit();
+                var line = p.StandardOutput.ReadLine();//alternative: string output=p.StandardOutput.ReadToEnd();p.WaitForExit();
                 Debug.Log("Process returned: \"" + line + "\"");
                 if (line != "Gesetzlich")
                 {
@@ -439,7 +455,8 @@ public class Menu : Singleton<Menu>
     public static IEnumerator ReportAndQuit(string server, string msg)
     {
         Debug.Log("Menu.ReportAndQuit(" + server + "," + msg + ")");
-        WWWForm form = new WWWForm();
+
+        var form = new WWWForm();
         form.AddField("msg", msg);
         form.AddField("l", Settings.clientLogin);
         WWW w = new WWW(server, form.data);
@@ -453,16 +470,18 @@ public class Menu : Singleton<Menu>
     private IEnumerator CheckForCommands()
     {
         Debug.Log("Menu.CheckForCommands(), standing by: " + standbyForCommands);
+
         while (true)
         {
             yield return new WaitForSeconds(1);
-            if (standbyForCommands && File.Exists(Settings.commandFile))
-            {
-                Debug.Log("Command file found.");
-                //				RunCommand(File.ReadAllText(commandFile));
-                foreach (string command in File.ReadAllText(Settings.commandFile).Trim().Split("\n"[0])) RunCommand(command.Trim());
-                File.Delete(Settings.commandFile);
-            }
+
+            if (!standbyForCommands || !File.Exists(Settings.commandFile)) 
+	            continue;
+
+            Debug.Log("Command file found.");
+            //RunCommand(File.ReadAllText(commandFile));
+            foreach (string command in File.ReadAllText(Settings.commandFile).Trim().Split("\n"[0])) RunCommand(command.Trim());
+            File.Delete(Settings.commandFile);
         }
     }
     
@@ -579,10 +598,10 @@ public class Menu : Singleton<Menu>
         Debug.Log("Menu.TryAdminPassword() Trying admin password against correct pass: " + (adminPass == correctAdminPass));
         if (adminPass == correctAdminPass) SetMenu();
         else wrongPass = true;
-        adminPass = "";
+        adminPass = string.Empty;
     }
 
-    private static string soundTemp = "";
+    private static string soundTemp = string.Empty;
     private static bool useSoundTemp = false;
 
     private static void OptionsMenu()
@@ -670,7 +689,7 @@ public class Menu : Singleton<Menu>
         if (m == categoryMenu)
         {
             style = style ?? instance.gantrySkin.customStyles[1];
-            adminPass = "";
+            adminPass = string.Empty;
         }
 
         instance.menuBackground.SetActive(m != mainMenu);
