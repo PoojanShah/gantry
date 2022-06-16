@@ -2814,7 +2814,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0c1e70997a356408e20218688d4b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HideMe: {fileID: 0}
 --- !u!114 &184715292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3883,7 +3882,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0c1e70997a356408e20218688d4b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HideMe: {fileID: 721929669}
 --- !u!1 &268134949
 GameObject:
   m_ObjectHideFlags: 0
@@ -4146,7 +4144,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: ToggleChanged
         m_Mode: 2
         m_Arguments:
@@ -4520,7 +4518,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0c1e70997a356408e20218688d4b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HideMe: {fileID: 1003469571}
 --- !u!1 &320060045
 GameObject:
   m_ObjectHideFlags: 0
@@ -7512,7 +7509,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0c1e70997a356408e20218688d4b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HideMe: {fileID: 1915193113}
 --- !u!1 &565013140
 GameObject:
   m_ObjectHideFlags: 0
@@ -9676,7 +9672,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: ShowFileExtensions
         m_Mode: 1
         m_Arguments:
@@ -10993,7 +10989,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: ToggleChanged
         m_Mode: 2
         m_Arguments:
@@ -16288,7 +16284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0c1e70997a356408e20218688d4b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HideMe: {fileID: 1323898964}
 --- !u!1 &1316033467
 GameObject:
   m_ObjectHideFlags: 0
@@ -18906,7 +18901,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: SimpleMenu
         m_Mode: 1
         m_Arguments:
@@ -23499,7 +23494,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: ToggleChanged
         m_Mode: 2
         m_Arguments:
@@ -24149,7 +24144,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1323898968}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
         m_MethodName: ToggleChanged
         m_Mode: 2
         m_Arguments:
