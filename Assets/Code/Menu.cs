@@ -95,9 +95,7 @@ public class Menu : Singleton<Menu>
 		Settings.appDir = Application.persistentDataPath;
 		Settings.noPersistFile = Settings.appDir + SRSUtilities.slashChar + "halt.motions";
 #endif
-		foreach (var f in new Func<IEnumerator>[] { UpdateCheck, DongleCheck }) 
-			StartCoroutine(f());
-
+		foreach (Func<IEnumerator> f in new Func<IEnumerator>[] { UpdateCheck, DongleCheck }) StartCoroutine(f());
 		Settings.Load();
 		Settings.LoadLibraryAndCategories();
 		Settings.initialScreenWidth = Screen.currentResolution.width; //Screen.width;
@@ -123,8 +121,8 @@ public class Menu : Singleton<Menu>
 		categoryMenu = catList.ToArray();
 
 		//Nate: I'm guessing this is here to call the awake function for Projection.
-		UIObject.SetActive(true);
-
+		projection.gameObject.SetActive(true);
+		projection.gameObject.SetActive(false);
 		StartCoroutine(CheckForCommands());
 
 		Settings.monitorMode = Settings.MonitorMode.Single;
@@ -197,31 +195,29 @@ public class Menu : Singleton<Menu>
 	private void Update()
 	{
 		if (projection.playing && Input.GetKeyDown(KeyCode.Escape))
-			CloseProjectorAndShowMenu();
-
-		if (DraggingWindow) 
-			windowPosition.position = (Vector2)SRSUtilities.adjustedFlipped - windowDragOffset;
-	}
-
-	private void CloseProjectorAndShowMenu()
-	{
-		ContourEditor.WipeBlackouts();
-
-		projection.playMode = false;
-		UIObject.SetActive(true);
-
-		instance.menuBackground.SetActive(false);
-		instance.DestroyPreviews();
-		instance.projection.gameObject.SetActive(false);
-		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
-
-		FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 		{
-			Debug.Log("Stopping \"" + mto.name + "\".");
-			(mto as VideoPlayer).Stop();
-		});
 
-		Settings.ShowCursor();
+			ContourEditor.WipeBlackouts();
+			//SetMenu(categoryMenu);
+			projection.playMode = false;
+			UIObject.SetActive(true);
+
+			instance.menuBackground.SetActive(false);
+			instance.DestroyPreviews();
+			instance.projection.gameObject.SetActive(false);
+			Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
+			FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
+			{
+				Debug.Log("Stopping \"" + mto.name + "\".");
+				(mto as VideoPlayer).Stop();
+			});
+			Settings.ShowCursor();
+			//Displayer = () => EditContour(0);
+			//superPass = string.Empty;
+			//Displayer = OptionsMenu;
+		}
+
+		if (DraggingWindow) windowPosition.position = (Vector2)SRSUtilities.adjustedFlipped - windowDragOffset;
 	}
 
 	public void AdministratorLogin() => AdminLogin.SetActive(true);
