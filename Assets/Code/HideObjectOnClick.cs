@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 
+//To be removed
 public class HideObjectOnClick : MonoBehaviour
 {
-    public GameObject HideMe;
+	[SerializeField] private GameObject _objectToHide;
 
-    public void HideObject()
-    {
-        HideMe.SetActive(false);
-    }
+	public void HideObject() => _objectToHide.SetActive(false);
 }
