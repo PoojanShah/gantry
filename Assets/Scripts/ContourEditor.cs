@@ -1531,7 +1531,7 @@ public class ContourEditor : Singleton<ContourEditor>
     public static void LoadConfiguration(string fileName, int screen = -1)
     {
         Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
-        GameObject screenObj = screen > -1 ? Projection.instance.screens[screen] : instance.gameObject;
+        GameObject screenObj = screen > -1 ? Projection.instance.Screens[screen] : instance.gameObject;
         BinaryReader br;
         try
         {
@@ -1579,7 +1579,7 @@ public class ContourEditor : Singleton<ContourEditor>
                     Debug.Log("Farbe: " + c);
                     if (screen > -1) bo.lassoObject.transform.position += Projection.ScreenPosition(screen);
                 }
-                Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " + (screenObj == Projection.instance.screens[1]) + ",numLassoPoints: " + numLassoPoints);
+                Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " + (screenObj == Projection.instance.Screens[1]) + ",numLassoPoints: " + numLassoPoints);
                 blackouts.Add(bo);
             }
 
