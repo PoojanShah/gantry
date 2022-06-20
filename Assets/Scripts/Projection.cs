@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Linq;
 using Configs;
+using ContourEditorTool;
 using UnityEngine.Serialization;
 using UnityEngine.Video;
 

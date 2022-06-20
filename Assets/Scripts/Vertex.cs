@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ContourEditorTool;
+using UnityEngine;
 
 public class Vertex : MonoBehaviour
 {

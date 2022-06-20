@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ContourEditorTool;
+
 public class Toolbar : Draggable2D
 {
     public static string tooltip = "", toolMessage = "";

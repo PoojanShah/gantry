@@ -23595,7 +23595,7 @@ MonoBehaviour:
   PassInputField: {fileID: 1744722457}
   LibMenu: {fileID: 1323898968}
   _projection: {fileID: 1747930128}
-  _contourEditor: {fileID: 0}
+  _contourEditor: {fileID: 1747930135}
   ContourUI: {fileID: 1992588253}
   menuBackground: {fileID: 1601677028}
   gantrySkin: {fileID: 11400000, guid: da4481917fe03a94899dedc0543e9cc6, type: 2}
