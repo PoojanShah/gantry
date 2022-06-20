@@ -258,6 +258,8 @@ public class ContourEditor : Singleton<ContourEditor>
         }
     };
 
+    [SerializeField] private Projection _projection;
+
     public GameObject vertexDotPrefab, lassoBlackoutPrefab;
     public Texture2D ellipse, activeVertex, inactiveVertex;
     public Texture2D[] backgrounds;
@@ -587,7 +589,7 @@ public class ContourEditor : Singleton<ContourEditor>
     public static void AddUndoStep(bool resetCurrentStep = true)
     {
         Debug.Log("Projection.AddUndoStep(" + resetCurrentStep + ") ANFANG, undo: " + undo + "/" + undos.Count);
-        //if(!editing)return;//Likely From configuration-loading operations in play mode.
+        //if(!IsEditing)return;//Likely From configuration-loading operations in play mode.
         while (undo > -1 && undo < undos.Count - 1) undos.RemoveAt(undos.Count - 1);
         //Mesh mesh;
         UndoStep us = new UndoStep();
@@ -615,7 +617,7 @@ public class ContourEditor : Singleton<ContourEditor>
         instance.toolbar.menus[2].ItemByTooltip("Redo Undone Action").disabled = undo >= undos.Count - 1;
         instance.toolbar.menus[2].ItemByTooltip("Undo Last Action").disabled = undo < 1;
     }
-    public static void Undo(int dir)
+    public void Undo(int dir)
     {
         if (undo + dir < 0 || undo + dir > undos.Count - 1 || undos.Count < 1)
         {
@@ -680,13 +682,13 @@ public class ContourEditor : Singleton<ContourEditor>
             Destroy(bo);
         }
     }
-    public static void Restart(int screenNum = -1)
+    public void Restart(int screenNum = -1)
     {//Start Anew.
         Menu.ResetWindowPosition();
         originalColumns = -1;
         //AddUndoStep();
     }
-    public static void Reset(int screenNum = -1, bool wipeBlackouts = true, bool addUndo = false)
+    public void Reset(int screenNum = -1, bool wipeBlackouts = true, bool addUndo = false)
     {//Start Anew.
         Debug.Log("Projection.Reset(" + screenNum + ")");
         Mesh mesh = instance.GetComponent<MeshFilter>().mesh;
@@ -698,7 +700,7 @@ public class ContourEditor : Singleton<ContourEditor>
         columns = originalColumns;
         deleted.Clear();
         ReconstructScreen(0, false);
-        //ReconstructScreen(0,Projection.editing,screenNum>-1 ? instance.projection.screens[screenNum] : instance.gameObject);
+        //ReconstructScreen(0,Projection.IsEditing,screenNum>-1 ? instance.projection.screens[screenNum] : instance.gameObject);
         if (wipeBlackouts) WipeBlackouts();
         WipeIntermittents();
         instance.transform.position = Vector3.zero;
@@ -707,7 +709,7 @@ public class ContourEditor : Singleton<ContourEditor>
         if (addUndo) AddUndoStep();
         else undos.Clear();
     }
-    public static void ReconstructScreen(int delta = 0, bool setUndo = false, GameObject screen = null, bool omitDeleted = true)
+    public void ReconstructScreen(int delta = 0, bool setUndo = false, GameObject screen = null, bool omitDeleted = true)
     {//Delta -1 to halve,0 to maintain,1 to double.
         screen = screen ?? instance.gameObject;
         DeSelect(setUndo && delta != 0);
@@ -739,12 +741,17 @@ public class ContourEditor : Singleton<ContourEditor>
                             Vector3.Lerp(oldVerts[ox1 + oz2 * oldColumns], oldVerts[ox2 + oz2 * oldColumns], x % total / total), z % total / total);
                     }
                     else vertices[x + z * columns] = new Vector3(((float) x / (columns - 1) - .5f) * width, 0f, ((float) z / (columns - 1) - .5f) * length);
-                    if (Projection.editing)
+                    if (_projection)
                     {
-                        Debug.Log("editing true for: " + (z * columns + x));
-                        vertexDots.Add((GameObject.Instantiate(instance.vertexDotPrefab, instance.transform.TransformPoint(vertices[x + z * columns]),
-                                                               Quaternion.Euler(90, 0, 0)) as GameObject).GetComponent<Vertex>());
-                        //vertexDots.ForEach((d)=>d.transform.parent=instance.transform);
+                        Debug.Log("IsEditing true for: " + (z * columns + x));
+
+                        var vertex = Instantiate(instance.vertexDotPrefab,
+		                        instance.transform.TransformPoint(vertices[x + z * columns]),
+		                        Quaternion.Euler(90, 0, 0))
+	                        .GetComponent<Vertex>();
+                        vertex.Init(_projection);
+
+                        vertexDots.Add(vertex);
                         vertexDots.Last().transform.parent = instance.transform;
                         vertexDots.Last().name = "Vertex " + (z * columns + x);
                     }
@@ -926,7 +933,7 @@ public class ContourEditor : Singleton<ContourEditor>
     }
     public static void DeSelect(bool undoStep = true)
     {
-        //if(!editing)return;
+        //if(!IsEditing)return;
         Debug.Log("ContourEditor.DeSelect(" + undoStep + ")");
         selectedVertices.ForEach((i) => vertexDots[i].Select(false));
         Vector3[] verts = instance.GetComponent<MeshFilter>().mesh.vertices;
@@ -1453,13 +1460,13 @@ public class ContourEditor : Singleton<ContourEditor>
         background = instance.backgrounds.Length;
     }
 
-    private static void SaveAndQuitToMenu()
+    private void SaveAndQuitToMenu()
     {
         DeSelect();
         WipeLasso();
         instance.gameObject.SetActive(false);
         WipeBlackouts();
-        Projection.editing = false;
+        _projection.IsEditing = false;
         Menu.SetMenu();
         Menu._drawUI = false;
         Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
@@ -1528,10 +1535,12 @@ public class ContourEditor : Singleton<ContourEditor>
         mode = Mode.normal;
     }
 
-    public static void LoadConfiguration(string fileName, int screen = -1)
+    public void LoadConfiguration(string fileName, int screen = -1)
     {
         Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
-        GameObject screenObj = screen > -1 ? Projection.instance.Screens[screen] : instance.gameObject;
+
+        var screenObj = screen > -1 ? _projection.Screens[screen] : instance.gameObject;
+
         BinaryReader br;
         try
         {
@@ -1556,7 +1565,7 @@ public class ContourEditor : Singleton<ContourEditor>
             for (int i = 0; i < numDeletions; i++) deletees.Add(br.ReadInt32());
             Delete(deletees.ToArray(), screenObj);
             screenObj.GetComponent<MeshFilter>().mesh.vertices = verts;
-            if (Projection.editing)
+            if (_projection)
             {
                 for (int i = 0; i < vertexDots.Count; i++) vertexDots[i].transform.position = instance.transform.TransformPoint(verts[i]);
                 blackouts.Clear();
@@ -1577,9 +1586,9 @@ public class ContourEditor : Singleton<ContourEditor>
                     BuildLassoMesh(bo, lassoPoints.ToArray());
                     bo.lassoObject.GetComponent<MeshRenderer>().material.color = c;
                     Debug.Log("Farbe: " + c);
-                    if (screen > -1) bo.lassoObject.transform.position += Projection.ScreenPosition(screen);
+                    if (screen > -1) bo.lassoObject.transform.position += _projection.ScreenPosition(screen);
                 }
-                Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " + (screenObj == Projection.instance.Screens[1]) + ",numLassoPoints: " + numLassoPoints);
+                Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " + (screenObj == _projection.Screens[1]) + ",numLassoPoints: " + numLassoPoints);
                 blackouts.Add(bo);
             }
 

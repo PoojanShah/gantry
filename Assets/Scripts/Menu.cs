@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using Configs;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using Debug = UnityEngine.Debug;
@@ -19,8 +20,8 @@ public class Menu : Singleton<Menu>
 		{
 			new(new GUIContent("Play"),
 				() => SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1])),
-			new(new GUIContent("Edit Contour Map"), () => EditContour(0)),
-			new(new GUIContent(Projection.numScreens > 1 ? "Edit Wall Map" : "Disabled"), () => EditContour(1)),
+			new(new GUIContent("Edit Contour Map"), () => Debug.Log("EditContour(0)")),
+			new(new GUIContent(Projection.numScreens > 1 ? "Edit Wall Map" : "Disabled"), () => Debug.Log("EditContour(1)")),
 			new(new GUIContent("Options"), () =>
 			{
 				superPass = string.Empty;
@@ -62,7 +63,8 @@ public class Menu : Singleton<Menu>
 	public GameObject UIObject, QuitConfirmation, AdminLogin, AdminMenu;
 	public InputField PassInputField;
 	public LibraryScreen LibMenu;
-	public Projection projection;
+	[FormerlySerializedAs("projection")][SerializeField]private Projection _projection;
+	[SerializeField] private ContourEditor _contourEditor;
 	public ContourEditorUI ContourUI;
 	public GameObject menuBackground;
 	public GUISkin gantrySkin;
@@ -105,7 +107,7 @@ public class Menu : Singleton<Menu>
 		//Settings.dongleKeys=new string[]{"DE2E19C984E2925D","D85D6EA1539B7493"};
 
 		Debug.Log("Initial ScreenWidth: " + Settings.initialScreenWidth);
-		(projection = projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
+		(_projection = _projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
 
 		var categoryTextures = Resources.LoadAll<Texture2D>("categories");
 		var catList = new List<KeyValuePair<GUIContent, Action>>();
@@ -124,8 +126,8 @@ public class Menu : Singleton<Menu>
 		categoryMenu = catList.ToArray();
 
 		//Nate: I'm guessing this is here to call the awake function for Projection.
-		projection.gameObject.SetActive(true);
-		projection.gameObject.SetActive(false);
+		_projection.gameObject.SetActive(true);
+		_projection.gameObject.SetActive(false);
 		StartCoroutine(CheckForCommands());
 
 		Settings.monitorMode = Settings.MonitorMode.Single;
@@ -197,17 +199,17 @@ public class Menu : Singleton<Menu>
 
 	private void Update()
 	{
-		if (projection.playing && Input.GetKeyDown(KeyCode.Escape))
+		if (_projection.playing && Input.GetKeyDown(KeyCode.Escape))
 		{
 
 			ContourEditor.WipeBlackouts();
 			//SetMenu(categoryMenu);
-			projection.playMode = false;
+			_projection.playMode = false;
 			UIObject.SetActive(true);
 
 			instance.menuBackground.SetActive(false);
 			instance.DestroyPreviews();
-			instance.projection.gameObject.SetActive(false);
+			instance._projection.gameObject.SetActive(false);
 			Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 			FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 			{
@@ -549,7 +551,7 @@ public class Menu : Singleton<Menu>
 		}
 	}
 
-	private static void RunCommand(string command)
+	private void RunCommand(string command)
 	{
 		Debug.Log("Running command: \"" + command + "\".");
 		int screenNum;
@@ -577,12 +579,12 @@ public class Menu : Singleton<Menu>
 					    RegexOptions.IgnoreCase))))
 				{
 					//StartMovie(movieName,(int)Settings.screenMode);
-					instance.projection.StartMovie(screenNum);
+					instance._projection.StartMovie(screenNum);
 				}
 				else
 				{
 					Debug.LogWarning("Attempted to play locked or unrecognized movie \"" + movieName + "\".");
-					instance.projection.StartMovie(screenNum);
+					instance._projection.StartMovie(screenNum);
 				}
 
 				break;
@@ -592,11 +594,11 @@ public class Menu : Singleton<Menu>
 					? Array.IndexOf(screenNames, command.Split(":"[0])[1].Trim())
 					: 0;
 				Debug.Log("Playing slides of patient \"" + patientName + "\" on screen " + screenNum + ".");
-				instance.projection.StartSlideshow(patientName, screenNum);
+				instance._projection.StartSlideshow(patientName, screenNum);
 				break;
 			case "halt":
-				if (instance.projection.playing)
-					instance.projection.StopMovie(command.Split(":"[0]).Length > 1
+				if (instance._projection.playing)
+					instance._projection.StopMovie(command.Split(":"[0]).Length > 1
 						? Array.IndexOf(new string[] { "gantry", "wall" }, command.Split(":"[0])[1].Trim())
 						: -1); //"gantrywall" will return -1 from Array.IndexOf.
 				limbo = true;
@@ -607,7 +609,7 @@ public class Menu : Singleton<Menu>
 					(Settings.ScreenMode)Enum.Parse(typeof(Settings.ScreenMode), command.Split(":"[0])[1].Trim());
 				break;
 			case "rotate":
-				Projection.Rotate(command.Split(":"[0])[1] == "Wall" ? 1 : 0);
+				_projection.Rotate(command.Split(":"[0])[1] == "Wall" ? 1 : 0);
 				break;
 			default:
 				Debug.LogError("Ungueltiges kommand: " + command.Split(":"[0])[0].Trim() + " (from command: " +
@@ -830,8 +832,8 @@ public class Menu : Singleton<Menu>
 		background = background??instance.categoryBackground;
 		style = style??instance.gantrySkin.customStyles[1];
 #endif
-		Camera.main.transform.position = Vector3.up * 5; //in case it's skewed from editing the contour map.
-		if (instance.projection.gameObject.activeSelf) Projection.StopAllMovies();
+		Camera.main.transform.position = Vector3.up * 5; //in case it's skewed from IsEditing the contour map.
+		if (instance._projection.gameObject.activeSelf) Projection.StopAllMovies();
 		m = m ?? mainMenu;
 		if (m == categoryMenu)
 		{
@@ -841,7 +843,7 @@ public class Menu : Singleton<Menu>
 
 		instance.menuBackground.SetActive(m != mainMenu);
 		instance.DestroyPreviews();
-		instance.projection.gameObject.SetActive(false);
+		instance._projection.gameObject.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 		FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 		{
@@ -905,31 +907,31 @@ public class Menu : Singleton<Menu>
 		GUI.enabled = true;
 	}
 
-	private static void EditContour(int screenNum)
+	private void EditContour(int screenNum)
 	{
 		Debug.Log("Menu.EditContour(" + screenNum + ")");
 		Displayer = null;
-		instance.projection.transform.gameObject.SetActive(true);
-		Projection.editing = true; //Keep before ContourEditor initialization.
+		instance._projection.transform.gameObject.SetActive(true);
+		_projection.IsEditing = true; //Keep before ContourEditor initialization.
 		instance.menuBackground.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(false);
-		instance.projection.enabled = true;
-		Camera.main.transform.position = -Projection.ScreenPosition(screenNum) + Vector3.up * 5;
+		instance._projection.enabled = true;
+		Camera.main.transform.position = -_projection.ScreenPosition(screenNum) + Vector3.up * 5;
 		Settings.monitorMode = (Settings.MonitorMode)screenNum;
-		instance.projection.GetComponent<Toolbar>().enabled =
-			instance.projection.GetComponent<InfoDisplay>().enabled = true;
-		ContourEditor.Reset(); //after toolbar's Awake, so it can select.
-		ContourEditor.Restart();
+		instance._projection.GetComponent<Toolbar>().enabled =
+			instance._projection.GetComponent<InfoDisplay>().enabled = true;
+		_contourEditor.Reset(); //after toolbar's Awake, so it can select.
+		_contourEditor.Restart();
 	}
 
 	public static void ShowPlayer()
 	{
-		if ( /*loaded&&*/instance.transform.childCount < 1 && !instance.projection.gameObject.activeSelf)
+		if ( /*loaded&&*/instance.transform.childCount < 1 && !instance._projection.gameObject.activeSelf)
 			GUI.Label(new Rect(Settings.ScreenW * 0.5f - 64, Settings.ScreenH * 0.5f - 32, 128, 64),
 				loadingMovie ? "Loading..." : "There are no movies available at this time.");
-		else if (instance.projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
+		else if (instance._projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
 
-		if (!instance.projection.playing && !limbo)
+		if (!instance._projection.playing && !limbo)
 		{
 			Overlays(instance.mediaFooter);
 			if (GUI.Button(BackButtonRect, instance.backArrow, instance.gantrySkin.customStyles[1]))

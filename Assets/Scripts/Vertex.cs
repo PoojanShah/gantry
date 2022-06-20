@@ -6,8 +6,12 @@ public class Vertex : MonoBehaviour
     public static Vector3 dragDifferential, worldStartPoint;
     public static float y;
 
-    private void Awake()
+    private Projection _projection;
+
+    public void Init(Projection projection)
     {
+	    _projection = projection;
+
         y = transform.position.y;
     }
 
@@ -26,7 +30,7 @@ public class Vertex : MonoBehaviour
         }
         dragDifferential = transform.position - hit.point;
         Debug.Log("We hit at " + hit.point + ". position " + transform.position + " - hit point " + hit.point + " = " + dragDifferential);
-        y = Mathf.Min(Projection.instance.transform.position.y + 0.1f, Camera.main.transform.position.y - 0.1f);
+        y = Mathf.Min(_projection.transform.position.y + 0.1f, Camera.main.transform.position.y - 0.1f);
         dragging = this;
         worldStartPoint = transform.position;
     }

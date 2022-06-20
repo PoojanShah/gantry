@@ -2,22 +2,26 @@ using UnityEngine;//NOTE: the up-side-down phenomenon occurs when you haven't lo
 using System;
 using System.IO;
 using System.Collections;
-using System.Text.RegularExpressions;
 using System.Linq;
 using Configs;
-using UnityEngine.Networking;
+using UnityEngine.Serialization;
 using UnityEngine.Video;
 
-public class Projection : Singleton<Projection>
+public class Projection : MonoBehaviour
 {
     [SerializeField] private GameObject[] _screens;
     [SerializeField] private VideosConfig _videosConfig;
 
     public GameObject[] Screens => _screens;
 
-    public static bool editing { get {/*Debug.Log("instance.editor: "+instance.editor+", enabled: "+instance.editor.enabled);*/return instance.editor != null && instance.editor.enabled; } set { instance.editor.enabled = value; } }
+    public bool IsEditing
+    {
+	    get => _contourEditor != null && _contourEditor.enabled;
+	    set { _contourEditor.enabled = value; }
+    }
+
     public static Vector3 originalExtents, rawSize = new Vector3(5, 0, 5);
-    public ContourEditor editor;
+    [FormerlySerializedAs("editor")][SerializeField]private ContourEditor _contourEditor;
     public static int currentSlideLoop = 0;
 
     public static int numScreens
@@ -53,7 +57,7 @@ public class Projection : Singleton<Projection>
     {
         get
         {
-            return gameObject.activeSelf && !editing;
+            return gameObject.activeSelf && !IsEditing;
         }
     }
 
@@ -75,11 +79,11 @@ public class Projection : Singleton<Projection>
         }
     }
 
-    public static Vector3 ScreenPosition(int screenNum)
+    public Vector3 ScreenPosition(int screenNum)
     {
         Debug.Log("Projection.ScreenPosition(" + screenNum + "), numScreens: " + numScreens + ", original extents: " + Projection.originalExtents.x +
-            ", local scale: " + instance.transform.localScale + ", ergebnis: " + new Vector3(originalExtents.x * instance.transform.localScale.x * (-0.5f * ((float) (numScreens - 1)) + screenNum), 0, 0));
-        return new Vector3(originalExtents.x * instance.transform.localScale.x * (-1 * ((float) (numScreens - 1)) + screenNum * 2), 0, 0);
+            ", local scale: " + transform.localScale + ", ergebnis: " + new Vector3(originalExtents.x * transform.localScale.x * (-0.5f * ((float) (numScreens - 1)) + screenNum), 0, 0));
+        return new Vector3(originalExtents.x * transform.localScale.x * (-1 * ((float) (numScreens - 1)) + screenNum * 2), 0, 0);
     }
 
     public static void StopAllMovies()
@@ -116,7 +120,7 @@ public class Projection : Singleton<Projection>
             + ";\nCommand Line: \"" + Environment.CommandLine + "\", Command Line Args: \"" + string.Join(",", Environment.GetCommandLineArgs()) + "\"; Screen.width: " + Screen.width + ", Screen.height: " + Screen.height + ", numScreens: " + numScreens);
 
         GetComponent<MeshFilter>().mesh.Clear();
-        instance.transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
+        transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
         originalExtents = Vector3.one * 5;
         Debug.Log("originalExtents: " + Projection.originalExtents);
         transform.localScale = new Vector3(4f / 3f, 1, 1);
@@ -169,14 +173,14 @@ public class Projection : Singleton<Projection>
 	    var clip = _videosConfig.GetFirstClip();
 
         Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
-        editing = false;
+        IsEditing = false;
         if (Playing(screenNum)) StopMovie(screenNum);
         Camera.main.transform.position = Vector3.zero + Vector3.up * 5;
         gameObject.SetActive(true);
         
-        instance.StopCoroutine("LoadAndPlayExternalResource");
-        instance.StartCoroutine(LoadAndPlayExternalResource(clip, screenNum));
-        instance.GetComponent<Toolbar>().enabled = instance.GetComponent<InfoDisplay>().enabled = false;
+        StopCoroutine("LoadAndPlayExternalResource");
+        StartCoroutine(LoadAndPlayExternalResource(clip, screenNum));
+        GetComponent<Toolbar>().enabled = GetComponent<InfoDisplay>().enabled = false;
         Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].transform.localScale.x);
     }
 
@@ -184,7 +188,7 @@ public class Projection : Singleton<Projection>
     {
         Debug.Log("Removed code");
         //Debug.Log("Projection.StartMovie(\"" + sprite.name + "\"," + screenNum + "); timeScale: " + Time.timeScale);
-        //editing = false;
+        //IsEditing = false;
         //if (Playing(screenNum)) StopMovie(screenNum);
         //Camera.main.transform.position = Vector3.zero + Vector3.up * 5;
         //gameObject.SetActive(true);
@@ -283,14 +287,14 @@ public class Projection : Singleton<Projection>
 				    if (PlayerPrefs.HasKey("DefaultConfiguration-" + i) &&
 				        File.Exists(PlayerPrefs.GetString("DefaultConfiguration-" + i)))
 				    {
-					    ContourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
+					    _contourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
 					    Debug.Log("DefaultConfiguration-" + i + ": " +
 					              PlayerPrefs.GetString("DefaultConfiguration-" + i));
 				    }
 				    else
 				    {
 					    Debug.Log("No saved configuration found for \"DefaultConfiguration-" + i + "\"");
-					    if (editing) ContourEditor.Reset(i);
+					    if (IsEditing) _contourEditor.Reset(i);
 				    }
 
 				    if (slide == -1)
@@ -374,9 +378,10 @@ public class Projection : Singleton<Projection>
                                SRSUtilities.Intersect(new Vector2(100, 20), new Vector2(1000, 200), new Vector2(1, 0), new Vector2(1, 10)));
     }
 
-    public static void Rotate(int screenNum = 0)
+    public void Rotate(int screenNum = 0)
     {
         Debug.Log("Projection.Rotate(" + screenNum + ")");
-        instance._screens[screenNum].transform.Rotate(new Vector3(0, 180, 0));
+        
+        _screens[screenNum].transform.Rotate(new Vector3(0, 180, 0));
     }
 }
