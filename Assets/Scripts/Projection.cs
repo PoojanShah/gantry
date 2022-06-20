@@ -364,20 +364,6 @@ public class Projection : MonoBehaviour
         if (Settings.sound) GetComponent<AudioSource>().Stop();
     }
 
-    private static void UnitTest()
-    {
-        Debug.LogWarning("UnitTest (alle wirklich sollen): " + SRSUtilities.Intersect(Vector2.zero, Vector2.one, new Vector2(1, 0), new Vector2(0, 1)) + "," +
-                               SRSUtilities.Intersect(new Vector2(0, 0), new Vector2(0, 2), new Vector2(-1, 1), new Vector2(1, 1)) + "," +
-                               SRSUtilities.Intersect(new Vector2(1, 0), new Vector2(0, 1), new Vector2(8, 0), new Vector2(0, 1)) + "," +
-                               SRSUtilities.Intersect(new Vector2(0, 0), new Vector2(0, 2), new Vector2(1, 1), new Vector2(-1, 1)) + "," +
-                               SRSUtilities.Intersect(new Vector2(100, 20), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 10)));
-        Debug.LogWarning("UnitTest (alle falch sollen): " + SRSUtilities.Intersect(Vector2.zero, Vector2.one, new Vector2(1, 0), new Vector2(2, 1)) + "," +
-                               SRSUtilities.Intersect(new Vector2(0, 0), new Vector2(0, 2), new Vector2(-1, 1), new Vector2(-1, 99)) + "," +
-                               SRSUtilities.Intersect(new Vector2(1, 0), new Vector2(0, 1), new Vector2(8, 0), new Vector2(0, 8)) + "," +
-                               SRSUtilities.Intersect(new Vector2(0, 0), new Vector2(0, 2), new Vector2(2, 2), new Vector2(2, -2)) + "," +
-                               SRSUtilities.Intersect(new Vector2(100, 20), new Vector2(1000, 200), new Vector2(1, 0), new Vector2(1, 10)));
-    }
-
     public void Rotate(int screenNum = 0)
     {
         Debug.Log("Projection.Rotate(" + screenNum + ")");
