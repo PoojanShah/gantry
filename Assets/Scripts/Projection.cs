@@ -13,7 +13,7 @@ public class Projection : Singleton<Projection>
     [SerializeField] private GameObject[] _screens;
     [SerializeField] private VideosConfig _videosConfig;
 
-    public GameObject[] Screens { get; }
+    public GameObject[] Screens => _screens;
 
     public static bool editing { get {/*Debug.Log("instance.editor: "+instance.editor+", enabled: "+instance.editor.enabled);*/return instance.editor != null && instance.editor.enabled; } set { instance.editor.enabled = value; } }
     public static Vector3 originalExtents, rawSize = new Vector3(5, 0, 5);
