@@ -32,11 +32,11 @@ public class ScrollableObject:MonoBehaviour{
     MouseDown();
   }
   private void MouseDown(){
-	Debug.Log("ScrollableObject.MouseDown(); Input.mousePosition: "+Input.mousePosition+", screen dimensions: ("+Screen.width+","+Screen.height+")");
+	//Debug.Log("ScrollableObject.MouseDown(); Input.mousePosition: "+Input.mousePosition+", screen dimensions: ("+Screen.width+","+Screen.height+")");
     if(guiCamera==null)Debug.LogError("You need to assign guiCamera to object: "+name);
     screenPoint=guiCamera.WorldToScreenPoint(objectToMove.transform.localPosition);
     offset=objectToMove.transform.localPosition-guiCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y,screenPoint.z));
-    Debug.Log(name+" ScrollableObject.MouseDown(). Offset: "+offset+", CanMove(): "+CanMove());
+    //Debug.Log(name+" ScrollableObject.MouseDown(). Offset: "+offset+", CanMove(): "+CanMove());
     mouseDown=true;
     momentum=Vector2.zero;
   }

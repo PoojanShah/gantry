@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using Configs;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -73,6 +74,8 @@ public class Menu : Singleton<Menu>
 	public static Vector2 saveWindowSize = new Vector2(Settings.menuScreenW * 0.5f, Settings.ScreenH * 0.5f);
 	public GameObject movieButtonPrefab;
 	public Texture2D missingIconTexture;
+
+
 
 	public static bool DraggingWindow
 	{
@@ -574,12 +577,12 @@ public class Menu : Singleton<Menu>
 					    RegexOptions.IgnoreCase))))
 				{
 					//StartMovie(movieName,(int)Settings.screenMode);
-					instance.projection.StartMovie(movieName, screenNum);
+					instance.projection.StartMovie(screenNum);
 				}
 				else
 				{
 					Debug.LogWarning("Attempted to play locked or unrecognized movie \"" + movieName + "\".");
-					instance.projection.StartMovie(movieName, screenNum);
+					instance.projection.StartMovie(screenNum);
 				}
 
 				break;
@@ -636,8 +639,8 @@ public class Menu : Singleton<Menu>
 			buttonObj.transform.parent = transform;
 			buttonObj.GetComponent<Renderer>().material.mainTexture =
 				Resources.Load<Texture2D>(Settings.thumbsDir + "/" + Settings.categories[category][i]);
-			buttonObj.transform.Find("Label").GetComponent<TextMesh>().text =
-				buttonObj.GetComponent<PreviewButton>().movieName = Settings.categories[category][i];
+			//buttonObj.transform.Find("Label").GetComponent<TextMesh>().text =
+			//	buttonObj.GetComponent<PreviewButton>().movieName = Settings.categories[category][i];
 		}
 	}
 
