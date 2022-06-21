@@ -5,6 +5,8 @@ namespace Core
 		public const string ZeroString = "0",
 			Colon = ":",
 			Comma = ",",
-			ClosingBracket = ")";
+			ClosingBracket = ")",
+			CorrectAdminPass = "Kim41",
+			CorrectSuperPass = "Jas375";
 	}
 }

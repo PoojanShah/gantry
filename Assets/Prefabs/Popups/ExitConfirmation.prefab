@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 7534455446742936760}
   - component: {fileID: 7534455446742936761}
   - component: {fileID: 7534455446742936762}
+  - component: {fileID: 2839662711598633644}
   m_Layer: 5
   m_Name: ExitConfirmation
   m_TagString: Untagged
@@ -200,6 +201,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2839662711598633644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7534455446742936708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d694e9e5eeb4e1dacc64a9e8463f645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _quitButton: {fileID: 7534455447236056825}
+  _cancelButton: {fileID: 7534455447132450903}
 --- !u!1 &7534455446839376391
 GameObject:
   m_ObjectHideFlags: 0
