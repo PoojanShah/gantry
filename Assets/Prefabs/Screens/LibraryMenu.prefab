@@ -2013,8 +2013,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2030411658669654038}
   m_HandleRect: {fileID: 2030411658669654025}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.6132763
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4256,6 +4256,7 @@ GameObject:
   - component: {fileID: 2030411659212374177}
   - component: {fileID: 2030411659212374176}
   - component: {fileID: 2030411659212374179}
+  - component: {fileID: 8580554649472696569}
   m_Layer: 5
   m_Name: LibraryMenu
   m_TagString: Untagged
@@ -4352,6 +4353,19 @@ MonoBehaviour:
   Woman: {fileID: 2030411657580610640}
   ContentHolder: {fileID: 2030411658706262775}
   _simpleMenuToggle: {fileID: 2030411658534747478}
+--- !u!114 &8580554649472696569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030411659212374181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daed5de844e946c8980d4131c91bad12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _exitButton: {fileID: 2030411657970575417}
 --- !u!1 &2030411659214703495
 GameObject:
   m_ObjectHideFlags: 0

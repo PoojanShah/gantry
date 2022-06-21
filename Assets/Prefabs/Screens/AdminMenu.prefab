@@ -883,6 +883,7 @@ GameObject:
   - component: {fileID: 5529332910021207382}
   - component: {fileID: 5529332910021207380}
   - component: {fileID: 5529332910021207381}
+  - component: {fileID: 2441421782388993640}
   m_Layer: 5
   m_Name: AdminMenu
   m_TagString: Untagged
@@ -953,6 +954,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2441421782388993640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5529332910021207383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd3063aeac4b4b5ab7d19e284a51a526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playButton: {fileID: 5529332910098269644}
+  _editMapButton: {fileID: 5529332908773465689}
+  _optionButton: {fileID: 5529332908989270528}
+  _libraryButton: {fileID: 5529332908411936639}
+  _exitButton: {fileID: 5529332908384599984}
 --- !u!1 &5529332910051323185
 GameObject:
   m_ObjectHideFlags: 0
