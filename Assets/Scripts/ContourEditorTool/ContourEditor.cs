@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using Tools;
+using VideoPlaying;
 
 namespace ContourEditorTool
 {
@@ -2008,7 +2009,7 @@ namespace ContourEditorTool
 					GUI.Window(0, new Rect(Menu.windowPosition.position + Vector2.up * 256, Menu.windowPosition.size),
 						(id) =>
 						{
-							float breite = 32 + 32 / Mathf.Max(Projection.numScreens, 1);
+							float breite = 32 + 32 / Mathf.Max(Projection.DisplaysAmount, 1);
 							for (int i = 0; i < densityOptions.Length; i++)
 							{
 								if (GUI.Button(new Rect(breite / 8 + (breite + breite / 8) * i, 20, breite, 64),
@@ -2034,7 +2035,7 @@ namespace ContourEditorTool
 						//						saveName=GUI.TextField(new Rect(8,8,Screen.width*0.5f-16,32),saveName);
 						saveName = GUI.TextField(
 							new Rect(8, Menu.saveWindowSize.y * 0.5f - 16, Menu.saveWindowSize.x - 16, 32), saveName);
-						//for(int i=0;i<numScreens;i++)if(GUI.Toggle(new Rect(16,Menu.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
+						//for(int i=0;i<DisplaysAmount;i++)if(GUI.Toggle(new Rect(16,Menu.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
 						saveAsDefault = GUI.Toggle(new Rect(16, Menu.saveWindowSize.y * 0.5f + 32, 16, 16),
 							saveAsDefault == (int)Settings.monitorMode,
 							"Set as Default " + (new string[] { "Gantry", "Wall" }[(int)Settings.monitorMode]) +
@@ -2116,7 +2117,7 @@ namespace ContourEditorTool
 						if (mirror[i])
 							GUI.DrawTexture(
 								new Rect(
-									(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.numScreens - 1) *
+									(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
 										Mathf.Sign(Camera.main.transform.position.x)) - 1),
 									i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
 									i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
@@ -2143,7 +2144,7 @@ namespace ContourEditorTool
 			instance.gameObject.SetActive(false);
 			WipeBlackouts();
 			_projection.IsEditing = false;
-			Menu.SetMenu();
+			//Menu.SetMenu();
 			Menu._drawUI = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
 		}
@@ -2224,7 +2225,7 @@ namespace ContourEditorTool
 		{
 			Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
 
-			var screenObj = screen > -1 ? _projection.Screens[screen] : instance.gameObject;
+			var screenObj = screen > -1 ? _projection.Screens[screen].GetObject() : instance.gameObject;
 
 			BinaryReader br;
 			try
@@ -2282,7 +2283,7 @@ namespace ContourEditorTool
 					}
 
 					Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " +
-					          (screenObj == _projection.Screens[1]) + ",numLassoPoints: " + numLassoPoints);
+					          (screenObj == _projection.Screens[1].GetObject()) + ",numLassoPoints: " + numLassoPoints);
 					blackouts.Add(bo);
 				}
 

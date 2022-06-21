@@ -4,6 +4,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VideoPlaying;
+
 public static class Settings
 {
     public static float ScreenW = 1024, ScreenH = 768, slideInterval = 15;
@@ -28,7 +30,7 @@ public static class Settings
         newBinaryURL = "http://www.sauerburger.org/dti/" + binaryFile;
     public static string[][] categories;
     public static string[] library;
-    public static float menuScreenW { get { return ScreenW / Mathf.Max(1, Projection.numScreens); } }
+    public static float menuScreenW { get { return ScreenW / Mathf.Max(1, Projection.DisplaysAmount); } }
     public static float updatePeriod = 60, dongleCheckInterval = 30;//*60*1;//Check the server every minute or hour.
     public static int allowConnectionAttempts = 2;//24;
     public static Dictionary<string, string> videoColor = new Dictionary<string, string>();

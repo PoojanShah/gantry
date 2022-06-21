@@ -1,5 +1,6 @@
 ﻿using ContourEditorTool;
 using UnityEngine;
+using VideoPlaying;
 
 public class Vertex : MonoBehaviour
 {
