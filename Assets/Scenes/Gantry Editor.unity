@@ -10434,6 +10434,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6849339693187168123, guid: a4bdeb27c0d59b44bb337978ab966aff,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4bdeb27c0d59b44bb337978ab966aff, type: 3}
 --- !u!1 &973890841
@@ -10616,9 +10621,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2007143141}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShowLibrary
+      - m_Target: {fileID: 1730768622}
+        m_TargetAssemblyTypeName: LibraryScreen, Assembly-CSharp
+        m_MethodName: Show
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
