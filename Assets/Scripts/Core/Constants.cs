@@ -6,7 +6,12 @@ namespace Core
 			Colon = ":",
 			Comma = ",",
 			ClosingBracket = ")",
+			OpeningBracket = "(",
 			CorrectAdminPass = "Kim41",
-			CorrectSuperPass = "Jas375";
+			CorrectSuperPass = "Jas375",
+			BoyHash = "Boy",
+			GirlHash = "Girl",
+			ManHash = "Man",
+			WomanHash = "Woman";
 	}
 }

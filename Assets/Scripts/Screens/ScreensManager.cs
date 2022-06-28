@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Configs;
 using Core;
+using Library;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -94,8 +95,8 @@ namespace Screens
 
 		private void InitLibrary(GameObject screen)
 		{
-			var library = screen.GetComponent<Library>();
-			library.Init(() => OpenWindow(ScreenType.AdminMenu));
+			var library = screen.GetComponent<LibraryScreen>();
+			//library.Init(() => OpenWindow(ScreenType.AdminMenu));
 		}
 		
 		private void InitExitPopUp(GameObject screen)
