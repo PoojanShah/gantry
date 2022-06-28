@@ -78,7 +78,7 @@ namespace Screens
 		private void InitMainMenu(GameObject screen)
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), Constants.CorrectAdminPass), 
+			mainMenu.Init(() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
 				() => OpenWindow(ScreenType.ExitConfirmationPopup));
 		}
 		
@@ -87,7 +87,7 @@ namespace Screens
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(null, 
 				null, 
-				null, 
+				() => OpenPasswordPopUp(() => Debug.Log("zesxrdctfvygb"), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
@@ -104,18 +104,26 @@ namespace Screens
 			exitPopUp.Init(Application.Quit);
 		}
 		
-		private void OpenPasswordPopUp(Action onContinue, string correctPass)
+		private void OpenPasswordPopUp(Action onContinue, PasswordType type)
 		{
 			var screen = ShowScreen(ScreenType.PasswordPopup);
 			var passwordPopUp = screen.GetComponent<PasswordPopUp>();
-			passwordPopUp.Init((password) =>
+
+			if (LogIn.CheckIsLogInByType(type))
 			{
-				if (password != correctPass)
-					return;
-				
 				onContinue?.Invoke();
 				Object.Destroy(screen);
-			});
+			}
+			
+			passwordPopUp.Init((password) =>
+			{
+				if (password != LogIn.GetPasswordByType(type))
+					return;
+				
+				LogIn.LogInByType(type);
+				onContinue?.Invoke();
+				Object.Destroy(screen);
+			}, type);
 		}
 	}
 }
