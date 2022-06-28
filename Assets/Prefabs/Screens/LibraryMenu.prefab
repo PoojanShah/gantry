@@ -1700,7 +1700,6 @@ GameObject:
   - component: {fileID: 2030411657999549923}
   - component: {fileID: 2030411657999549934}
   - component: {fileID: 2030411657999549921}
-  - component: {fileID: 2030411657999549920}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -1758,10 +1757,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -1770,21 +1769,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Extensions
---- !u!114 &2030411657999549920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2030411657999549922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21e830bfeaf19374dbfeb67f03ace5ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultHeight: 60.97894
-  _defaultFontSize: 12
-  _childTextObjects: []
 --- !u!1 &2030411658042216584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2014,7 +1998,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2030411658669654025}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.6132763
+  m_Size: 0.55196005
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2288,7 +2272,6 @@ GameObject:
   - component: {fileID: 2030411658344936956}
   - component: {fileID: 2030411658344936955}
   - component: {fileID: 2030411658344936954}
-  - component: {fileID: 2030411658344936957}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2346,10 +2329,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -2360,21 +2343,6 @@ MonoBehaviour:
   m_Text: 'Simple Menu
 
 '
---- !u!114 &2030411658344936957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2030411658344936959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21e830bfeaf19374dbfeb67f03ace5ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultHeight: 60.97894
-  _defaultFontSize: 12
-  _childTextObjects: []
 --- !u!1 &2030411658401649391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2466,7 +2434,6 @@ GameObject:
   - component: {fileID: 2030411658423645821}
   - component: {fileID: 2030411658423645816}
   - component: {fileID: 2030411658423645819}
-  - component: {fileID: 2030411658423645818}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2536,21 +2503,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: All
---- !u!114 &2030411658423645818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2030411658423645820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21e830bfeaf19374dbfeb67f03ace5ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultHeight: 60.97894
-  _defaultFontSize: 12
-  _childTextObjects: []
 --- !u!1 &2030411658424812490
 GameObject:
   m_ObjectHideFlags: 0
@@ -2893,7 +2845,6 @@ GameObject:
   - component: {fileID: 2030411658568496069}
   - component: {fileID: 2030411658568496064}
   - component: {fileID: 2030411658568496067}
-  - component: {fileID: 2030411658568496066}
   m_Layer: 5
   m_Name: ColorText
   m_TagString: Untagged
@@ -2963,21 +2914,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Yellow Green
---- !u!114 &2030411658568496066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2030411658568496068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21e830bfeaf19374dbfeb67f03ace5ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultHeight: 60.97894
-  _defaultFontSize: 12
-  _childTextObjects: []
 --- !u!1 &2030411658669654024
 GameObject:
   m_ObjectHideFlags: 0
