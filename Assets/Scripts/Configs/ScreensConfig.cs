@@ -8,7 +8,8 @@ namespace Configs
 		AdminMenu,
 		LibraryMenu,
 		PasswordPopup,
-		ExitConfirmationPopup
+		ExitConfirmationPopup,
+		OptionsMenu
 	}
 
 	[System.Serializable]
