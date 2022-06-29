@@ -7,34 +7,37 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using ContourEditorTool;
 using Configs;
+using Library;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using VideoPlaying;
 using Debug = UnityEngine.Debug;
 
 public class Menu : Singleton<Menu>
 {
-	public static KeyValuePair<GUIContent, Action>[] mainMenu =
-		{
-			new(new GUIContent("Play"),
-				() => SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1])),
-			new(new GUIContent("Edit Contour Map"), () => EditContour(0)),
-			new(new GUIContent(Projection.numScreens > 1 ? "Edit Wall Map" : "Disabled"), () => EditContour(1)),
-			new(new GUIContent("Options"), () =>
-			{
-				superPass = string.Empty;
-				Displayer = OptionsMenu;
-			}),
-			new(new GUIContent("Library"), () =>
-			{
-				//RefreshLibrary();
-				//instance.StartCoroutine(LoadThumbs());
-				//Displayer=LibraryMenu;mainMenu
-			}),
-			new(new GUIContent("Exit"), () => { Application.Quit(); }),
-		},
-		categoryMenu;
+	//public KeyValuePair<GUIContent, Action>[] mainMenu =
+	//	{
+	//		new(new GUIContent("Play"),
+	//			() => Debug.Log("SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]))")),
+	//		new(new GUIContent("Edit Contour Map"), () => Debug.Log("EditContour(0)")),
+	//		new(new GUIContent(Projection.DisplaysAmount > 1 ? "Edit Wall Map" : "Disabled"), () => Debug.Log("EditContour(1)")),
+	//		new(new GUIContent("Options"), () =>
+	//		{
+	//			superPass = string.Empty;
+	//			Displayer = () => Debug.Log("OptionsMenu()");
+	//		}),
+	//		new(new GUIContent("Library"), () =>
+	//		{
+	//			//RefreshLibrary();
+	//			//instance.StartCoroutine(LoadThumbs());
+	//			//Displayer=LibraryMenu;mainMenu
+	//		}),
+	//		new(new GUIContent("Exit"), () => { Application.Quit(); }),
+	//	},
+	//	categoryMenu;
 
 	private static string
 		adminPass = "",
@@ -44,10 +47,10 @@ public class Menu : Singleton<Menu>
 
 	public static bool limbo;
 	public static int heartbeatTriesRemaining = Settings.allowConnectionAttempts;
-	public static Action Displayer; //=()=>ShowMenu(mainMenu);
+	public Action Displayer;
 
 	private static bool standbyForCommands = true;
-	private static Action displayerWas;
+	private Action displayerWas;
 	private static bool wrongPass, passPrompt;
 	private static Vector2 windowDragOffset = -Vector2.one;
 	private static Vector2 libraryScroll = Vector2.zero;
@@ -62,7 +65,8 @@ public class Menu : Singleton<Menu>
 	public GameObject UIObject, QuitConfirmation, AdminLogin, AdminMenu;
 	public InputField PassInputField;
 	public LibraryScreen LibMenu;
-	public Projection projection;
+	[SerializeField]private Projection _projection;
+	[SerializeField] private ContourEditor _contourEditor;
 	public ContourEditorUI ContourUI;
 	public GameObject menuBackground;
 	public GUISkin gantrySkin;
@@ -105,7 +109,7 @@ public class Menu : Singleton<Menu>
 		//Settings.dongleKeys=new string[]{"DE2E19C984E2925D","D85D6EA1539B7493"};
 
 		Debug.Log("Initial ScreenWidth: " + Settings.initialScreenWidth);
-		(projection = projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
+		(_projection = _projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
 
 		var categoryTextures = Resources.LoadAll<Texture2D>("categories");
 		var catList = new List<KeyValuePair<GUIContent, Action>>();
@@ -121,11 +125,11 @@ public class Menu : Singleton<Menu>
 			}));
 		}
 
-		categoryMenu = catList.ToArray();
+		//categoryMenu = catList.ToArray();
 
 		//Nate: I'm guessing this is here to call the awake function for Projection.
-		projection.gameObject.SetActive(true);
-		projection.gameObject.SetActive(false);
+		_projection.gameObject.SetActive(true);
+		_projection.gameObject.SetActive(false);
 		StartCoroutine(CheckForCommands());
 
 		Settings.monitorMode = Settings.MonitorMode.Single;
@@ -197,17 +201,17 @@ public class Menu : Singleton<Menu>
 
 	private void Update()
 	{
-		if (projection.playing && Input.GetKeyDown(KeyCode.Escape))
+		if (_projection.IsPlaying && Input.GetKeyDown(KeyCode.Escape))
 		{
 
 			ContourEditor.WipeBlackouts();
 			//SetMenu(categoryMenu);
-			projection.playMode = false;
+			_projection.IsPlayMode = false;
 			UIObject.SetActive(true);
 
 			instance.menuBackground.SetActive(false);
 			instance.DestroyPreviews();
-			instance.projection.gameObject.SetActive(false);
+			instance._projection.gameObject.SetActive(false);
 			Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 			FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 			{
@@ -549,7 +553,7 @@ public class Menu : Singleton<Menu>
 		}
 	}
 
-	private static void RunCommand(string command)
+	private void RunCommand(string command)
 	{
 		Debug.Log("Running command: \"" + command + "\".");
 		int screenNum;
@@ -577,12 +581,12 @@ public class Menu : Singleton<Menu>
 					    RegexOptions.IgnoreCase))))
 				{
 					//StartMovie(movieName,(int)Settings.screenMode);
-					instance.projection.StartMovie(screenNum);
+					instance._projection.StartMovie(screenNum);
 				}
 				else
 				{
 					Debug.LogWarning("Attempted to play locked or unrecognized movie \"" + movieName + "\".");
-					instance.projection.StartMovie(screenNum);
+					instance._projection.StartMovie(screenNum);
 				}
 
 				break;
@@ -592,11 +596,10 @@ public class Menu : Singleton<Menu>
 					? Array.IndexOf(screenNames, command.Split(":"[0])[1].Trim())
 					: 0;
 				Debug.Log("Playing slides of patient \"" + patientName + "\" on screen " + screenNum + ".");
-				instance.projection.StartSlideshow(patientName, screenNum);
 				break;
 			case "halt":
-				if (instance.projection.playing)
-					instance.projection.StopMovie(command.Split(":"[0]).Length > 1
+				if (instance._projection.IsPlaying)
+					instance._projection.StopMovie(command.Split(":"[0]).Length > 1
 						? Array.IndexOf(new string[] { "gantry", "wall" }, command.Split(":"[0])[1].Trim())
 						: -1); //"gantrywall" will return -1 from Array.IndexOf.
 				limbo = true;
@@ -607,7 +610,7 @@ public class Menu : Singleton<Menu>
 					(Settings.ScreenMode)Enum.Parse(typeof(Settings.ScreenMode), command.Split(":"[0])[1].Trim());
 				break;
 			case "rotate":
-				Projection.Rotate(command.Split(":"[0])[1] == "Wall" ? 1 : 0);
+				_projection.Rotate(command.Split(":"[0])[1] == "Wall" ? 1 : 0);
 				break;
 			default:
 				Debug.LogError("Ungueltiges kommand: " + command.Split(":"[0])[0].Trim() + " (from command: " +
@@ -653,7 +656,7 @@ public class Menu : Singleton<Menu>
 				Settings.ScreenH * 0.1246261216350947f), footerTexture);
 	}
 
-	private static void DrawConfirmQuit()
+	private void DrawConfirmQuit()
 	{
 		GUI.Window(0, windowPosition, (id) =>
 		{
@@ -669,7 +672,7 @@ public class Menu : Singleton<Menu>
 		}, "Confirmation");
 	}
 
-	private static void DrawAdminPassPrompt()
+	private void DrawAdminPassPrompt()
 	{
 		GUI.Window(0, windowPosition, (id) =>
 		{
@@ -700,11 +703,12 @@ public class Menu : Singleton<Menu>
 		}, "Confirmation");
 	}
 
-	private static void TryAdminPassword()
+	private void TryAdminPassword()
 	{
 		Debug.Log("Menu.TryAdminPassword() Trying admin password against correct pass: " +
 		          (adminPass == correctAdminPass));
-		if (adminPass == correctAdminPass) SetMenu();
+		if (adminPass == correctAdminPass) 
+			SetMenu();
 		else wrongPass = true;
 		adminPass = string.Empty;
 	}
@@ -712,7 +716,7 @@ public class Menu : Singleton<Menu>
 	private static string soundTemp = string.Empty;
 	private static bool useSoundTemp = false;
 
-	private static void OptionsMenu()
+	private void OptionsMenu()
 	{
 		float lmargin = Settings.menuScreenW * 0.15f,
 			tmargin = Settings.ScreenH * 0.15f,
@@ -821,7 +825,7 @@ public class Menu : Singleton<Menu>
 		GUI.skin.toggle.overflow.right = rightOverflowWas;
 	}
 
-	public static void SetMenu(KeyValuePair<GUIContent, Action>[] m = null, int[] disabled = null,
+	public void SetMenu(KeyValuePair<GUIContent, Action>[] m = null, int[] disabled = null,
 		Texture2D background = null, GUIStyle style = null)
 	{
 		Debug.Log("Menu.SetMenu(" + m + "," + disabled + "," + background + ")");
@@ -830,18 +834,18 @@ public class Menu : Singleton<Menu>
 		background = background??instance.categoryBackground;
 		style = style??instance.gantrySkin.customStyles[1];
 #endif
-		Camera.main.transform.position = Vector3.up * 5; //in case it's skewed from editing the contour map.
-		if (instance.projection.gameObject.activeSelf) Projection.StopAllMovies();
-		m = m ?? mainMenu;
-		if (m == categoryMenu)
-		{
-			style = style ?? instance.gantrySkin.customStyles[1];
-			adminPass = string.Empty;
-		}
+		Camera.main.transform.position = Vector3.up * 5; //in case it's skewed from IsEditing the contour map.
+		if (instance._projection.gameObject.activeSelf) _projection.StopAllScreens();
+		//m = m ?? mainMenu;
+		//if (m == categoryMenu)
+		//{
+		//	style = style ?? instance.gantrySkin.customStyles[1];
+		//	adminPass = string.Empty;
+		//}
 
-		instance.menuBackground.SetActive(m != mainMenu);
+		//instance.menuBackground.SetActive(m != mainMenu);
 		instance.DestroyPreviews();
-		instance.projection.gameObject.SetActive(false);
+		instance._projection.gameObject.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 		FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 		{
@@ -851,92 +855,92 @@ public class Menu : Singleton<Menu>
 		Settings.ShowCursor();
 
 		instance.transform.DestroyChildren();
-		Displayer = () => ShowMenu(m ?? mainMenu, disabled, style);
+		//Displayer = () => ShowMenu(m ?? mainMenu, disabled, style);
 		Settings.ShowCursor();
 		passPrompt = false;
 	}
 
-	private static void ShowMenu(KeyValuePair<GUIContent, Action>[] m, int[] disabled = null, GUIStyle style = null)
-	{
-		float buttonWidth = Settings.menuScreenW * 0.5f, buttonHeight = 48, margin = 16, catButtonSize = 128;
+	//private void ShowMenu(KeyValuePair<GUIContent, Action>[] m, int[] disabled = null, GUIStyle style = null)
+	//{
+	//	float buttonWidth = Settings.menuScreenW * 0.5f, buttonHeight = 48, margin = 16, catButtonSize = 128;
 
-		if (instance.menuBackground.activeSelf)
-			Overlays(m == categoryMenu ? instance.categoryFooter : instance.mediaFooter);
-		if (m == categoryMenu)
-		{
-			if (GUI.Button(BackButtonRect, instance.adminButton, style ?? GUI.skin.button))
-			{
-				passPrompt = true;
-				displayerWas = Displayer;
-				wrongPass = false;
-				Displayer = DrawAdminPassPrompt;
-				ResetWindowPosition();
-				SRSUtilities.guiMatrixNormalized = true;
-			}
+	//	if (instance.menuBackground.activeSelf)
+	//		Overlays(m == categoryMenu ? instance.categoryFooter : instance.mediaFooter);
+	//	if (m == categoryMenu)
+	//	{
+	//		if (GUI.Button(BackButtonRect, instance.adminButton, style ?? GUI.skin.button))
+	//		{
+	//			passPrompt = true;
+	//			displayerWas = Displayer;
+	//			wrongPass = false;
+	//			Displayer = DrawAdminPassPrompt;
+	//			ResetWindowPosition();
+	//			SRSUtilities.guiMatrixNormalized = true;
+	//		}
 
-			if (GUI.Button(
-				    new Rect(Settings.ScreenW - backButtonMargin - 96, Settings.ScreenH - 56 - backButtonMargin, 96,
-					    56), instance.exitButton))
-			{
-				displayerWas = Displayer;
-				Displayer = DrawConfirmQuit;
-				ResetWindowPosition();
-				SRSUtilities.guiMatrixNormalized = true;
-			}
-		}
-		else
-			for (int i = 0; i < m.Length; i++)
-			{
-				GUI.enabled = !disabled.Contains(i);
-				if (m[i].Key.text != "Disabled" && GUI.Button(m == categoryMenu
-						    ? new Rect(
-							    Settings.menuScreenW * 0.4f + (i % 2) * Settings.ScreenW * 0.2f - catButtonSize * 0.5f,
-							    Settings.ScreenH * 0.35f + i / 2 * Settings.ScreenH * 0.3f - catButtonSize * 0.5f,
-							    catButtonSize, catButtonSize)
-						    : new Rect((Settings.menuScreenW - buttonWidth) * 0.5f,
-							    (Settings.ScreenH - m.Length * (buttonHeight + margin)) * 0.5f +
-							    i * (buttonHeight + margin), buttonWidth, buttonHeight), m[i].Key,
-					    style ?? GUI.skin.button))
-				{
-					m[i].Value();
-				}
-			}
+	//		if (GUI.Button(
+	//			    new Rect(Settings.ScreenW - backButtonMargin - 96, Settings.ScreenH - 56 - backButtonMargin, 96,
+	//				    56), instance.exitButton))
+	//		{
+	//			displayerWas = Displayer;
+	//			Displayer = DrawConfirmQuit;
+	//			ResetWindowPosition();
+	//			SRSUtilities.guiMatrixNormalized = true;
+	//		}
+	//	}
+	//	else
+	//		for (int i = 0; i < m.Length; i++)
+	//		{
+	//			GUI.enabled = !disabled.Contains(i);
+	//			if (m[i].Key.text != "Disabled" && GUI.Button(m == categoryMenu
+	//					    ? new Rect(
+	//						    Settings.menuScreenW * 0.4f + (i % 2) * Settings.ScreenW * 0.2f - catButtonSize * 0.5f,
+	//						    Settings.ScreenH * 0.35f + i / 2 * Settings.ScreenH * 0.3f - catButtonSize * 0.5f,
+	//						    catButtonSize, catButtonSize)
+	//					    : new Rect((Settings.menuScreenW - buttonWidth) * 0.5f,
+	//						    (Settings.ScreenH - m.Length * (buttonHeight + margin)) * 0.5f +
+	//						    i * (buttonHeight + margin), buttonWidth, buttonHeight), m[i].Key,
+	//				    style ?? GUI.skin.button))
+	//			{
+	//				m[i].Value();
+	//			}
+	//		}
 
-		GUI.enabled = true;
-	}
+	//	GUI.enabled = true;
+	//}
 
-	private static void EditContour(int screenNum)
+	private void EditContour(int screenNum)
 	{
 		Debug.Log("Menu.EditContour(" + screenNum + ")");
 		Displayer = null;
-		instance.projection.transform.gameObject.SetActive(true);
-		Projection.editing = true; //Keep before ContourEditor initialization.
+		instance._projection.transform.gameObject.SetActive(true);
+		_projection.IsEditing = true; //Keep before ContourEditor initialization.
 		instance.menuBackground.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(false);
-		instance.projection.enabled = true;
-		Camera.main.transform.position = -Projection.ScreenPosition(screenNum) + Vector3.up * 5;
+		instance._projection.enabled = true;
+		Camera.main.transform.position = -_projection.ScreenPosition(screenNum) + Vector3.up * 5;
 		Settings.monitorMode = (Settings.MonitorMode)screenNum;
-		instance.projection.GetComponent<Toolbar>().enabled =
-			instance.projection.GetComponent<InfoDisplay>().enabled = true;
-		ContourEditor.Reset(); //after toolbar's Awake, so it can select.
-		ContourEditor.Restart();
+		instance._projection.GetComponent<Toolbar>().enabled =
+			instance._projection.GetComponent<InfoDisplay>().enabled = true;
+		_contourEditor.Reset(); //after toolbar's Awake, so it can select.
+		_contourEditor.Restart();
 	}
 
-	public static void ShowPlayer()
+	public void ShowPlayer()
 	{
-		if ( /*loaded&&*/instance.transform.childCount < 1 && !instance.projection.gameObject.activeSelf)
+		if ( /*loaded&&*/instance.transform.childCount < 1 && !instance._projection.gameObject.activeSelf)
 			GUI.Label(new Rect(Settings.ScreenW * 0.5f - 64, Settings.ScreenH * 0.5f - 32, 128, 64),
 				loadingMovie ? "Loading..." : "There are no movies available at this time.");
-		else if (instance.projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
+		else if (instance._projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
 
-		if (!instance.projection.playing && !limbo)
+		if (!instance._projection.IsPlaying && !limbo)
 		{
 			Overlays(instance.mediaFooter);
 			if (GUI.Button(BackButtonRect, instance.backArrow, instance.gantrySkin.customStyles[1]))
 			{
 				Debug.Log("Should be destroying previews...");
 				instance.DestroyPreviews();
-				SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]);
+				//SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]);
 				Settings.ShowCursor(true);
 			}
 		}
