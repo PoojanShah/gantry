@@ -15,14 +15,16 @@ namespace Screens
 		private readonly Transform _canvasTransform;
 		private readonly ScreensConfig _screensConfig;
 		private readonly ICommonFactory _factory;
+		private readonly Action _playAction;
 
 		private GameObject _currentScreen;
 
-		public ScreensManager(ICommonFactory factory, ScreensConfig screensConfig, Transform canvasTransform)
+		public ScreensManager(ICommonFactory factory, ScreensConfig screensConfig, Transform canvasTransform, Action playAction)
 		{
 			_factory = factory;
 			_screensConfig = screensConfig;
 			_canvasTransform = canvasTransform;
+			_playAction = playAction;
 
 			OpenWindow(ScreenType.MainMenu);
 		}
@@ -87,7 +89,7 @@ namespace Screens
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
-			adminMenu.Init(null, 
+			adminMenu.Init(_playAction, 
 				null, 
 				() => OpenPasswordPopUp(() => Debug.Log("zesxrdctfvygb"), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),

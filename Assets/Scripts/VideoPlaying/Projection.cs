@@ -140,7 +140,6 @@ namespace VideoPlaying
 			int thisLoop = ++currentSlideLoop;
 			string[] slides = null, extensions = { "ogg", "jpg", "png", "" };
 			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + clip.name + "\"," + screenNum + "," + slide + ");");
-			Menu.instance.menuBackground.SetActive(false);
 			gameObject.SetActive(true);
 			enabled = false;
 			_renderer.enabled = false;

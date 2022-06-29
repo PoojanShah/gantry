@@ -15,7 +15,13 @@ namespace Screens
 		public void Init(Action onPlayAction, Action onEditMapAction, Action onOptionAction, Action onLibraryAction,
 			Action onExitAction)
 		{
-			_playButton.onClick.AddListener(() => { onPlayAction?.Invoke(); });
+			_playButton.onClick.AddListener(() =>
+			{
+				onPlayAction?.Invoke();
+
+				Destroy(gameObject);
+			});
+
 			_editMapButton.onClick.AddListener(() => { onEditMapAction?.Invoke(); });
 			_optionButton.onClick.AddListener(() => { onOptionAction?.Invoke(); });
 			_libraryButton.onClick.AddListener(() => { onLibraryAction?.Invoke(); });

@@ -2,22 +2,24 @@ using Configs;
 using Core;
 using Screens;
 using UnityEngine;
+using VideoPlaying;
 
 namespace Common
 {
 	public class Bootstrapper : MonoBehaviour
 	{
-		[SerializeField] private ScreensConfig _screensConfig;
+		[SerializeField] private MainConfig _mainConfig;
 		[SerializeField] private Transform _canvasTransform;
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
+		private ProjectionController _projectionController;
 		
 		private void Awake()
 		{
 			_factory = new CommonFactory();
-
-			_screensManager = new ScreensManager(_factory, _screensConfig, _canvasTransform);
+			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup);
+			_screensManager = new ScreensManager(_factory, _mainConfig.ScreensConfig, _canvasTransform, _projectionController.Play);
 
 			InitSettings();
 		}

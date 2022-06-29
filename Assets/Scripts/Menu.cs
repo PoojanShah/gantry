@@ -16,7 +16,7 @@ using UnityEngine.Video;
 using VideoPlaying;
 using Debug = UnityEngine.Debug;
 
-public class Menu : Singleton<Menu>
+public class Menu : MonoBehaviour
 {
 	//public KeyValuePair<GUIContent, Action>[] mainMenu =
 	//	{
@@ -114,6 +114,7 @@ public class Menu : Singleton<Menu>
 		var categoryTextures = Resources.LoadAll<Texture2D>("categories");
 		var catList = new List<KeyValuePair<GUIContent, Action>>();
 
+
 		for (var i = 0; i < categoryTextures.Length; i++)
 		{
 			var _i = i;
@@ -207,11 +208,11 @@ public class Menu : Singleton<Menu>
 			ContourEditor.WipeBlackouts();
 			//SetMenu(categoryMenu);
 			_projection.IsPlayMode = false;
-			UIObject.SetActive(true);
+			UIObject?.SetActive(true);
 
-			instance.menuBackground.SetActive(false);
-			instance.DestroyPreviews();
-			instance._projection.gameObject.SetActive(false);
+			menuBackground.SetActive(false);
+			DestroyPreviews();
+			_projection.gameObject.SetActive(false);
 			Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 			FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 			{
@@ -581,12 +582,12 @@ public class Menu : Singleton<Menu>
 					    RegexOptions.IgnoreCase))))
 				{
 					//StartMovie(movieName,(int)Settings.screenMode);
-					instance._projection.StartMovie(screenNum);
+					_projection.StartMovie(screenNum);
 				}
 				else
 				{
 					Debug.LogWarning("Attempted to play locked or unrecognized movie \"" + movieName + "\".");
-					instance._projection.StartMovie(screenNum);
+					_projection.StartMovie(screenNum);
 				}
 
 				break;
@@ -598,8 +599,8 @@ public class Menu : Singleton<Menu>
 				Debug.Log("Playing slides of patient \"" + patientName + "\" on screen " + screenNum + ".");
 				break;
 			case "halt":
-				if (instance._projection.IsPlaying)
-					instance._projection.StopMovie(command.Split(":"[0]).Length > 1
+				if (_projection.IsPlaying)
+					_projection.StopMovie(command.Split(":"[0]).Length > 1
 						? Array.IndexOf(new string[] { "gantry", "wall" }, command.Split(":"[0])[1].Trim())
 						: -1); //"gantrywall" will return -1 from Array.IndexOf.
 				limbo = true;
@@ -647,10 +648,10 @@ public class Menu : Singleton<Menu>
 		}
 	}
 
-	private static void Overlays(Texture2D footerTexture)
+	private void Overlays(Texture footerTexture)
 	{
 		GUI.DrawTexture(new Rect(0, 0, Settings.ScreenW, Settings.ScreenH * 0.127617148554337f),
-			instance.illuminationsHeader);
+			illuminationsHeader);
 		GUI.DrawTexture(
 			new Rect(0, Settings.ScreenH * (1 - 0.1246261216350947f), Settings.ScreenW,
 				Settings.ScreenH * 0.1246261216350947f), footerTexture);
@@ -662,7 +663,7 @@ public class Menu : Singleton<Menu>
 		{
 			GUI.Label(
 				new Rect(windowPosition.width * 0.25f, windowPosition.height * 0.25f, windowPosition.width * 0.5f, 32),
-				"Really quit?", instance.gantrySkin.customStyles[2]);
+				"Really quit?", gantrySkin.customStyles[2]);
 			if (GUI.Button(
 				    new Rect(windowPosition.width * 0.2f, windowPosition.height * 0.75f, windowPosition.width * 0.2f,
 					    32), "Yes")) Application.Quit();
@@ -678,7 +679,7 @@ public class Menu : Singleton<Menu>
 		{
 			GUI.Label(
 				new Rect(windowPosition.width * 0.05f, windowPosition.height * 0.25f, windowPosition.width * 0.9f, 32),
-				"Please enter the administrator password:", instance.gantrySkin.customStyles[2]);
+				"Please enter the administrator password:", gantrySkin.customStyles[2]);
 			GUI.skin.textField.overflow.bottom = 0;
 			if (Event.current != null && Event.current.type == EventType.KeyDown &&
 			    new KeyCode[] { KeyCode.Return, KeyCode.KeypadEnter }.Any(kc => Event.current.keyCode == kc))
@@ -693,7 +694,7 @@ public class Menu : Singleton<Menu>
 				GUI.Label(
 					new Rect(windowPosition.width * 0.05f, windowPosition.height * 0.25f + 96,
 						windowPosition.width * 0.9f, 32), "Incorrect password. Please try again.",
-					instance.gantrySkin.customStyles[3]);
+					gantrySkin.customStyles[3]);
 			if (GUI.Button(
 				    new Rect(windowPosition.width * 0.2f, windowPosition.height * 0.75f, windowPosition.width * 0.2f,
 					    32), "Ok")) TryAdminPassword();
@@ -835,7 +836,7 @@ public class Menu : Singleton<Menu>
 		style = style??instance.gantrySkin.customStyles[1];
 #endif
 		Camera.main.transform.position = Vector3.up * 5; //in case it's skewed from IsEditing the contour map.
-		if (instance._projection.gameObject.activeSelf) _projection.StopAllScreens();
+		if (_projection.gameObject.activeSelf) _projection.StopAllScreens();
 		//m = m ?? mainMenu;
 		//if (m == categoryMenu)
 		//{
@@ -844,8 +845,8 @@ public class Menu : Singleton<Menu>
 		//}
 
 		//instance.menuBackground.SetActive(m != mainMenu);
-		instance.DestroyPreviews();
-		instance._projection.gameObject.SetActive(false);
+		DestroyPreviews();
+		_projection.gameObject.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(true);
 		FindObjectsOfType(typeof(VideoPlayer)).ToList().ForEach((mto) =>
 		{
@@ -854,7 +855,7 @@ public class Menu : Singleton<Menu>
 		});
 		Settings.ShowCursor();
 
-		instance.transform.DestroyChildren();
+		transform.DestroyChildren();
 		//Displayer = () => ShowMenu(m ?? mainMenu, disabled, style);
 		Settings.ShowCursor();
 		passPrompt = false;
@@ -913,33 +914,33 @@ public class Menu : Singleton<Menu>
 	{
 		Debug.Log("Menu.EditContour(" + screenNum + ")");
 		Displayer = null;
-		instance._projection.transform.gameObject.SetActive(true);
+		_projection.transform.gameObject.SetActive(true);
 		_projection.IsEditing = true; //Keep before ContourEditor initialization.
-		instance.menuBackground.SetActive(false);
+		menuBackground.SetActive(false);
 		Camera.main.transform.Find("Scrolling Background").gameObject.SetActive(false);
-		instance._projection.enabled = true;
+		_projection.enabled = true;
 		Camera.main.transform.position = -_projection.ScreenPosition(screenNum) + Vector3.up * 5;
 		Settings.monitorMode = (Settings.MonitorMode)screenNum;
-		instance._projection.GetComponent<Toolbar>().enabled =
-			instance._projection.GetComponent<InfoDisplay>().enabled = true;
+		_projection.GetComponent<Toolbar>().enabled =
+			_projection.GetComponent<InfoDisplay>().enabled = true;
 		_contourEditor.Reset(); //after toolbar's Awake, so it can select.
 		_contourEditor.Restart();
 	}
 
 	public void ShowPlayer()
 	{
-		if ( /*loaded&&*/instance.transform.childCount < 1 && !instance._projection.gameObject.activeSelf)
+		if (transform.childCount < 1 && !_projection.gameObject.activeSelf)
 			GUI.Label(new Rect(Settings.ScreenW * 0.5f - 64, Settings.ScreenH * 0.5f - 32, 128, 64),
 				loadingMovie ? "Loading..." : "There are no movies available at this time.");
-		else if (instance._projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
+		else if (_projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
 
-		if (!instance._projection.IsPlaying && !limbo)
+		if (!_projection.IsPlaying && !limbo)
 		{
-			Overlays(instance.mediaFooter);
-			if (GUI.Button(BackButtonRect, instance.backArrow, instance.gantrySkin.customStyles[1]))
+			Overlays(mediaFooter);
+			if (GUI.Button(BackButtonRect, backArrow, gantrySkin.customStyles[1]))
 			{
 				Debug.Log("Should be destroying previews...");
-				instance.DestroyPreviews();
+				DestroyPreviews();
 				//SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]);
 				Settings.ShowCursor(true);
 			}
