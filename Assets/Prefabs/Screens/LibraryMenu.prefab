@@ -1763,6 +1763,7 @@ MonoBehaviour:
   _man: {fileID: 2030411657941693480}
   _woman: {fileID: 2030411657580610640}
   _contentHolder: {fileID: 9211838326808944889}
+  _scrollbar: {fileID: 5372452582149622565}
 --- !u!1 &2147533116371856136
 GameObject:
   m_ObjectHideFlags: 0

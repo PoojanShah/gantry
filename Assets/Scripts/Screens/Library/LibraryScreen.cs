@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,7 @@ namespace Library
 		[SerializeField] private Image _exampleFile;
 		[SerializeField] private Text _boy, _girl, _man, _woman;
 		[SerializeField] private RectTransform _contentHolder;
+		[SerializeField] private Scrollbar _scrollbar;
 
 		private bool _showFileExtensions;
 
@@ -33,6 +35,8 @@ namespace Library
 			InitButtons();
 		
 			LibraryReloadHandler();
+
+			_scrollbar.value = Constants.ScrollbarDefaultValue;
 		}
 
 		private void ExitButtonClicked()

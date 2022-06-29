@@ -1,6 +1,6 @@
 namespace Core
 {
-	public class Constants
+	public static class Constants
 	{
 		public const string ZeroString = "0",
 			Colon = ":",
@@ -13,5 +13,7 @@ namespace Core
 			GirlHash = "Girl",
 			ManHash = "Man",
 			WomanHash = "Woman";
+
+		public const float ScrollbarDefaultValue = 1.0f;
 	}
 }
