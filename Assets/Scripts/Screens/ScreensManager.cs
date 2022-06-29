@@ -71,7 +71,7 @@ namespace Screens
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
-				case ScreenType.Option:
+				case ScreenType.OptionsMenu:
 					InitOptions(screen);
 					break;
 				case ScreenType.PasswordPopup:
@@ -92,7 +92,7 @@ namespace Screens
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(null, 
 				null, 
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.Option), PasswordType.SuperAdmin), 
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
@@ -105,7 +105,7 @@ namespace Screens
 
 		private void InitOptions(GameObject screen)
 		{
-			var options = screen.GetComponent<Options>();
+			var options = screen.GetComponent<OptionsMenu>();
 			options.Init();
 		}
 		

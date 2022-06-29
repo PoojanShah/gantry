@@ -2170,9 +2170,9 @@ GameObject:
   - component: {fileID: 2786991009734342561}
   - component: {fileID: 2786991009734342563}
   - component: {fileID: 2786991009734342562}
-  - component: {fileID: 2134951470808129794}
+  - component: {fileID: 7099011152983100692}
   m_Layer: 5
-  m_Name: Options
+  m_Name: OptionsMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2238,7 +2238,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2134951470808129794
+--- !u!114 &7099011152983100692
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
