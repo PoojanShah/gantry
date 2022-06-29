@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Common;
 using Configs;
 using Core;
 using Library;
@@ -96,7 +97,7 @@ namespace Screens
 		private void InitLibrary(GameObject screen)
 		{
 			var library = screen.GetComponent<LibraryScreen>();
-			//library.Init(() => OpenWindow(ScreenType.AdminMenu));
+			library.Init(() => OpenWindow(ScreenType.AdminMenu));
 		}
 		
 		private void InitExitPopUp(GameObject screen)
@@ -110,7 +111,7 @@ namespace Screens
 			var screen = ShowScreen(ScreenType.PasswordPopup);
 			var passwordPopUp = screen.GetComponent<PasswordPopUp>();
 
-			if (LogIn.CheckIsLogInByType(type))
+			if (LoginHelper.IsLoggedInByType(type))
 			{
 				onContinue?.Invoke();
 				Object.Destroy(screen);
@@ -118,10 +119,10 @@ namespace Screens
 			
 			passwordPopUp.Init((password) =>
 			{
-				if (password != LogIn.GetPasswordByType(type))
+				if (password != LoginHelper.GetPasswordByType(type))
 					return;
 				
-				LogIn.LogInByType(type);
+				LoginHelper.LogInByType(type);
 				onContinue?.Invoke();
 				Object.Destroy(screen);
 			}, type);

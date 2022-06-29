@@ -27,9 +27,12 @@ namespace Library
 		[SerializeField] private Scrollbar _scrollbar;
 
 		private bool _showFileExtensions;
+		private Action _quitButtonAction;
 
-		public void Show()
+		public void Init(Action quitButtonAction)
 		{
+			_quitButtonAction = quitButtonAction;
+
 			gameObject.SetActive(true);
 
 			InitButtons();
@@ -52,6 +55,8 @@ namespace Library
 			_libFiles.Clear();
 
 			gameObject.SetActive(false);
+
+			_quitButtonAction?.Invoke();
 		}
 
 		private void InitButtons()
@@ -164,6 +169,8 @@ namespace Library
 			{
 				Debug.LogError("Error writing file " + Settings.movieColorFile + Core.Constants.Colon + e);
 			}
+
+			_quitButtonAction?.Invoke();
 
 			gameObject.SetActive(false);
 		}
