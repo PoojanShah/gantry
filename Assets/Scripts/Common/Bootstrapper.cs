@@ -18,7 +18,9 @@ namespace Common
 		private void Awake()
 		{
 			_factory = new CommonFactory();
-			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup);
+			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
+				_mainConfig.VideosConfig,
+				() => _screensManager.ShowScreen(ScreenType.MainMenu));
 			_screensManager = new ScreensManager(_factory, _mainConfig.ScreensConfig, _canvasTransform, _projectionController.Play);
 
 			InitSettings();

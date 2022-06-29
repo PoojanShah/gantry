@@ -272,7 +272,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d99f3644abdb1c045a163eef652a7260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Projection: {fileID: 48927143547244676}
+  _players:
+  - {fileID: 48927143402232702}
+  - {fileID: 48927143286672950}
+  _projection: {fileID: 48927143547244676}
 --- !u!1 &48927143286672905
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,7 +665,6 @@ MonoBehaviour:
   - Transform: {fileID: 48927143286672949}
     Player: {fileID: 48927143286672950}
     _gameObject: {fileID: 48927143286672905}
-  _videosConfig: {fileID: 11400000, guid: f584e977180fec6428356b40fde3d570, type: 2}
   _renderer: {fileID: 48927143547244677}
   _contourEditor: {fileID: 48927143547244675}
 --- !u!114 &48927143547244675

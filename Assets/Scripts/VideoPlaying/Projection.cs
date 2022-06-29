@@ -24,11 +24,12 @@ namespace VideoPlaying
 
 	public class Projection : MonoBehaviour
 	{
+		public VideoPlayerScreen[] Screens => _screens;
+
 		[SerializeField] private VideoPlayerScreen[] _screens;
-		[SerializeField] private VideosConfig _videosConfig;
 		[SerializeField] private Renderer _renderer;
 
-		public VideoPlayerScreen[] Screens => _screens;
+		private VideosConfig _videosConfig;
 
 		public bool IsEditing
 		{
@@ -68,8 +69,10 @@ namespace VideoPlaying
 
 		public bool IsPlaying => gameObject.activeSelf && !IsEditing;
 
-		private void Awake()
+		public void Init(VideosConfig config)
 		{
+			_videosConfig = config;
+
 			Debug.Log("Projection.Awake(); Settings.dataPath: " + Settings.dataPath + ", Application.persistentDataPath: " + Application.persistentDataPath
 					  + ";\nCommand Line: \"" + Environment.CommandLine + "\", Command Line Args: \"" + string.Join(",", Environment.GetCommandLineArgs()) + "\"; Screen.width: " + Screen.width + ", Screen.height: " + Screen.height + ", DisplaysAmount: " + DisplaysAmount);
 
