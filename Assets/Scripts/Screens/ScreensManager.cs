@@ -71,6 +71,9 @@ namespace Screens
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
+				case ScreenType.Option:
+					InitOptions(screen);
+					break;
 				case ScreenType.PasswordPopup:
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -89,7 +92,7 @@ namespace Screens
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(null, 
 				null, 
-				() => OpenPasswordPopUp(() => Debug.Log("zesxrdctfvygb"), PasswordType.SuperAdmin), 
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.Option), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
@@ -98,6 +101,12 @@ namespace Screens
 		{
 			var library = screen.GetComponent<LibraryScreen>();
 			library.Init(() => OpenWindow(ScreenType.AdminMenu));
+		}
+
+		private void InitOptions(GameObject screen)
+		{
+			var options = screen.GetComponent<Options>();
+			options.Init();
 		}
 		
 		private void InitExitPopUp(GameObject screen)
