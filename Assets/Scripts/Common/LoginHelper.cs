@@ -38,8 +38,8 @@ namespace Common
 		{
 			return type switch
 			{
-				PasswordType.Admin => Constants.CorrectAdminPass,
-				PasswordType.SuperAdmin => Constants.CorrectSuperPass,
+				PasswordType.Admin => Constants.CorrectAdminPassword,
+				PasswordType.SuperAdmin => Constants.CorrectSuperPassword,
 				_ => null
 			};
 		}
