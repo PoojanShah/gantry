@@ -28,6 +28,7 @@ namespace VideoPlaying
 			if (_projectionView != null)
 			{
 				_projectionView.SetActive(true);
+				_projectionView.Init(_videosConfig, StopAndHidePlayer);
 				_projectionView.Play(videoId);
 
 				return;

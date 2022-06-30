@@ -55,7 +55,7 @@ namespace Screens
 
 		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
 
-		private void OpenWindow(ScreenType type)
+		public void OpenWindow(ScreenType type)
 		{
 			var screen = ShowScreen(type);
 			
