@@ -1,4 +1,5 @@
 using Configs;
+using ContourEditorTool;
 using Core;
 using Screens;
 using UnityEngine;
@@ -14,14 +15,15 @@ namespace Common
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
 		private ProjectionController _projectionController;
+		private CounterEditorController _counterEditorController;
 		
 		private void Awake()
 		{
 			_factory = new CommonFactory();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
-				_mainConfig.VideosConfig,
-				() => _screensManager.OpenWindow(ScreenType.MainMenu));
-			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play);
+				_mainConfig.VideosConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
+			_counterEditorController = new CounterEditorController(_factory, /*_projectionController.GetProjection()*/null);
+			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _counterEditorController.Show);
 
 			InitSettings();
 		}

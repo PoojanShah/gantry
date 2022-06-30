@@ -23,6 +23,8 @@ namespace VideoPlaying
 			_stopAction = stopAction;
 		}
 
+		public Projection GetProjection() => _projectionView.GetProjection();
+
 		public void Play(int videoId)
 		{
 			if (_projectionView != null)

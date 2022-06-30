@@ -22,6 +22,7 @@ namespace VideoPlaying
 
 		public void Play(int videoId) => _projection.StartMovie(videoId);
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);
+		public Projection GetProjection() => _projection;
 		private void Update() => InputHandler();
 
 		private void InputHandler()

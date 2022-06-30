@@ -138,47 +138,47 @@ public class Menu : MonoBehaviour
 		Screen.fullScreen = false;
 
 		bool onStartRan = false;
-		if (File.Exists(Settings.configFile))
-		{
-			//Format: variable name on the left, followed by "=", followed by value.
-			Debug.Log("Config file \"" + Settings.configFile + "\" found.");
+		//if (File.Exists(Settings.configFile))
+		//{
+		//	//Format: variable name on the left, followed by "=", followed by value.
+		//	Debug.Log("Config file \"" + Settings.configFile + "\" found.");
 
-			var reader = new StreamReader(Settings.configFile);
+		//	var reader = new StreamReader(Settings.configFile);
 
-			while (reader.ReadLine() is { } line)
-			{
-				if (line.Trim().StartsWith("#")) continue;
-				if (!line.Contains("=") || line.Split("="[0])[1].Trim().Length < 1)
-				{
-					Debug.LogError("Ungueltiges line: \"" + line + "\"");
-					continue;
-				}
+		//	while (reader.ReadLine() is { } line)
+		//	{
+		//		if (line.Trim().StartsWith("#")) continue;
+		//		if (!line.Contains("=") || line.Split("="[0])[1].Trim().Length < 1)
+		//		{
+		//			Debug.LogError("Ungueltiges line: \"" + line + "\"");
+		//			continue;
+		//		}
 
-				switch (line.Split("="[0])[0].Trim().ToLower())
-				{
-					case "commandfile":
-						Settings.commandFile = line.Split("="[0])[1].Trim();
-						Debug.Log("Set command file to \"" + Settings.commandFile + "\".");
-						break;
-					case "onstart":
-						RunCommand(line.Split("="[0])[1].Trim());
-						onStartRan = true;
-						break;
-					case "persist":
-						Settings.persist = Boolean.Parse(line.Split("="[0])[1].Trim());
-						break;
-					case "simplemenu":
-						Settings._simpleMenu =
-							Convert.ToBoolean(Int32.Parse(line.Split("="[0])[1].Trim()) ==
-							                  1); //Settings.simpleMenu=Boolean.Parse(line.Split("="[0])[1].Trim());
-						break;
-					default:
-						Debug.LogError("Ungueltiges config file entry: \"" + line.Split("="[0])[0] + "\"");
-						break;
-				}
-			}
-		}
-		else Debug.Log("Config file \"" + Settings.configFile + "\" not found.");
+		//		switch (line.Split("="[0])[0].Trim().ToLower())
+		//		{
+		//			case "commandfile":
+		//				Settings.commandFile = line.Split("="[0])[1].Trim();
+		//				Debug.Log("Set command file to \"" + Settings.commandFile + "\".");
+		//				break;
+		//			case "onstart":
+		//				RunCommand(line.Split("="[0])[1].Trim());
+		//				onStartRan = true;
+		//				break;
+		//			case "persist":
+		//				Settings.persist = Boolean.Parse(line.Split("="[0])[1].Trim());
+		//				break;
+		//			case "simplemenu":
+		//				Settings._simpleMenu =
+		//					Convert.ToBoolean(Int32.Parse(line.Split("="[0])[1].Trim()) ==
+		//					                  1); //Settings.simpleMenu=Boolean.Parse(line.Split("="[0])[1].Trim());
+		//				break;
+		//			default:
+		//				Debug.LogError("Ungueltiges config file entry: \"" + line.Split("="[0])[0] + "\"");
+		//				break;
+		//		}
+		//	}
+		//}
+		//else Debug.Log("Config file \"" + Settings.configFile + "\" not found.");
 
 		Debug.Log("onStartRan: " + onStartRan);
 #if UNITY_EDITOR

@@ -12,19 +12,22 @@ namespace Screens
 	public class ScreensManager
 	{
 		private const byte QTS_POPUP_ID = 2;
+		private readonly Action _openEditorAction;
+		private readonly Action<int> _playAction;
 		private readonly Transform _canvasTransform;
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
-		private readonly Action<int> _playAction;
 
 		private GameObject _currentScreen;
 
-		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform, Action<int> playAction)
+		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
+			Action<int> playAction, Action openEditorAction)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
 			_canvasTransform = canvasTransform;
 			_playAction = playAction;
+			_openEditorAction = openEditorAction;
 
 			OpenWindow(ScreenType.MainMenu);
 		}
@@ -85,15 +88,15 @@ namespace Screens
 		private void InitMainMenu(GameObject screen)
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(PlayVideoAction, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+			mainMenu.Init(PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
 				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.VideosConfig, _factory);
 		}
 		
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
-			adminMenu.Init(PlayVideoAction, 
-				null, 
+			adminMenu.Init(PlayVideo, 
+				OpenPatternsEditor, 
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
 				() => OpenWindow(ScreenType.MainMenu));
@@ -139,11 +142,19 @@ namespace Screens
 			}, type);
 		}
 
-		private void PlayVideoAction(int videoId)
+		private void PlayVideo(int videoId)
 		{
 			_playAction?.Invoke(videoId);
 
 			Object.Destroy(_currentScreen);
 		}
+
+		private void OpenPatternsEditor()
+		{
+			_openEditorAction?.Invoke();
+
+			Object.Destroy(_currentScreen);
+		}
+
 	}
 }
