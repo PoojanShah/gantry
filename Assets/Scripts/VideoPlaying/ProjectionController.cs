@@ -23,7 +23,13 @@ namespace VideoPlaying
 			_stopAction = stopAction;
 		}
 
-		public Projection GetProjection() => _projectionView.GetProjection();
+		public Projection GetProjection()
+		{
+			if(_projectionView == null)
+				CreateProjectionView();
+
+			return _projectionView.GetProjection();
+		}
 
 		public void Play(int videoId)
 		{
@@ -36,9 +42,15 @@ namespace VideoPlaying
 				return;
 			}
 
+			CreateProjectionView();
+
+			_projectionView.Play(videoId);
+		}
+
+		private void CreateProjectionView()
+		{
 			_projectionView = _commonFactory.InstantiateObject<ProjectionView>(_prefab);
 			_projectionView.Init(_videosConfig, StopAndHidePlayer);
-			_projectionView.Play(videoId);
 		}
 
 		private void StopAndHidePlayer()
