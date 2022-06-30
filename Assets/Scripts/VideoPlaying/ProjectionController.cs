@@ -23,19 +23,19 @@ namespace VideoPlaying
 			_stopAction = stopAction;
 		}
 
-		public void Play()
+		public void Play(int videoId)
 		{
 			if (_projectionView != null)
 			{
 				_projectionView.SetActive(true);
-				_projectionView.Play();
+				_projectionView.Play(videoId);
 
 				return;
 			}
 
 			_projectionView = _commonFactory.InstantiateObject<ProjectionView>(_prefab);
 			_projectionView.Init(_videosConfig, StopAndHidePlayer);
-			_projectionView.Play();
+			_projectionView.Play(videoId);
 		}
 
 		private void StopAndHidePlayer()

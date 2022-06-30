@@ -21,7 +21,7 @@ namespace Common
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				_mainConfig.VideosConfig,
 				() => _screensManager.ShowScreen(ScreenType.MainMenu));
-			_screensManager = new ScreensManager(_factory, _mainConfig.ScreensConfig, _canvasTransform, _projectionController.Play);
+			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play);
 
 			InitSettings();
 		}

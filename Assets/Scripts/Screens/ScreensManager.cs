@@ -13,16 +13,16 @@ namespace Screens
 	{
 		private const byte QTS_POPUP_ID = 2;
 		private readonly Transform _canvasTransform;
-		private readonly ScreensConfig _screensConfig;
+		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
-		private readonly Action _playAction;
+		private readonly Action<int> _playAction;
 
 		private GameObject _currentScreen;
 
-		public ScreensManager(ICommonFactory factory, ScreensConfig screensConfig, Transform canvasTransform, Action playAction)
+		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform, Action<int> playAction)
 		{
 			_factory = factory;
-			_screensConfig = screensConfig;
+			_mainConfig = mainConfig;
 			_canvasTransform = canvasTransform;
 			_playAction = playAction;
 
@@ -31,7 +31,7 @@ namespace Screens
 
 		public GameObject ShowScreen(ScreenType type)
 		{
-			var screen = _screensConfig.Screens.FirstOrDefault(s => s.Type == type);
+			var screen = _mainConfig.ScreensConfig.Screens.FirstOrDefault(s => s.Type == type);
 
 			if (screen == null)
 				return null;
@@ -85,14 +85,14 @@ namespace Screens
 		private void InitMainMenu(GameObject screen)
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				() => OpenWindow(ScreenType.ExitConfirmationPopup));
+			mainMenu.Init(PlayVideoAction, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.VideosConfig, _factory);
 		}
 		
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
-			adminMenu.Init(_playAction, 
+			adminMenu.Init(PlayVideoAction, 
 				null, 
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
@@ -137,6 +137,13 @@ namespace Screens
 				onContinue?.Invoke();
 				Object.Destroy(screen);
 			}, type);
+		}
+
+		private void PlayVideoAction(int videoId)
+		{
+			_playAction?.Invoke(videoId);
+
+			Object.Destroy(_currentScreen);
 		}
 	}
 }

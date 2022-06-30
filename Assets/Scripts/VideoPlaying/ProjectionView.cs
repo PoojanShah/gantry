@@ -20,7 +20,7 @@ namespace VideoPlaying
 			_projection.Init(videosConfig);
 		}
 
-		public void Play() => _projection.StartMovie();
+		public void Play(int videoId) => _projection.StartMovie(videoId);
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);
 		private void Update() => InputHandler();
 

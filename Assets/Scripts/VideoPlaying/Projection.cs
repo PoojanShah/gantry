@@ -120,9 +120,9 @@ namespace VideoPlaying
 		public bool IsScreenPlaying(VideoPlayerScreen playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
-		public void StartMovie(int screenNum = 0, bool testMovie = false)
+		public void StartMovie(int videoId = -1, int screenNum = 0, bool testMovie = false)
 		{
-			var clip = _videosConfig.GetFirstClip();
+			var clip = videoId > -1? _videosConfig.Videos[videoId] : _videosConfig.GetFirstClip();
 
 			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
