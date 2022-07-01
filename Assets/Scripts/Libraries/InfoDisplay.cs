@@ -2,7 +2,11 @@
 using System.Collections;
 public class InfoDisplay:Draggable2D{
     public string message="";
+    public bool isNeedToShow;
     private void OnGUI(){
+        if (!isNeedToShow)
+            return;
+        
         //Debug.Log("InfoDisplay.OnGUI(), message: \""+message+"\"");
         //Rect hudRect=new Rect(0,Screen.height-216,160,216);
         //Rect hudRect=new Rect(0,0,Screen.width,Screen.height);

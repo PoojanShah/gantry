@@ -13,7 +13,7 @@ public class Toolbar : Draggable2D
     public float menuMargin = 8;
     public static bool clickedThisFrame = false;
     private bool vertical = true;//,direction=true;//Getue
-                                 //private bool infoOn=true;
+    public bool isNeedToShow;
     public InfoDisplay info;
     public static GUISkin gantrySkin;
     private static Rect tooltipRect = new Rect(Screen.width * 0.5f - 128, Screen.height - 64, 256, 32);
@@ -21,6 +21,9 @@ public class Toolbar : Draggable2D
     {
         gantrySkin = Resources.Load<GUISkin>("Gantry Skin");
         info = GetComponent<InfoDisplay>();
+        
+        isNeedToShow = false;
+        info.isNeedToShow = false;
     }
     private void Start()
     {
@@ -90,14 +93,14 @@ public class Toolbar : Draggable2D
     // }
     public void OnGUI()
     {
-        //if (ContourEditor.HideOldUI) return;
-
+        if (!isNeedToShow)
+            return;
+        
         GUI.depth = -1;
         GUI.skin = gantrySkin;
         GUI.color = Color.white;
         tooltip = "";
         clickedThisFrame = false;
-
         if (!ContourEditor.HideOldUI)
         {
             GUI.Box(rect, "Tools", gantrySkin.window);
