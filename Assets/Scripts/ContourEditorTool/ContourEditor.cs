@@ -1042,7 +1042,7 @@ namespace ContourEditorTool
 
 			foreach (GameObject bo in GameObject.FindGameObjectsWithTag("Blackout"))
 			{
-				Debug.LogError("Stray blackout object found: " + bo.name);
+				Debug.Log("Stray blackout object found: " + bo.name);
 				Destroy(bo);
 			}
 		}
@@ -1130,7 +1130,7 @@ namespace ContourEditorTool
 						vertices[x + z * columns] = new Vector3(((float)x / (columns - 1) - .5f) * width, 0f,
 							((float)z / (columns - 1) - .5f) * length);
 
-					if (_projection)
+					if (_projection.IsEditing)
 					{
 						//Debug.Log("IsEditing true for: " + (z * columns + x));
 
