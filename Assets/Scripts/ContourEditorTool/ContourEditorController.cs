@@ -15,6 +15,7 @@ namespace ContourEditorTool
 
 		public void Show()
 		{
+			_projection.transform.parent.gameObject.SetActive(true);
 			_projection.gameObject.SetActive(true);
 			_projection.IsEditing = true;
 			_projection.enabled = true;
