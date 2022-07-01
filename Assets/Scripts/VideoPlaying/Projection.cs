@@ -193,7 +193,6 @@ namespace VideoPlaying
 						if (PlayerPrefs.HasKey("DefaultConfiguration-" + i) &&
 							File.Exists(PlayerPrefs.GetString("DefaultConfiguration-" + i)))
 						{
-							_contourEditor.Init();
 							_contourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
 							Debug.Log("DefaultConfiguration-" + i + ": " +
 									  PlayerPrefs.GetString("DefaultConfiguration-" + i));
@@ -203,7 +202,6 @@ namespace VideoPlaying
 							Debug.Log("No saved configuration found for \"DefaultConfiguration-" + i + "\"");
 							if (IsEditing)
 							{
-								_contourEditor.Init();
 								_contourEditor.Reset(i);
 							}
 						}

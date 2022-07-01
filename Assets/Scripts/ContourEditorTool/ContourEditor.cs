@@ -693,9 +693,14 @@ namespace ContourEditorTool
 			}
 		}
 
-		public void Init()
+		private Action _quitButtonAction;
+
+		public void Init(Action quitButtonAction)
 		{
+			_quitButtonAction = quitButtonAction;
+
 			instance = this;
+
 			Debug.Log("Projection.Awake(); columns: " + columns + ",Settings.dataPath: " + Settings.dataPath +
 			          ",Application.persistentDataPath: " + Application.persistentDataPath);
 			//projection=GetComponent<Projection>();
@@ -1054,20 +1059,24 @@ namespace ContourEditorTool
 		{
 			//Start Anew.
 			Debug.Log("Projection.Reset(" + screenNum + ")");
-			Mesh mesh = instance.GetComponent<MeshFilter>().mesh;
+			
+			if (instance == null)
+				Init(null);
+
+			Mesh mesh = GetComponent<MeshFilter>().mesh;
 			//mesh.vertices=originalVerts;
 			//mesh.triangles=originalTriangles;
 			//mesh.RecalculateNormals();
 			//mesh.RecalculateBounds();
-			if (instance.toolbar != null && instance.toolbar.menus != null && instance.toolbar.menus.Length > 0)
-				instance.toolbar.menus[0].SelectItem(0, 0);
+			if (toolbar != null && toolbar.menus != null && toolbar.menus.Length > 0)
+				toolbar.menus[0].SelectItem(0, 0);
 			columns = originalColumns;
 			deleted.Clear();
 			ReconstructScreen(0, false);
 			//ReconstructScreen(0,Projection.IsEditing,screenNum>-1 ? instance.projection.screens[screenNum] : instance.gameObject);
 			if (wipeBlackouts) WipeBlackouts();
 			WipeIntermittents();
-			instance.transform.position = Vector3.zero;
+			transform.position = Vector3.zero;
 			downPoint = -Vector2.one;
 			//Debug.LogError(addUndo+", "+(addUndo?"add":"clear")+"ing.");
 			if (addUndo) AddUndoStep();
@@ -1078,7 +1087,7 @@ namespace ContourEditorTool
 			bool omitDeleted = true)
 		{
 			//Delta -1 to halve,0 to maintain,1 to double.
-			screen = screen ?? instance.gameObject;
+			screen = screen ?? gameObject;
 			DeSelect(setUndo && delta != 0);
 			MeshFilter filter = screen.GetComponent<MeshFilter>();
 			Mesh mesh = filter.mesh;
@@ -2149,6 +2158,8 @@ namespace ContourEditorTool
 			//Menu.SetMenu();
 			Menu._drawUI = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
+
+			_quitButtonAction?.Invoke();
 		}
 
 		private static void SaveConfiguration(string fileName)

@@ -1,3 +1,4 @@
+using System;
 using VideoPlaying;
 
 namespace ContourEditorTool
@@ -13,7 +14,7 @@ namespace ContourEditorTool
 			_contourEditor = _projection.GetComponent<ContourEditor>();
 		}
 
-		public void Show()
+		public void Show(Action quitAction)
 		{
 			_projection.transform.parent.gameObject.SetActive(true);
 			_projection.gameObject.SetActive(true);
@@ -21,7 +22,7 @@ namespace ContourEditorTool
 			_projection.enabled = true;
 			_projection.GetComponent<Toolbar>().enabled = _projection.GetComponent<InfoDisplay>().enabled = true;
 
-			_contourEditor.Init();
+			_contourEditor.Init(quitAction);
 			_contourEditor.Reset(); //after toolbar's Awake, so it can select.
 			_contourEditor.Restart();
 		}

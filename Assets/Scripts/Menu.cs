@@ -910,7 +910,6 @@ public class Menu : MonoBehaviour
 		Settings.monitorMode = (Settings.MonitorMode)screenNum;
 		_projection.GetComponent<Toolbar>().enabled =
 			_projection.GetComponent<InfoDisplay>().enabled = true;
-		_contourEditor.Init();
 		_contourEditor.Reset(); //after toolbar's Awake, so it can select.
 		_contourEditor.Restart();
 	}

@@ -12,7 +12,7 @@ namespace Screens
 	public class ScreensManager
 	{
 		private const byte QTS_POPUP_ID = 2;
-		private readonly Action _openEditorAction;
+		private readonly Action<Action> _openEditorAction;
 		private readonly Action<int> _playAction;
 		private readonly Transform _canvasTransform;
 		private readonly MainConfig _mainConfig;
@@ -21,7 +21,7 @@ namespace Screens
 		private GameObject _currentScreen;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
-			Action<int> playAction, Action openEditorAction)
+			Action<int> playAction, Action<Action> openEditorAction)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
@@ -151,7 +151,7 @@ namespace Screens
 
 		private void OpenPatternsEditor()
 		{
-			_openEditorAction?.Invoke();
+			_openEditorAction?.Invoke(() => OpenWindow(ScreenType.AdminMenu));
 
 			Object.Destroy(_currentScreen);
 		}
