@@ -2,12 +2,12 @@ using VideoPlaying;
 
 namespace ContourEditorTool
 {
-	public class CounterEditorController
+	public class ContourEditorController
 	{
 		private readonly Projection _projection;
 		private readonly ContourEditor _contourEditor;
 
-		public CounterEditorController(Projection projection)
+		public ContourEditorController(Projection projection)
 		{
 			_projection = projection;
 			_contourEditor = _projection.GetComponent<ContourEditor>();
@@ -20,6 +20,7 @@ namespace ContourEditorTool
 			_projection.enabled = true;
 			_projection.GetComponent<Toolbar>().enabled = _projection.GetComponent<InfoDisplay>().enabled = true;
 
+			_contourEditor.Init();
 			_contourEditor.Reset(); //after toolbar's Awake, so it can select.
 			_contourEditor.Restart();
 		}

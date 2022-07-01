@@ -10,7 +10,7 @@ using VideoPlaying;
 
 namespace ContourEditorTool
 {
-	public class ContourEditor : Singleton<ContourEditor>
+	public class ContourEditor : MonoBehaviour
 	{
 		public static KeyCode
 			deleteBlackoutKey = KeyCode.LeftAlt,
@@ -39,6 +39,7 @@ namespace ContourEditorTool
 		private static List<UndoStep> undos = new List<UndoStep>();
 		private static int undo = 0;
 		private static float editingLassoAlpha = 0.5f;
+		public static ContourEditor instance;
 
 		private static Tool[] toolBehaviour = new Tool[]
 		{
@@ -692,8 +693,9 @@ namespace ContourEditorTool
 			}
 		}
 
-		private void Awake()
+		public void Init()
 		{
+			instance = this;
 			Debug.Log("Projection.Awake(); columns: " + columns + ",Settings.dataPath: " + Settings.dataPath +
 			          ",Application.persistentDataPath: " + Application.persistentDataPath);
 			//projection=GetComponent<Projection>();

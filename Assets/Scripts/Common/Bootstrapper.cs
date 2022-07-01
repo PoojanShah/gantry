@@ -15,15 +15,15 @@ namespace Common
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
 		private ProjectionController _projectionController;
-		private CounterEditorController _counterEditorController;
+		private ContourEditorController _contourEditorController;
 		
 		private void Awake()
 		{
 			_factory = new CommonFactory();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				_mainConfig.VideosConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
-			_counterEditorController = new CounterEditorController(_projectionController.GetProjection());
-			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _counterEditorController.Show);
+			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
+			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _contourEditorController.Show);
 
 			InitSettings();
 		}
