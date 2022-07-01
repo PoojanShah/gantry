@@ -228,6 +228,7 @@ namespace Library
 
 				clone.Init(i, ToggleChanged);
 				clone.transform.SetParent(_contentHolder.transform);
+				clone.transform.localScale = Vector3.one;
 			}
 
 			UpdateToggleAmounts();
