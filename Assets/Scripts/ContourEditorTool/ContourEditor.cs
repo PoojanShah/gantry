@@ -2027,6 +2027,8 @@ namespace ContourEditorTool
 									    densityOptions[i].ToString(), gantrySkin.customStyles[5]))
 								{
 									Debug.Log("SET DENSITY OPTION TO: " + densityOptions[i]);
+									toolbar.isNeedToShow = true;
+									toolbar.info.isNeedToShow = true;
 									originalColumns = columns = densityOptions[i];
 									Reset(-1, true, true);
 									Toolbar.clickedThisFrame = true;
