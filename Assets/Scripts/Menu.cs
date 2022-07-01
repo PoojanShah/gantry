@@ -67,7 +67,6 @@ public class Menu : MonoBehaviour
 	public LibraryScreen LibMenu;
 	[SerializeField]private Projection _projection;
 	[SerializeField] private ContourEditor _contourEditor;
-	public ContourEditorUI ContourUI;
 	public GameObject menuBackground;
 	public GUISkin gantrySkin;
 	public Texture2D illuminationsHeader, categoryFooter, mediaFooter, backArrow, blankScreen, adminButton;
@@ -256,23 +255,11 @@ public class Menu : MonoBehaviour
 
 	public void EditContour()
 	{
-		if (ContourEditor.HideOldUI)
-		{
-			ContourUI.OnDisplayContourEditor();
+		Displayer = () => EditContour(0);
 
-			//EditContour(0);
-			Displayer = () => EditContour(0);
+		_drawUI = true;
 
-			_drawUI = true;
-		}
-		else
-		{
-			Displayer = () => EditContour(0);
-
-			_drawUI = true;
-
-			UIObject.SetActive(false);
-		}
+		UIObject.SetActive(false);
 	}
 
 	public void ShowOptions()

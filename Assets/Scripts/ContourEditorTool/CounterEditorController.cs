@@ -1,4 +1,3 @@
-using Core;
 using VideoPlaying;
 
 namespace ContourEditorTool
@@ -8,7 +7,7 @@ namespace ContourEditorTool
 		private readonly Projection _projection;
 		private readonly ContourEditor _contourEditor;
 
-		public CounterEditorController(ICommonFactory factory, Projection projection)
+		public CounterEditorController(Projection projection)
 		{
 			_projection = projection;
 			_contourEditor = _projection.GetComponent<ContourEditor>();

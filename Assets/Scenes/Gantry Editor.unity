@@ -208,7 +208,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnScaleButton
         m_Mode: 1
@@ -1179,7 +1179,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -1469,7 +1469,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnEllipticalMask
         m_Mode: 1
@@ -1684,7 +1684,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: ToggleMirror
         m_Mode: 3
@@ -2291,7 +2291,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SetContourBackground
         m_Mode: 3
@@ -3094,7 +3094,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -3692,7 +3692,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588252}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 1
@@ -4334,7 +4334,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnEditMenu
         m_Mode: 1
@@ -5413,7 +5413,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnFileMenu
         m_Mode: 1
@@ -5937,7 +5937,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnEllipticalWhiteout
         m_Mode: 1
@@ -8138,7 +8138,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnBackgroundMode
         m_Mode: 1
@@ -8509,7 +8509,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertexMode
         m_Mode: 1
@@ -8644,7 +8644,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnEllipticalSelection
         m_Mode: 1
@@ -9012,7 +9012,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SetContourBackground
         m_Mode: 3
@@ -9147,7 +9147,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnLassoMask
         m_Mode: 1
@@ -9589,7 +9589,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnLassoWhiteoutButton
         m_Mode: 1
@@ -9964,7 +9964,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVerticalScale
         m_Mode: 1
@@ -10752,7 +10752,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -11201,7 +11201,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnViewMenu
         m_Mode: 1
@@ -11491,7 +11491,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -12301,7 +12301,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnRectangularWhiteout
         m_Mode: 1
@@ -13541,7 +13541,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SelectAll
         m_Mode: 1
@@ -14087,7 +14087,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: ToggleMirror
         m_Mode: 3
@@ -14956,7 +14956,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnHorizontalScale
         m_Mode: 1
@@ -15425,7 +15425,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -15636,7 +15636,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnRectangularMask
         m_Mode: 1
@@ -16223,7 +16223,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -16358,7 +16358,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnWhiteoutMode
         m_Mode: 1
@@ -16927,7 +16927,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: Undo
         m_Mode: 1
@@ -17160,18 +17160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248d46573693fdf4192b3117ac31af1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1747930136 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 48927143547244684, guid: 5dd3b7b01c6305440959944e16918f8d,
-    type: 3}
-  m_PrefabInstance: {fileID: 48927143147429012}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad224f60164f6a8448700c7227dd2099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1747949472
 GameObject:
   m_ObjectHideFlags: 0
@@ -17257,7 +17245,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnRectangularSelection
         m_Mode: 1
@@ -17468,7 +17456,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SetContourBackground
         m_Mode: 3
@@ -17603,7 +17591,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnScaleMode
         m_Mode: 1
@@ -17897,7 +17885,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnBlackoutMode
         m_Mode: 1
@@ -18501,7 +18489,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SetContourBackground
         m_Mode: 3
@@ -18551,66 +18539,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1929492622}
   m_CullTransparentMesh: 1
---- !u!1 &1992588252
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1992588254}
-  - component: {fileID: 1992588253}
-  m_Layer: 0
-  m_Name: CountourEditorUI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1992588253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1992588252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 072821ca90588ff47bf8e07695f138af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ContourEdit: {fileID: 1747930135}
-  ToolbarMenu: {fileID: 1747930136}
-  MainUI: {fileID: 1872998777}
-  DensityOptions: {fileID: 973890841}
-  ContourEditorMenu: {fileID: 1727021218}
-  Darken1: {fileID: 2098651819}
-  Darken2: {fileID: 19205894}
-  OptionMenus:
-  - {fileID: 90720063}
-  - {fileID: 702195544}
-  - {fileID: 1426649592}
-  - {fileID: 1801995109}
-  - {fileID: 1014116024}
-  - {fileID: 1398548919}
-  - {fileID: 534666636}
-  - {fileID: 609342339}
---- !u!4 &1992588254
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1992588252}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 537.906, y: 349.4237, z: -5.8266883}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2007143140
 GameObject:
   m_ObjectHideFlags: 0
@@ -18648,7 +18576,7 @@ MonoBehaviour:
   LibMenu: {fileID: 1730768622}
   _projection: {fileID: 1747930128}
   _contourEditor: {fileID: 1747930135}
-  ContourUI: {fileID: 1992588253}
+  ContourUI: {fileID: 0}
   menuBackground: {fileID: 1601677028}
   gantrySkin: {fileID: 11400000, guid: da4481917fe03a94899dedc0543e9cc6, type: 2}
   illuminationsHeader: {fileID: 2800000, guid: 4d06131b0a004694b915ea06ef55b50c, type: 3}
@@ -19235,7 +19163,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnLassoSelection
         m_Mode: 1
@@ -19702,7 +19630,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SetContourBackground
         m_Mode: 3
@@ -19988,7 +19916,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1992588253}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnVertDensitySelected
         m_Mode: 3
@@ -20521,7 +20449,7 @@ PrefabInstance:
     - target: {fileID: 48927142494963029, guid: 5dd3b7b01c6305440959944e16918f8d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 48927142494963029, guid: 5dd3b7b01c6305440959944e16918f8d,
         type: 3}
