@@ -27,16 +27,29 @@ namespace VideoPlaying
 
 		private void InputHandler()
 		{
-			if (!_projection.IsPlaying || !Input.GetKeyDown(KeyCode.Escape))
+			if (!_projection.IsPlaying)
 				return;
 
+#if UNITY_EDITOR
+			if(!Input.GetKeyDown(KeyCode.Escape))
+				return;
+#elif UNITY_ANDROID
+			if(Input.touchCount == 0)
+				return;
+#endif
+
+			StopVideoPlaying();
+		}
+
+		private void StopVideoPlaying()
+		{
 			ContourEditor.WipeBlackouts();
 
 			_projection.IsPlayMode = false;
 
 			foreach (var videoPlayer in _players)
 			{
-				if(videoPlayer.isPlaying)
+				if (videoPlayer.isPlaying)
 					videoPlayer.Stop();
 			}
 
