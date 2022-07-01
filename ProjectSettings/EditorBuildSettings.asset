@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Gantry Editor.unity
-    guid: 3c413a42d07d90f468d2954625d6bfdd
+    path: Assets/Scenes/Gantry.unity
+    guid: fa8bea2b3f85a7749907ef312b17c9f8
   m_configObjects: {}

@@ -180,11 +180,8 @@ public class Menu : MonoBehaviour
 		//else Debug.Log("Config file \"" + Settings.configFile + "\" not found.");
 
 		Debug.Log("onStartRan: " + onStartRan);
-#if UNITY_EDITOR
+
 		if (!onStartRan) SetMenu();
-#else
-        if(!onStartRan)SetMenu(categoryMenu);
-#endif
 	}
 
 	private void OnGUI()
