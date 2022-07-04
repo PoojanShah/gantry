@@ -2027,8 +2027,7 @@ namespace ContourEditorTool
 									    densityOptions[i].ToString(), gantrySkin.customStyles[5]))
 								{
 									Debug.Log("SET DENSITY OPTION TO: " + densityOptions[i]);
-									toolbar.isNeedToShow = true;
-									toolbar.info.isNeedToShow = true;
+									SetToolbarAvailable(true);
 									originalColumns = columns = densityOptions[i];
 									Reset(-1, true, true);
 									Toolbar.clickedThisFrame = true;
@@ -2161,8 +2160,15 @@ namespace ContourEditorTool
 			//Menu.SetMenu();
 			Menu._drawUI = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
+			SetToolbarAvailable(false);
 
 			_quitButtonAction?.Invoke();
+		}
+
+		private void SetToolbarAvailable(bool isAvailable)
+		{
+			toolbar.isNeedToShow = isAvailable;
+			toolbar.info.isNeedToShow = isAvailable;
 		}
 
 		private static void SaveConfiguration(string fileName)
