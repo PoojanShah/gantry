@@ -2108,6 +2108,7 @@ namespace ContourEditorTool
 								{
 									LoadConfiguration(files[i]);
 									Toolbar.clickedThisFrame = true;
+									SaveDefaultConfiguration(files[i]);
 								}
 								else if (GUI.Button(new Rect(8 + Menu.saveWindowSize.x - 64 - 8, i * 40, 32, 32), "X"))
 									fileToDelete = files[i];
@@ -2227,19 +2228,23 @@ namespace ContourEditorTool
 			}
 
 			bw.Close();
-			if (saveAsDefault > -1)
-			{
-				PlayerPrefs.SetString("DefaultConfiguration-" + saveAsDefault, fileName);
-				PlayerPrefs.Save();
-			}
+
+			if (saveAsDefault > -1) 
+				SaveDefaultConfiguration(fileName);
 
 			mode = Mode.normal;
+		}
+
+		private static void SaveDefaultConfiguration(string fileName)
+		{
+			PlayerPrefs.SetString("DefaultConfiguration-" + 0, fileName);
+			PlayerPrefs.Save();
 		}
 
 		public void LoadConfiguration(string fileName, int screen = -1)
 		{
 			Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
-
+			
 			var screenObj = screen > -1 ? _projection.Screens[screen].GetObject() : instance.gameObject;
 
 			BinaryReader br;
@@ -2315,14 +2320,6 @@ namespace ContourEditorTool
 			undos.Clear();
 			undo = 0;
 			mode = Mode.normal;
-		}
-
-		private static void UnitTest()
-		{
-			Debug.Log("UnitTest: " + Mathf.InverseLerp(1, 2, 1.2f) + "," + Mathf.InverseLerp(1, 2, 0.8f) + "," +
-			          Mathf.InverseLerp(1, 2, 3));
-			Debug.Log("UnitTest: " + Mathf.Lerp(0, 5, 0.2f) + "," + Mathf.Lerp(0, 5, -0.2f) + ",MyLerp: " +
-			          SRSUtilities.Lerp(0, 5, -0.2f));
 		}
 	}
 }
