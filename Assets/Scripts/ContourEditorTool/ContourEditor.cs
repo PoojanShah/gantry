@@ -2288,15 +2288,23 @@ namespace ContourEditorTool
 				}
 
 				int numBlackouts = br.ReadInt32();
-
+				Debug.Log($"[Loader] blackouts {numBlackouts}");
 				for (int i = 0; i < numBlackouts; i++)
 				{
 					bool ellip = br.ReadBoolean();
+					Debug.Log($"[Loader] isEllip? {ellip}");
+
 					Color c = br.ReadBoolean() ? Color.white : Color.black;
+					Debug.Log($"[Loader] Color {c}");
+
 					Rect r = new Rect((float)br.ReadDouble(), (float)br.ReadDouble(), (float)br.ReadDouble(),
 						(float)br.ReadDouble());
+					Debug.Log($"[Loader] rect size {r.x} {r.y} {r.width} {r.height}");
+
 					Blackout bo = new Blackout { elliptical = ellip, rect = r, farbe = c };
 					int numLassoPoints = br.ReadInt32();
+					Debug.Log($"[Loader] num lasso {numLassoPoints}");
+
 					if (numLassoPoints > 0)
 					{
 						lassoPoints.Clear();
