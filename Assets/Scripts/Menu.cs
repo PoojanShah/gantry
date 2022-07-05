@@ -120,7 +120,6 @@ public class Menu : MonoBehaviour
 
 			catList.Add(new KeyValuePair<GUIContent, Action>(new GUIContent(categoryTextures[i]), () =>
 			{
-				LoadCategoryMenu(_i);
 				Displayer = ShowPlayer;
 			}));
 		}
@@ -558,21 +557,7 @@ public class Menu : MonoBehaviour
 				          pattern + "   : " + Regex.IsMatch(Regex.Replace(subject, "\\.\\w{3,4}$", ""), pattern,
 					          RegexOptions.IgnoreCase));
 
-				Debug.Log("Categories: " +
-				          string.Join("\n", Settings.categories.Select(l => string.Join(",", l)).ToArray()));
-
-				if (Settings.categories.Any(a => a.Any(n => Regex.IsMatch(n,
-					    "^" + Regex.Replace(movieName, "\\.\\w{3,4}$", "") + "(\\.(jpg|png|ogg))?$",
-					    RegexOptions.IgnoreCase))))
-				{
-					//StartMovie(movieName,(int)Settings.screenMode);
-					_projection.StartMovie(screenNum);
-				}
-				else
-				{
-					Debug.LogWarning("Attempted to play locked or unrecognized movie \"" + movieName + "\".");
-					_projection.StartMovie(screenNum);
-				}
+				_projection.StartMovie(screenNum);
 
 				break;
 			case "playpatient": //Show patient photos
@@ -610,25 +595,6 @@ public class Menu : MonoBehaviour
 		foreach (Transform t in transform)
 		{
 			Destroy(t.gameObject);
-		}
-	}
-
-	private void LoadCategoryMenu(int category = 0)
-	{
-		float margin = 0.5f;
-		for (int i = 0; i < Settings.categories[category].Length; i++)
-		{
-			int columns = 2;
-			float width = 2.5f;
-			GameObject buttonObj = GameObject.Instantiate(movieButtonPrefab,
-				Camera.main.transform.position + Vector3.down * 5 + Vector3.left * width * 0.5f +
-				Vector3.right * width / (columns - 1) * (i % columns) + Vector3.forward * 2 +
-				Vector3.back * (columns + margin) * ((int)(i / columns)), Quaternion.Euler(90, 0, 0)) as GameObject;
-			buttonObj.transform.parent = transform;
-			buttonObj.GetComponent<Renderer>().material.mainTexture =
-				Resources.Load<Texture2D>(Settings.thumbsDir + "/" + Settings.categories[category][i]);
-			//buttonObj.transform.Find("Label").GetComponent<TextMesh>().text =
-			//	buttonObj.GetComponent<PreviewButton>().movieName = Settings.categories[category][i];
 		}
 	}
 

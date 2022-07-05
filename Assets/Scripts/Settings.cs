@@ -28,7 +28,6 @@ public static class Settings
         binaryPath = appDir + SRSUtilities.slashChar + binaryFile,
         noPersistFile = appDir + SRSUtilities.slashChar + "halt.motions",
         newBinaryURL = "http://www.sauerburger.org/dti/" + binaryFile;
-    public static string[][] categories;
     public static string[] library;
     public static float menuScreenW { get { return ScreenW / Mathf.Max(1, Projection.DisplaysAmount); } }
     public static float updatePeriod = 60, dongleCheckInterval = 30;//*60*1;//Check the server every minute or hour.
@@ -210,8 +209,6 @@ public static class Settings
         for (int i = 0; i < library.Length; i++)
             if (!videoColor.ContainsKey(library[i]))
                 videoColor[library[i]] = colorDefaults[i % colorDefaults.Length].Key;//Will catch new oggs that are in the library directory and not in the existing color directory.
-        
-        categories = LoadCategories(categoryFile);
     }
 
     //public static string GetVideoFolder()
@@ -275,28 +272,5 @@ public static class Settings
             Debug.LogError("Error loading file " + categoryFile + ": " + e.ToString());
         }
         return movieColors;
-    }
-
-    private static string[][] LoadCategories(string categoryFile)
-    {
-        Debug.Log("LoadCategories(" + categoryFile + ")");
-        string line;
-        StreamReader reader;
-        List<string[]> catList = new List<string[]>();
-        try
-        {
-            reader = new StreamReader(categoryFile);
-            int c = 0;
-            while ((line = reader.ReadLine()) != null)
-            {
-                Debug.Log("Line " + (c++) + ": " + line + ", library: " + library);
-                List<string> list = line.Split(","[0]).ToList();
-                list.RemoveAll((e) => { return /*!library.Contains(e.Trim())||*/e.Trim().Length < 1; });
-                catList.Add(list.ToArray());
-            }
-            reader.Close();
-        }
-        catch (Exception e) { Debug.LogError("Error loading file " + categoryFile + ": " + e); }
-        return catList != null ? catList.ToArray() : null;
     }
 }
