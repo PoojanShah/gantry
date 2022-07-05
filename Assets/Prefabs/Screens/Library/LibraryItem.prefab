@@ -330,11 +330,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc1a66a195bbd2740845ea4c1bf62707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThumbnailImage: {fileID: 6349408588659835657}
-  FileNameText: {fileID: 1996579603265344281}
-  ColorText: {fileID: 8549254272960819403}
-  NextColorButton: {fileID: 923694775381722954}
-  PreviousColorButton: {fileID: 3153840158080748149}
+  _transform: {fileID: 1989643747285989172}
+  _thumbnailImage: {fileID: 6349408588659835657}
+  _fileNameText: {fileID: 1996579603265344281}
+  _colorText: {fileID: 8549254272960819403}
+  _nextColorButton: {fileID: 923694775381722954}
+  _previousColorButton: {fileID: 3153840158080748149}
 --- !u!1 &3615990146627519947
 GameObject:
   m_ObjectHideFlags: 0

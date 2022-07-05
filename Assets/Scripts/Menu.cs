@@ -245,8 +245,6 @@ public class Menu : MonoBehaviour
 		LibMenu.gameObject.SetActive(true);
 
 		Settings.LoadLibraryAndCategories();
-
-		LibMenu.ShowLibraryOptions();
 	}
 
 	public void EditContour()

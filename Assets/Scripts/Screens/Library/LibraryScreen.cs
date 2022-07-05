@@ -2,46 +2,68 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Configs;
 using Core;
 using UnityEngine;
 using UnityEngine.UI;
+using VideoPlaying;
 
 namespace Library
 {
 	public class LibraryScreen : MonoBehaviour
 	{
-		private readonly LinkedList<LibraryFile> _libFiles = new();
-
 		[SerializeField] private Button _saveButton, _exitButton;
-		[SerializeField] private Image _exampleFile;
+		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
 		[SerializeField] private Scrollbar _scrollbar;
 
-		private bool _showFileExtensions;
+		private bool _isExtensionsVisible;
 		private Action _quitButtonAction;
+		private LibraryFile[] _files;
+		private MediaConfig _config;
 
-		public void Init(Action quitButtonAction)
+		public void Init(ICommonFactory factory, MediaConfig config, Action quitButtonAction)
 		{
 			_quitButtonAction = quitButtonAction;
+			_config = config;
 
 			gameObject.SetActive(true);
 
 			InitButtons();
-		
-			LibraryReloadHandler();
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
+
+			InitMediaItems(config, factory);
 		}
+
+		private void InitMediaItems(MediaConfig config, ICommonFactory commonFactory)
+		{
+			_files = new LibraryFile[config.MediaFiles.Length];
+
+			for (var i = 0; i < config.MediaFiles.Length; i++)
+			{
+				var libraryItemInstance = commonFactory.InstantiateObject<LibraryFile>(_exampleFile, _contentHolder);
+				libraryItemInstance.name = i.ToString();
+				libraryItemInstance.Init(OnColorClicked);
+				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(config.MediaFiles[i].name));
+				libraryItemInstance.SetColorText(Settings.videoColor[Settings.library[i]], Settings.colorDefaults
+					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[i]]).Value);
+				libraryItemInstance.SetParent(_contentHolder.transform);
+
+				_files[i] = libraryItemInstance;
+			}
+		}
+
 
 		private void ExitButtonClicked()
 		{
 			_saveButton.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
 
-			foreach (var libraryFile in _libFiles)
+			foreach (var libraryFile in _files)
 				libraryFile.Close();
 
-			_libFiles.Clear();
+			_files = null;
 
 			gameObject.SetActive(false);
 
@@ -56,32 +78,36 @@ namespace Library
 
 		public void ShowFileExtensions()
 		{
-			_showFileExtensions = !_showFileExtensions;
+			_isExtensionsVisible = !_isExtensionsVisible;
 
-			var count = 0;
+			//for (var i = 0; i < _config.MediaFiles.Length; i++)
+			//{
+			//	var file = _files[i];
+			//	var title = _isExtensionsVisible ? ;
 
-			foreach (var file in _libFiles)
-			{
-				file.FileNameText.text = _showFileExtensions
-					? Settings.library[count]
-					: Path.GetFileNameWithoutExtension(Settings.library[count]);
-
-				count++;
-			}
+			//	file.SetFileName(title);
+			//}
 		}
 
+		private void OnColorClicked(GameObject clickedObject, bool isNextColor)
+		{
+			if(isNextColor)
+				NextColorClicked(clickedObject);
+			else 
+				PreviousColorClicked(clickedObject);
+		}
 
 		public void NextColorClicked(GameObject callingObj)
 		{
-			var index = int.Parse(callingObj.transform.parent.name);
+			var index = int.Parse(callingObj.name);
 			var libFile = callingObj.transform.parent.GetComponent<LibraryFile>();
 		
 			ChangeColor(index, libFile, true);
 		}
 
-		public void PrevColorClicked(GameObject callingObj)
+		public void PreviousColorClicked(GameObject callingObj)
 		{
-			var index = int.Parse(callingObj.transform.parent.name);
+			var index = int.Parse(callingObj.name);
 			var libFile = callingObj.transform.parent.GetComponent<LibraryFile>();
 
 			ChangeColor(index, libFile, false);
@@ -106,80 +132,6 @@ namespace Library
 			gameObject.SetActive(false);
 		}
 
-		private void LibraryReloadHandler()
-		{
-			if (_libFiles.Count > 0)
-			{
-				_libFiles.RemoveFirst();
-
-				const int minAllowedLibrariesAmount = 1;
-
-				while (_libFiles.Count > minAllowedLibrariesAmount)
-				{
-					var fileGObject = _libFiles.Last.Value.gameObject;
-
-					Destroy(fileGObject);
-
-					_libFiles.RemoveLast();
-				}
-			}
-
-			var genNewFiles = Settings.library.Length;
-
-			if (genNewFiles == 0)
-			{
-				_exampleFile.gameObject.SetActive(false);
-
-				return;
-			}
-
-			for (var i = 0; i < genNewFiles; i++)
-			{
-				var clone = Instantiate(_exampleFile).GetComponent<LibraryFile>();
-				clone.gameObject.SetActive(true);
-
-				clone.name = i.ToString();
-				_libFiles.AddLast(clone);
-
-				try
-				{
-					clone.FileNameText.text = Path.GetFileNameWithoutExtension(Settings.library[i]);
-					clone.ColorText.text = Settings.videoColor[Settings.library[i]];
-					clone.ColorText.color = Settings.colorDefaults
-						.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[i]]).Value;
-				}
-				catch (Exception e)
-				{
-					Debug.LogError(e);
-				}
-
-				clone.Init(i);
-				clone.transform.SetParent(_contentHolder.transform);
-				clone.transform.localScale = Vector3.one;
-			}
-		}
-
-		public void ShowLibraryOptions()
-		{
-			if (_libFiles.Count > 0 && _libFiles.Count == Settings.library.Length)
-			{
-				var count = 0;
-
-				foreach (var libFile in _libFiles)
-				{
-					if ((_showFileExtensions
-						    ? Settings.library[count]
-						    : Path.GetFileNameWithoutExtension(Settings.library[count]))
-					    .Equals(libFile.FileNameText.text))
-					{
-						continue;
-					}
-
-					count++;
-				}
-			}
-		}
-
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
 		{
 			Settings.videoColor[Settings.library[index]] = Settings
@@ -188,9 +140,8 @@ namespace Library
 						Settings.colorDefaults.IndexOfFirstMatch(cd =>
 							cd.Key == Settings.videoColor[Settings.library[index]]) + (next ? 1 : -1),
 						Settings.colorDefaults.Length)].Key;
-			libFile.ColorText.text = Settings.videoColor[Settings.library[index]];
-			libFile.ColorText.color = Settings.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[index]]).Value;
+			libFile.SetColorText(Settings.videoColor[Settings.library[index]], Settings.colorDefaults
+				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[index]]).Value);
 		}
 	}
 }
