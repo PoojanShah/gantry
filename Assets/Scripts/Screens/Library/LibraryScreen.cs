@@ -100,7 +100,7 @@ namespace Library
 		public void NextColorClicked(GameObject callingObj)
 		{
 			var index = int.Parse(callingObj.name);
-			var libFile = callingObj.transform.parent.GetComponent<LibraryFile>();
+			var libFile = callingObj.GetComponent<LibraryFile>();
 		
 			ChangeColor(index, libFile, true);
 		}
@@ -108,7 +108,7 @@ namespace Library
 		public void PreviousColorClicked(GameObject callingObj)
 		{
 			var index = int.Parse(callingObj.name);
-			var libFile = callingObj.transform.parent.GetComponent<LibraryFile>();
+			var libFile = callingObj.GetComponent<LibraryFile>();
 
 			ChangeColor(index, libFile, false);
 		}
@@ -140,8 +140,12 @@ namespace Library
 						Settings.colorDefaults.IndexOfFirstMatch(cd =>
 							cd.Key == Settings.videoColor[Settings.library[index]]) + (next ? 1 : -1),
 						Settings.colorDefaults.Length)].Key;
-			libFile.SetColorText(Settings.videoColor[Settings.library[index]], Settings.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[index]]).Value);
+
+			var colorTitle = Settings.videoColor[Settings.library[index]];
+			var color = Settings.colorDefaults
+				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.library[index]]).Value;
+
+			libFile.SetColorText(colorTitle, color);
 		}
 	}
 }

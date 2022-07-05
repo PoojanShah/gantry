@@ -111,7 +111,7 @@ public static class Settings
   public static string dataPath="meshes";
 #endif
 #if UNITY_EDITOR
-    public static string categoryFile = "categories.cfg"/*,unlockFile="unlocked.cfg"*/, configFile = "motions.cfg", commandFile = "cmd", libraryDir = "meshes", patientDir = "patient", thumbsDir = "Thumbs", testBackground = "file://Test.jpg", movieColorFile = "moviecolors.cfg";
+    public static string categoryFile = "categories.cfg"/*,unlockFile="unlocked.cfg"*/, configFile = "motions.cfg", commandFile = "cmd", libraryDir = Application.dataPath + "/Videos/", patientDir = "patient", thumbsDir = "Thumbs", testBackground = "file://Test.jpg", movieColorFile = "moviecolors.cfg";
 #elif UNITY_STANDALONE_LINUX
   public static string categoryFile="/etc/motions/categories.cfg",unlockFile="/etc/motions/unlocked.cfg",configFile="/etc/motions/motions.cfg",commandFile="/var/www/run/motions.cmd",libraryDir="/usr/share/motions/Movies",patientDir="/var/www/html/images/patient",thumbsDir="/var/www/html/images/thumbs",appDir="/home/motions/app",testBackground="file://"+appDir+"/Test.jpg",movieColorFile="/etc/motions/moviecolors.cfg";
 #else

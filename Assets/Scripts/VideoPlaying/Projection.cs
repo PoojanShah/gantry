@@ -217,6 +217,7 @@ namespace VideoPlaying
 							player.clip = (VideoClip)mediaFile;
 							player.isLooping = true;
 							player.Play();
+							Debug.Log(Settings.videoColor.ContainsKey(mediaFile.name));
 						}
 						else
 						{

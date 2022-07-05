@@ -19,6 +19,8 @@ namespace Common
 		
 		private void Awake()
 		{
+			CameraHelper.Init();
+
 			_factory = new CommonFactory();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				_mainConfig.MediaConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
