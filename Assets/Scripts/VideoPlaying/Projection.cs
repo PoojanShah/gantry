@@ -6,6 +6,7 @@ using System.Linq;
 using Configs;
 using ContourEditorTool;
 using UnityEngine.Video;
+using Object = UnityEngine.Object;
 
 namespace VideoPlaying
 {
@@ -16,10 +17,12 @@ namespace VideoPlaying
 		public VideoPlayer Player;
 
 		[SerializeField] private GameObject _gameObject;
+		[SerializeField] private Renderer _renderer;
 
 		public GameObject GetObject() => _gameObject;
 		public bool IsActive() => _gameObject.activeSelf;
 		public void SetActive(bool isActive) => _gameObject.SetActive(isActive);
+		public void SetTexture(Texture texture) => _renderer.sharedMaterial.mainTexture = texture;
 	}
 
 	public class Projection : MonoBehaviour
@@ -29,7 +32,7 @@ namespace VideoPlaying
 		[SerializeField] private VideoPlayerScreen[] _screens;
 		[SerializeField] private Renderer _renderer;
 
-		private VideosConfig _videosConfig;
+		private MediaConfig _mediaConfig;
 
 		public bool IsEditing
 		{
@@ -69,9 +72,9 @@ namespace VideoPlaying
 
 		public bool IsPlaying => gameObject.activeSelf && !IsEditing;
 
-		public void Init(VideosConfig config)
+		public void Init(MediaConfig config)
 		{
-			_videosConfig = config;
+			_mediaConfig = config;
 
 			Debug.Log("Projection.Awake(); Settings.dataPath: " + Settings.dataPath + ", Application.persistentDataPath: " + Application.persistentDataPath
 					  + ";\nCommand Line: \"" + Environment.CommandLine + "\", Command Line Args: \"" + string.Join(",", Environment.GetCommandLineArgs()) + "\"; Screen.width: " + Screen.width + ", Screen.height: " + Screen.height + ", DisplaysAmount: " + DisplaysAmount);
@@ -120,9 +123,9 @@ namespace VideoPlaying
 		public bool IsScreenPlaying(VideoPlayerScreen playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
-		public void StartMovie(int videoId = -1, int screenNum = 0, bool testMovie = false)
+		public void StartMovie(int mediaId = -1, int screenNum = 0, bool testMovie = false)
 		{
-			var clip = videoId > -1? _videosConfig.Videos[videoId] : _videosConfig.GetFirstClip();
+			var clip = mediaId > -1? _mediaConfig.MediaFiles[mediaId] : _mediaConfig.GetFirstClip();
 
 			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
@@ -136,13 +139,14 @@ namespace VideoPlaying
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}
 
-		private IEnumerator LoadAndPlayExternalResource(VideoClip clip, int screenNum = 0, int slide = -1)
+		private IEnumerator LoadAndPlayExternalResource(Object mediaFile, int screenNum = 0, int slide = -1)
 		{
+			var isVideo = mediaFile is VideoClip;
 			//Slide of -1 is a movie; resourceName is the ogg file name if movie, patient folder name if slide.
 			//stopSlides=true;//slide<0;//Clever reliance on the fact that an existing loop will finish in less time than this one, unless they happened to click this on the exact frame of it in which case it'll be equal.
 			int thisLoop = ++currentSlideLoop;
 			string[] slides = null, extensions = { "ogg", "jpg", "png", "" };
-			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + clip.name + "\"," + screenNum + "," + slide + ");");
+			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + mediaFile.name + "\"," + screenNum + "," + slide + ");");
 			gameObject.SetActive(true);
 			enabled = false;
 			_renderer.enabled = false;
@@ -154,21 +158,21 @@ namespace VideoPlaying
 			IsPlayMode = true;
 
 			Debug.Log("In Play Mode. Projection main texture: " + _renderer.material.mainTexture +
-					  ", _screens[1] active: " + _screens[1].IsActive() + ", videoColor contains \"" + clip.name +
-					  "\" key: " + Settings.videoColor.ContainsKey(clip.name));
+					  ", _screens[1] active: " + _screens[1].IsActive() + ", videoColor contains \"" + mediaFile.name +
+					  "\" key: " + Settings.videoColor.ContainsKey(mediaFile.name));
 
-			Debug.LogWarning(Settings.videoColor.ContainsKey(clip.name)
-				? "\"" + clip.name + "\"'s color \"" + Settings.videoColor[clip.name] + "\" in colorDefaults: " +
-				  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[clip.name]) + ". Index: " +
-				  Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[clip.name]) +
+			Debug.LogWarning(Settings.videoColor.ContainsKey(mediaFile.name)
+				? "\"" + mediaFile.name + "\"'s color \"" + Settings.videoColor[mediaFile.name] + "\" in colorDefaults: " +
+				  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name]) + ". Index: " +
+				  Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name]) +
 				  "\nColor defaults: " +
 				  Settings.colorDefaults.Select(kvp => kvp.Key + ":" + kvp.Value).ToList().Stringify()
-				: "\"" + clip.name + "\" not in videoColor.");
+				: "\"" + mediaFile.name + "\" not in videoColor.");
 			if (Settings.useCueCore)
 				SRSUtilities.TCPMessage(
-					((Settings.videoColor.ContainsKey(clip.name) &&
-					  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[clip.name])
-						? Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[clip.name])
+					((Settings.videoColor.ContainsKey(mediaFile.name) &&
+					  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name])
+						? Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
 						: UnityEngine.Random.Range(0, Settings.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					Settings.cuecoreIP, Settings.cuecorePort);
 			//Menu.Displayer = Menu.ShowPlayer;
@@ -186,7 +190,7 @@ namespace VideoPlaying
 					if (i == screenNum || screenNum >= DisplaysAmount)
 					{
 						//{Debug.Log("___ i: "+i+", displayId: "+displayId+", DisplaysAmount: "+DisplaysAmount+", (i==displayId||displayId>=DisplaysAmount): "+(i==displayId||displayId>=DisplaysAmount)+", (i==displayId): "+(i==displayId)+", (displayId>=DisplaysAmount): "+(displayId>=DisplaysAmount));
-						Debug.Log("--Playing \"" + clip.name + "\" on screen " + i + ". (displayId: " + screenNum +
+						Debug.Log("--Playing \"" + mediaFile.name + "\" on screen " + i + ". (displayId: " + screenNum +
 								  "), DisplaysAmount: " + DisplaysAmount);
 						_screens[i].SetActive(true);
 						if (IsScreenPlayingById(i)) StopMovie(i);
@@ -206,19 +210,18 @@ namespace VideoPlaying
 							}
 						}
 
-						if (slide == -1)
+						if (isVideo)
 						{
 							//movie
 							var player = _screens[i].Player;
-							player.clip = clip;
+							player.clip = (VideoClip)mediaFile;
 							player.isLooping = true;
 							player.Play();
 						}
 						else
 						{
 							Debug.Log("Photo");
-							//Photo slide
-							//_screens[i]._renderer.material.mainTexture = request.texture;
+							_screens[i].SetTexture(mediaFile as Texture);
 						}
 					}
 

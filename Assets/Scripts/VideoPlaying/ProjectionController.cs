@@ -9,17 +9,17 @@ namespace VideoPlaying
 	{
 		private readonly ICommonFactory _commonFactory;
 		private readonly GameObject _prefab;
-		private readonly VideosConfig _videosConfig;
+		private readonly MediaConfig _mediaConfig;
 		private readonly Action _stopAction;
 
 		private ProjectionView _projectionView;
 
-		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, VideosConfig videosConfig,
+		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, MediaConfig mediaConfig,
 			Action stopAction)
 		{
 			_commonFactory = commonFactory;
 			_prefab = prefab;
-			_videosConfig = videosConfig;
+			_mediaConfig = mediaConfig;
 			_stopAction = stopAction;
 		}
 
@@ -36,7 +36,7 @@ namespace VideoPlaying
 			if (_projectionView != null)
 			{
 				_projectionView.SetActive(true);
-				_projectionView.Init(_videosConfig, StopAndHidePlayer);
+				_projectionView.Init(_mediaConfig, StopAndHidePlayer);
 				_projectionView.Play(videoId);
 
 				return;
@@ -50,7 +50,7 @@ namespace VideoPlaying
 		private void CreateProjectionView()
 		{
 			_projectionView = _commonFactory.InstantiateObject<ProjectionView>(_prefab);
-			_projectionView.Init(_videosConfig, StopAndHidePlayer);
+			_projectionView.Init(_mediaConfig, StopAndHidePlayer);
 		}
 
 		private void StopAndHidePlayer()

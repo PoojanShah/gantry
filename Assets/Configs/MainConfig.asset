@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProjectionSetup: {fileID: 48927142494963028, guid: 5dd3b7b01c6305440959944e16918f8d,
     type: 3}
-  VideosConfig: {fileID: 11400000, guid: f584e977180fec6428356b40fde3d570, type: 2}
+  MediaConfig: {fileID: 11400000, guid: f584e977180fec6428356b40fde3d570, type: 2}
   ScreensConfig: {fileID: 11400000, guid: daca770208d7c1e42aee90c0d6ed1728, type: 2}

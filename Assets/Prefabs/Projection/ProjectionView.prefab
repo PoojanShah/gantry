@@ -662,9 +662,11 @@ MonoBehaviour:
   - Transform: {fileID: 48927143402232701}
     Player: {fileID: 48927143402232702}
     _gameObject: {fileID: 48927143402232689}
+    _renderer: {fileID: 48927143402232690}
   - Transform: {fileID: 48927143286672949}
     Player: {fileID: 48927143286672950}
     _gameObject: {fileID: 48927143286672905}
+    _renderer: {fileID: 48927143286672906}
   _renderer: {fileID: 48927143547244677}
   _contourEditor: {fileID: 48927143547244675}
 --- !u!114 &48927143547244675
@@ -716,6 +718,7 @@ MonoBehaviour:
     width: 0
     height: 0
   menuMargin: 8
+  isNeedToShow: 0
   info: {fileID: 0}
 --- !u!114 &48927143547244685
 MonoBehaviour:
@@ -738,3 +741,4 @@ MonoBehaviour:
     width: 160
     height: 216
   message: 
+  isNeedToShow: 0

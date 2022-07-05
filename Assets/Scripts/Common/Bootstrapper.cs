@@ -21,7 +21,7 @@ namespace Common
 		{
 			_factory = new CommonFactory();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
-				_mainConfig.VideosConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
+				_mainConfig.MediaConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
 			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _contourEditorController.Show);
 

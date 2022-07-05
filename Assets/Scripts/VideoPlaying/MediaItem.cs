@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace VideoPlaying
 {
-	public class VideoItem : MonoBehaviour
+	public class MediaItem : MonoBehaviour
 	{
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Button _button;

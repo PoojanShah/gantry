@@ -13,11 +13,11 @@ namespace VideoPlaying
 
 		private Action _stopAction;
 
-		public void Init(VideosConfig videosConfig, Action stopAction)
+		public void Init(MediaConfig mediaConfig, Action stopAction)
 		{
 			_stopAction = stopAction;
 
-			_projection.Init(videosConfig);
+			_projection.Init(mediaConfig);
 		}
 
 		public void Play(int videoId) => _projection.StartMovie(videoId);

@@ -89,7 +89,7 @@ namespace Screens
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
 			mainMenu.Init(PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.VideosConfig, _factory);
+				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaConfig, _factory);
 		}
 		
 		private void InitAdminMenu(GameObject screen)
