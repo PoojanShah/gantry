@@ -1,4 +1,4 @@
-using UnityEngine;//NOTE: the up-side-down phenomenon occurs when you haven't loaded a gantry configuration.
+using UnityEngine;
 using System;
 using System.IO;
 using System.Collections;
@@ -85,10 +85,8 @@ namespace VideoPlaying
 		{
 			_mediaConfig = config;
 
-			Debug.Log("Projection.Awake(); Settings.dataPath: " + Settings.dataPath + ", Application.persistentDataPath: " + Application.persistentDataPath
-					  + ";\nCommand Line: \"" + Environment.CommandLine + "\", Command Line Args: \"" + string.Join(",", Environment.GetCommandLineArgs()) + "\"; Screen.width: " + Screen.width + ", Screen.height: " + Screen.height + ", DisplaysAmount: " + DisplaysAmount);
-
 			GetComponent<MeshFilter>().mesh.Clear();
+
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
 			originalExtents = Vector3.one * 5;
 			Debug.Log("originalExtents: " + Projection.originalExtents);
@@ -99,14 +97,6 @@ namespace VideoPlaying
 				_screens[i].Transform.localScale = new Vector3(4f / 3f, 1, 1);
 				_screens[i].Transform.position = ScreenPosition(i);
 			}
-
-			Debug.Log("Original Scale X: " + Settings.originalScaleX + ", Screen.width: " + Screen.width + ", screen 0 width: " + _screens[0].Transform.localScale.x + " (Screen.width/1024)=" + (Screen.width / 1024));
-			Debug.Log("originalExtents: " + originalExtents);
-			if (DisplaysAmount > 1)
-			{
-				Debug.Log("Screen.width: " + Screen.width + ", screen 0 width: " + _screens[0].Transform.localScale.x);
-			}
-			Debug.Log("Original Scale X 2: " + Settings.originalScaleX + ", Screen.width: " + Screen.width + ", screen 0 width: " + _screens[0].Transform.localScale.x + " (Screen.width/1024)=" + (Screen.width / 1024));
 		}
 
 		public Vector3 ScreenPosition(int screenNum)
@@ -143,7 +133,7 @@ namespace VideoPlaying
 			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
-			Camera.main.transform.position = Vector3.zero + Vector3.up * 5;
+			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * 5);
 			gameObject.SetActive(true);
 
 			StopCoroutine("LoadAndPlayExternalResource");
@@ -200,16 +190,16 @@ namespace VideoPlaying
 							File.Exists(PlayerPrefs.GetString("DefaultConfiguration-" + i)))
 						{
 							_contourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
+
 							Debug.Log("DefaultConfiguration-" + i + ": " +
 									  PlayerPrefs.GetString("DefaultConfiguration-" + i));
 						}
 						else
 						{
 							Debug.Log("No saved configuration found for \"DefaultConfiguration-" + i + "\"");
+
 							if (IsEditing)
-							{
 								_contourEditor.Reset(i);
-							}
 						}
 
 						if (isVideo)
@@ -228,15 +218,12 @@ namespace VideoPlaying
 						}
 					}
 
-				Debug.Log("Changing to slide: " + slide);
 				if (slide > -1)
 				{
 					yield return new WaitForSeconds(Settings.slideInterval);
 					slide = (slide + 1) % slides.Length;
 				}
 			} while (slide > -1 && thisLoop == currentSlideLoop);
-
-			Debug.Log("Finished slide " + slide + " routine " + thisLoop + ", current slide loop: " + currentSlideLoop);
 		}
 
 		public void StopMovie(int screenNum = -1)

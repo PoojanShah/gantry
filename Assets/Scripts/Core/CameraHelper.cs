@@ -4,9 +4,10 @@ namespace Core
 {
 	public static class CameraHelper
 	{
-		private static Camera _camera;
+		public static Camera Camera;
 
-		public static void Init() => _camera = Camera.main;
-		public static void SetBackgroundColor(Color color) => _camera.backgroundColor = color;
+		public static void Init() => Camera = Camera.main;
+		public static void SetCameraPosition(Vector3 position) => Camera.transform.position = position;
+		public static void SetBackgroundColor(Color color) => Camera.backgroundColor = color;
 	}
 }
