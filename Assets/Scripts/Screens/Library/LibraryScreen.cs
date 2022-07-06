@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Configs;
 using Core;
 using UnityEngine;
 using UnityEngine.UI;
-using VideoPlaying;
 
 namespace Library
 {
@@ -20,34 +17,30 @@ namespace Library
 
 		private Action _quitButtonAction;
 		private LibraryFile[] _files;
-		private MediaConfig _config;
 
-		public void Init(ICommonFactory factory, MediaConfig config, Action quitButtonAction)
+		public void Init(ICommonFactory factory, Action quitButtonAction)
 		{
 			_quitButtonAction = quitButtonAction;
-			_config = config;
 
 			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
-
-			gameObject.SetActive(true);
 
 			InitButtons();
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
 
-			InitMediaItems(config, factory);
+			InitMediaItems(factory);
 		}
 
-		private void InitMediaItems(MediaConfig config, ICommonFactory commonFactory)
+		private void InitMediaItems(ICommonFactory commonFactory)
 		{
-			_files = new LibraryFile[config.MediaFiles.Length];
+			_files = new LibraryFile[Settings.mediaLibrary.Length];
 
-			for (var i = 0; i < config.MediaFiles.Length; i++)
+			for (var i = 0; i < Settings.mediaLibrary.Length; i++)
 			{
 				var libraryItemInstance = commonFactory.InstantiateObject<LibraryFile>(_exampleFile, _contentHolder);
 				libraryItemInstance.name = i.ToString();
 				libraryItemInstance.Init(OnColorClicked);
-				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(config.MediaFiles[i].name));
+				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(Settings.mediaLibrary[i]));
 				libraryItemInstance.SetColorText(Settings.videoColor[Settings.mediaLibrary[i]], Settings.colorDefaults
 					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[i]]).Value);
 				libraryItemInstance.SetParent(_contentHolder.transform);
@@ -96,9 +89,9 @@ namespace Library
 
 		private void OnColorClicked(GameObject clickedObject, bool isNextColor)
 		{
-			if(isNextColor)
+			if (isNextColor)
 				NextColorClicked(clickedObject);
-			else 
+			else
 				PreviousColorClicked(clickedObject);
 		}
 
@@ -106,7 +99,7 @@ namespace Library
 		{
 			var index = int.Parse(callingObj.name);
 			var libFile = callingObj.GetComponent<LibraryFile>();
-		
+
 			ChangeColor(index, libFile, true);
 		}
 
@@ -123,8 +116,10 @@ namespace Library
 			try
 			{
 				var sw = new StreamWriter(Settings.movieColorFile);
+
 				foreach (var kvp in Settings.videoColor)
 					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
+
 				sw.Close();
 			}
 			catch (Exception e)

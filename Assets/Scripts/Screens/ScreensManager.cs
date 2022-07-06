@@ -105,7 +105,7 @@ namespace Screens
 		private void InitLibrary(GameObject screen)
 		{
 			var library = screen.GetComponent<LibraryScreen>();
-			library.Init(_factory, _mainConfig.MediaConfig, () => OpenWindow(ScreenType.AdminMenu));
+			library.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
 		}
 
 		private void InitOptions(GameObject screen)
