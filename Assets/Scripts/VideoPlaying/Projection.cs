@@ -127,7 +127,7 @@ namespace VideoPlaying
 			var clip = mediaId > -1? _mediaConfig.MediaFiles[mediaId] : _mediaConfig.GetFirstClip();
 
 			if (mediaId > -1)
-				CameraHelper.SetBackgroundColor(Settings.colorDefaults
+				CameraHelper.SetBackgroundColor(Constants.colorDefaults
 					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
 
 			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
@@ -163,9 +163,9 @@ namespace VideoPlaying
 			if (Settings.useCueCore)
 				SRSUtilities.TCPMessage(
 					((Settings.videoColor.ContainsKey(mediaFile.name) &&
-					  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name])
-						? Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
-						: UnityEngine.Random.Range(0, Settings.colorDefaults.Length)) + 1).ToString("D3") + "\n",
+					  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name])
+						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
+						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					Settings.cuecoreIP, Settings.cuecorePort);
 
 			Menu.limbo = false;

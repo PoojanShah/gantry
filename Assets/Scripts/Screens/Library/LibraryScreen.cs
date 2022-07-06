@@ -41,7 +41,7 @@ namespace Library
 				libraryItemInstance.name = i.ToString();
 				libraryItemInstance.Init(OnColorClicked);
 				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(Settings.mediaLibrary[i]));
-				libraryItemInstance.SetColorText(Settings.videoColor[Settings.mediaLibrary[i]], Settings.colorDefaults
+				libraryItemInstance.SetColorText(Settings.videoColor[Settings.mediaLibrary[i]], Constants.colorDefaults
 					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[i]]).Value);
 				libraryItemInstance.SetParent(_contentHolder.transform);
 
@@ -134,15 +134,15 @@ namespace Library
 
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
 		{
-			Settings.videoColor[Settings.mediaLibrary[index]] = Settings
+			Settings.videoColor[Settings.mediaLibrary[index]] = Constants
 				.colorDefaults[
 					SRSUtilities.Wrap(
-						Settings.colorDefaults.IndexOfFirstMatch(cd =>
+						Constants.colorDefaults.IndexOfFirstMatch(cd =>
 							cd.Key == Settings.videoColor[Settings.mediaLibrary[index]]) + (next ? 1 : -1),
-						Settings.colorDefaults.Length)].Key;
+						Constants.colorDefaults.Length)].Key;
 
 			var colorTitle = Settings.videoColor[Settings.mediaLibrary[index]];
-			var color = Settings.colorDefaults
+			var color = Constants.colorDefaults
 				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[index]]).Value;
 
 			libFile.SetColorText(colorTitle, color);

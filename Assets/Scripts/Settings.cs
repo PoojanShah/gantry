@@ -12,9 +12,7 @@ public static class Settings
     public static float ScreenW = 1024, ScreenH = 768, slideInterval = 15;
     public static int initialScreenWidth;
     public static string heartbeatServerAddress = "www.dtimotions.com/checkin.php",
-        //{get{return "www.dtimotions.com/checkin.php?l="+clientLogin;}}/*lighterPath="lighter",*/
-        //heartbeatServerAddress="www.sauerburger.org/dti/checkin.php",
-        clientLogin = "", dlServeraddress = "http://www.dtimotions.com",
+	    clientLogin = "", dlServeraddress = "http://www.dtimotions.com",
 #if UNITY_EDITOR
         appDir = ".",
         binaryFile = "Motions-Linux.x86_64",
@@ -51,54 +49,6 @@ public static class Settings
             File.WriteAllText(configFile,t);
         }}
     public static string[] dongleKeys = new string[] { "DE2E19C984E2925D", "D85D6EA1539B7493" };
-    public static KeyValuePair<string, Color32>[] colorDefaults = {
-		new KeyValuePair<string,Color32>("maroon",new Color32(128,0,0,255)),
-        new KeyValuePair<string,Color32>("firebrick",new Color32(178,34,34,255)),
-        new KeyValuePair<string,Color32>("crimson",new Color32(220,20,60,255)),
-        new KeyValuePair<string,Color32>("red",new Color32(255,0,0,255)),
-        new KeyValuePair<string,Color32>("tomato",new Color32(255,99,71,255)),
-        new KeyValuePair<string,Color32>("coral",new Color32(255,127,80,255)),
-        new KeyValuePair<string,Color32>("orange",new Color32(255,165,0,255)),
-        new KeyValuePair<string,Color32>("gold",new Color32(255,215,0,255)),
-        new KeyValuePair<string,Color32>("yellow",new Color32(255,255,0,255)),
-        new KeyValuePair<string,Color32>("yellow green",new Color32(154,205,50,255)),
-        new KeyValuePair<string,Color32>("green yellow",new Color32(173,255,47,255)),
-        new KeyValuePair<string,Color32>("green",new Color32(0,128,0,255)),
-        new KeyValuePair<string,Color32>("lime green",new Color32(50,205,50,255)),
-        new KeyValuePair<string,Color32>("light green",new Color32(144,238,144,255)),
-        new KeyValuePair<string,Color32>("spring green",new Color32(0,255,127,255)),
-        new KeyValuePair<string,Color32>("medium aqua marine",new Color32(102,205,170,255)),
-        new KeyValuePair<string,Color32>("light sea green",new Color32(32,178,170,255)),
-        new KeyValuePair<string,Color32>("cyan",new Color32(0,255,255,255)),
-        new KeyValuePair<string,Color32>("turquoise",new Color32(64,224,208,255)),
-        new KeyValuePair<string,Color32>("pale turquoise",new Color32(175,238,238,255)),
-        new KeyValuePair<string,Color32>("corn flower blue",new Color32(100,149,237,255)),
-        new KeyValuePair<string,Color32>("deep sky blue",new Color32(0,191,255,255)),
-        new KeyValuePair<string,Color32>("dodger blue",new Color32(30,144,255,255)),
-        new KeyValuePair<string,Color32>("light sky blue",new Color32(135,206,250,255)),
-        new KeyValuePair<string,Color32>("navy",new Color32(0,0,128,255)),
-        new KeyValuePair<string,Color32>("blue",new Color32(0,0,255,255)),
-        new KeyValuePair<string,Color32>("royal blue",new Color32(65,105,225,255)),
-        new KeyValuePair<string,Color32>("indigo",new Color32(75,0,130,255)),
-        new KeyValuePair<string,Color32>("medium slate blue",new Color32(123,104,238,255)),
-        new KeyValuePair<string,Color32>("medium purple",new Color32(147,112,219,255)),
-        new KeyValuePair<string,Color32>("dark magenta",new Color32(139,0,139,255)),
-        new KeyValuePair<string,Color32>("dark orchid",new Color32(153,50,204,255))
-//033		medium orchid	#BA55D3	186,85,211	DID NOT MAKE IT IN TO CureCore List
-//034		plum	#DDA0DD	221,160,221	DID NOT MAKE IT IN TO CureCore List
-//035		violet	#EE82EE	238,130,238	DID NOT MAKE IT IN TO CureCore List
-//036		magenta / fuchsia	#FF00FF	255,0,255	DID NOT MAKE IT IN TO CureCore List
-//037		deep pink	#FF1493	255,20,147	DID NOT MAKE IT IN TO CureCore List
-//038		hot pink	#FF69B4	255,105,180	DID NOT MAKE IT IN TO CureCore List
-//039		pink	#FFC0CB	255,192,203	DID NOT MAKE IT IN TO CureCore List
-//040		corn silk	#FFF8DC	255,248,220	DID NOT MAKE IT IN TO CureCore List
-//041		misty rose	#FFE4E1	255,228,225	DID NOT MAKE IT IN TO CureCore List
-//042		lavender blush	#FFF0F5	255,240,245	DID NOT MAKE IT IN TO CureCore List
-//043		lavender	#E6E6FA	230,230,250	DID NOT MAKE IT IN TO CureCore List
-//044		honeydew	#F0FFF0	240,255,240	DID NOT MAKE IT IN TO CureCore List
-//045		azure	#F0FFFF	240,255,255	DID NOT MAKE IT IN TO CureCore List
-//046		white	#FFFFFF	255,255,255	DID NOT MAKE IT IN TO CureCore List
-    };
     public static bool sound = true;
     public static bool _persist = true;
     public static bool rotation = true;
@@ -106,11 +56,11 @@ public static class Settings
     public static string dataPath = Application.dataPath + "/Videos/";
 
 #if UNITY_EDITOR
-    public static string categoryFile = "categories.cfg"/*,unlockFile="unlocked.cfg"*/, configFile = "motions.cfg", commandFile = "cmd", libraryDir = Application.dataPath + "/Videos/", patientDir = "patient", thumbsDir = "Thumbs", testBackground = "file://Test.jpg", movieColorFile = "moviecolors.cfg";
+    public static string configFile = "motions.cfg", commandFile = "cmd", libraryDir = Application.dataPath + "/Videos/", patientDir = "patient", thumbsDir = "Thumbs", testBackground = "file://Test.jpg", movieColorFile = "moviecolors.cfg";
 #elif UNITY_STANDALONE_LINUX
-  public static string categoryFile="/etc/motions/categories.cfg",unlockFile="/etc/motions/unlocked.cfg",configFile="/etc/motions/motions.cfg",commandFile="/var/www/run/motions.cmd",libraryDir="/usr/share/motions/Movies",patientDir="/var/www/html/images/patient",thumbsDir="/var/www/html/images/thumbs",appDir="/home/motions/app",testBackground="file://"+appDir+"/Test.jpg",movieColorFile="/etc/motions/moviecolors.cfg";
+  public static string unlockFile="/etc/motions/unlocked.cfg",configFile="/etc/motions/motions.cfg",commandFile="/var/www/run/motions.cmd",libraryDir="/usr/share/motions/Movies",patientDir="/var/www/html/images/patient",thumbsDir="/var/www/html/images/thumbs",appDir="/home/motions/app",testBackground="file://"+appDir+"/Test.jpg",movieColorFile="/etc/motions/moviecolors.cfg";
 #else
-  public static string categoryFile="C:\\motions\\categories.cfg",unlockFile="C:\\motions\\unlocked.cfg",configFile="C:\\motions\\motions.cfg",commandFile="C:\\motions\\cmd",libraryDir="Movies",patientDir="patient",thumbsDir="Thumbs",testBackground="file:///Test.jpg",movieColorFile="C:\\motions\\moviecolors.cfg";
+  public static string unlockFile="C:\\motions\\unlocked.cfg",configFile="C:\\motions\\motions.cfg",commandFile="C:\\motions\\cmd",libraryDir="Movies",patientDir="patient",thumbsDir="Thumbs",testBackground="file:///Test.jpg",movieColorFile="C:\\motions\\moviecolors.cfg";
 #endif
     public enum MonitorMode { Single = 0, Dual };
     public enum ScreenMode { gantry = 0, wall, gantrywall };
@@ -199,10 +149,12 @@ public static class Settings
     {
         LoadMediaLibrary();
 
-        if (File.Exists(movieColorFile)) videoColor = LoadMovieColors(movieColorFile);
-        for (int i = 0; i < mediaLibrary.Length; i++)
+        if (File.Exists(movieColorFile)) 
+	        videoColor = LoadMovieColors(movieColorFile);
+
+        for (var i = 0; i < mediaLibrary.Length; i++)
             if (!videoColor.ContainsKey(mediaLibrary[i]))
-                videoColor[mediaLibrary[i]] = colorDefaults[i % colorDefaults.Length].Key;//Will catch new oggs that are in the mediaLibrary directory and not in the existing color directory.
+                videoColor[mediaLibrary[i]] = Constants.colorDefaults[i % Constants.colorDefaults.Length].Key;//Will catch new oggs that are in the mediaLibrary directory and not in the existing color directory.
     }
 
     private static void LoadMediaLibrary()
@@ -219,37 +171,6 @@ public static class Settings
 
 	    mediaLibrary = libraryTemp.ToArray();
     }
-
-    //public static string GetVideoFolder()
-    //{
-    //    string errorMessage = "ERROR";
-    //    string videoFolderName = "Videos";
-
-    //    string[] folders = Application.dataPath.Split(new char[] { '/' });
-    //    string baseProjectFolder = "I-Motions";
-    //    string videoPath = "";
-    //    bool foundIMotions = false;
-
-    //    foreach (var folder in folders)
-    //    {
-    //        videoPath += (folder + "/");
-
-    //        if (folder.Equals(baseProjectFolder))
-    //        {
-    //            videoPath += videoFolderName + "/";
-    //            foundIMotions = true;
-    //            break;
-    //        }
-    //    }
-
-    //    if (foundIMotions && !Directory.Exists(videoPath))
-    //    {
-    //        Debug.LogError("Video directory does not exist!");
-    //        return errorMessage;
-    //    }
-
-    //    return foundIMotions ? videoPath : errorMessage;
-    //}
 
     private static Dictionary<string, string> LoadMovieColors(string movieColorFile)
     {
@@ -275,7 +196,7 @@ public static class Settings
 	    }
 	    catch (Exception e)
 	    {
-		    Debug.LogError("Error loading file " + categoryFile + ": " + e.ToString());
+		    Debug.LogError(e);
 	    }
 
 	    return movieColors;
