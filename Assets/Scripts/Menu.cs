@@ -9,42 +9,13 @@ using System.Linq;
 using System.Net;
 using ContourEditorTool;
 using Configs;
-using Library;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 using UnityEngine.Video;
 using VideoPlaying;
 using Debug = UnityEngine.Debug;
 
 public class Menu : MonoBehaviour
 {
-	//public KeyValuePair<GUIContent, Action>[] mainMenu =
-	//	{
-	//		new(new GUIContent("Play"),
-	//			() => Debug.Log("SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]))")),
-	//		new(new GUIContent("Edit Contour Map"), () => Debug.Log("EditContour(0)")),
-	//		new(new GUIContent(Projection.DisplaysAmount > 1 ? "Edit Wall Map" : "Disabled"), () => Debug.Log("EditContour(1)")),
-	//		new(new GUIContent("Options"), () =>
-	//		{
-	//			superPass = string.Empty;
-	//			Displayer = () => Debug.Log("OptionsMenu()");
-	//		}),
-	//		new(new GUIContent("Library"), () =>
-	//		{
-	//			//RefreshLibrary();
-	//			//instance.StartCoroutine(LoadThumbs());
-	//			//Displayer=LibraryMenu;mainMenu
-	//		}),
-	//		new(new GUIContent("Exit"), () => { Application.Quit(); }),
-	//	},
-	//	categoryMenu;
-
-	private static string
-		adminPass = "",
-		superPass = "",
-		correctAdminPass = "Kim41",
-		correctSuperPass = "Jas375"; //"dti873"; _Motions01_+ Motions01
-
 	public static bool limbo;
 	public static int heartbeatTriesRemaining = Settings.allowConnectionAttempts;
 	
@@ -63,22 +34,12 @@ public class Menu : MonoBehaviour
 	public static bool _drawUI;
 
 	public GameObject UIObject, QuitConfirmation, AdminLogin, AdminMenu;
-	public InputField PassInputField;
-	public LibraryScreen LibMenu;
 	[SerializeField]private Projection _projection;
 	[SerializeField] private ContourEditor _contourEditor;
 	public GameObject menuBackground;
 	public GUISkin gantrySkin;
 	public Texture2D illuminationsHeader, categoryFooter, mediaFooter, backArrow, blankScreen, adminButton;
-	public VideoPlayer[] testMovies;
-	public AudioClip testAudioClip;
-	public Texture2D exitButton;
 	public static Rect windowPosition;
-	public static Vector2 saveWindowSize = new Vector2(Settings.ScreenW * 0.5f, Settings.ScreenH * 0.5f);
-	public GameObject movieButtonPrefab;
-	public Texture2D missingIconTexture;
-
-
 
 	public static bool DraggingWindow
 	{
@@ -124,47 +85,6 @@ public class Menu : MonoBehaviour
 		Screen.fullScreen = false;
 
 		bool onStartRan = false;
-		//if (File.Exists(Settings.configFile))
-		//{
-		//	//Format: variable name on the left, followed by "=", followed by value.
-		//	Debug.Log("Config file \"" + Settings.configFile + "\" found.");
-
-		//	var reader = new StreamReader(Settings.configFile);
-
-		//	while (reader.ReadLine() is { } line)
-		//	{
-		//		if (line.Trim().StartsWith("#")) continue;
-		//		if (!line.Contains("=") || line.Split("="[0])[1].Trim().Length < 1)
-		//		{
-		//			Debug.LogError("Ungueltiges line: \"" + line + "\"");
-		//			continue;
-		//		}
-
-		//		switch (line.Split("="[0])[0].Trim().ToLower())
-		//		{
-		//			case "commandfile":
-		//				Settings.commandFile = line.Split("="[0])[1].Trim();
-		//				Debug.Log("Set command file to \"" + Settings.commandFile + "\".");
-		//				break;
-		//			case "onstart":
-		//				RunCommand(line.Split("="[0])[1].Trim());
-		//				onStartRan = true;
-		//				break;
-		//			case "persist":
-		//				Settings.persist = Boolean.Parse(line.Split("="[0])[1].Trim());
-		//				break;
-		//			case "simplemenu":
-		//				Settings._simpleMenu =
-		//					Convert.ToBoolean(Int32.Parse(line.Split("="[0])[1].Trim()) ==
-		//					                  1); //Settings.simpleMenu=Boolean.Parse(line.Split("="[0])[1].Trim());
-		//				break;
-		//			default:
-		//				Debug.LogError("Ungueltiges config file entry: \"" + line.Split("="[0])[0] + "\"");
-		//				break;
-		//		}
-		//	}
-		//}
-		//else Debug.Log("Config file \"" + Settings.configFile + "\" not found.");
 
 		Debug.Log("onStartRan: " + onStartRan);
 
@@ -212,7 +132,6 @@ public class Menu : MonoBehaviour
 	public void AdministratorLogin() => AdminLogin.SetActive(true);
 	public void ShowQuitUI() => QuitConfirmation.SetActive(true);
 	public void QuitApplication() => Application.Quit();
-	public void AdminPassChanged(string pass) => adminPass = pass;
 
 	public void EditContour()
 	{
@@ -223,8 +142,6 @@ public class Menu : MonoBehaviour
 
 	public void ShowOptions()
 	{
-		superPass = string.Empty;
-		
 		UIObject.SetActive(false);
 		_drawUI = true;
 	}
@@ -517,44 +434,6 @@ public class Menu : MonoBehaviour
 		}, "Confirmation");
 	}
 
-	private void DrawAdminPassPrompt()
-	{
-		GUI.Window(0, windowPosition, (id) =>
-		{
-			GUI.Label(
-				new Rect(windowPosition.width * 0.05f, windowPosition.height * 0.25f, windowPosition.width * 0.9f, 32),
-				"Please enter the administrator password:", gantrySkin.customStyles[2]);
-			GUI.skin.textField.overflow.bottom = 0;
-			if (Event.current != null && Event.current.type == EventType.KeyDown &&
-			    new KeyCode[] { KeyCode.Return, KeyCode.KeypadEnter }.Any(kc => Event.current.keyCode == kc))
-				TryAdminPassword();
-			GUI.SetNextControlName("Passfield");
-			adminPass = GUI.PasswordField(
-				new Rect(windowPosition.width * 0.25f, windowPosition.height * 0.25f + 64, windowPosition.width * 0.5f,
-					24), adminPass, "*"[0]);
-			GUI.FocusControl("Passfield");
-			if (adminPass.IndexOfAny("\n\r".ToCharArray()) != -1) Debug.LogWarning("Return in pass string.");
-			if (wrongPass)
-				GUI.Label(
-					new Rect(windowPosition.width * 0.05f, windowPosition.height * 0.25f + 96,
-						windowPosition.width * 0.9f, 32), "Incorrect password. Please try again.",
-					gantrySkin.customStyles[3]);
-			if (GUI.Button(
-				    new Rect(windowPosition.width * 0.2f, windowPosition.height * 0.75f, windowPosition.width * 0.2f,
-					    32), "Ok")) TryAdminPassword();
-		}, "Confirmation");
-	}
-
-	private void TryAdminPassword()
-	{
-		Debug.Log("Menu.TryAdminPassword() Trying admin password against correct pass: " +
-		          (adminPass == correctAdminPass));
-		if (adminPass == correctAdminPass) 
-			SetMenu();
-		else wrongPass = true;
-		adminPass = string.Empty;
-	}
-
 	private static string soundTemp = string.Empty;
 	private static bool useSoundTemp = false;
 
@@ -597,47 +476,7 @@ public class Menu : MonoBehaviour
 	//{
 	//	float buttonWidth = Settings.menuScreenW * 0.5f, buttonHeight = 48, margin = 16, catButtonSize = 128;
 
-	//	if (instance.menuBackground.activeSelf)
-	//		Overlays(m == categoryMenu ? instance.categoryFooter : instance.mediaFooter);
-	//	if (m == categoryMenu)
-	//	{
-	//		if (GUI.Button(BackButtonRect, instance.adminButton, style ?? GUI.skin.button))
-	//		{
-	//			passPrompt = true;
-	//			displayerWas = Displayer;
-	//			wrongPass = false;
-	//			Displayer = DrawAdminPassPrompt;
-	//			ResetWindowPosition();
-	//			SRSUtilities.guiMatrixNormalized = true;
-	//		}
 
-	//		if (GUI.Button(
-	//			    new Rect(Settings.ScreenW - backButtonMargin - 96, Settings.ScreenH - 56 - backButtonMargin, 96,
-	//				    56), instance.exitButton))
-	//		{
-	//			displayerWas = Displayer;
-	//			Displayer = DrawConfirmQuit;
-	//			ResetWindowPosition();
-	//			SRSUtilities.guiMatrixNormalized = true;
-	//		}
-	//	}
-	//	else
-	//		for (int i = 0; i < m.Length; i++)
-	//		{
-	//			GUI.enabled = !disabled.Contains(i);
-	//			if (m[i].Key.text != "Disabled" && GUI.Button(m == categoryMenu
-	//					    ? new Rect(
-	//						    Settings.menuScreenW * 0.4f + (i % 2) * Settings.ScreenW * 0.2f - catButtonSize * 0.5f,
-	//						    Settings.ScreenH * 0.35f + i / 2 * Settings.ScreenH * 0.3f - catButtonSize * 0.5f,
-	//						    catButtonSize, catButtonSize)
-	//					    : new Rect((Settings.menuScreenW - buttonWidth) * 0.5f,
-	//						    (Settings.ScreenH - m.Length * (buttonHeight + margin)) * 0.5f +
-	//						    i * (buttonHeight + margin), buttonWidth, buttonHeight), m[i].Key,
-	//				    style ?? GUI.skin.button))
-	//			{
-	//				m[i].Value();
-	//			}
-	//		}
 
 	//	GUI.enabled = true;
 	//}
@@ -659,23 +498,4 @@ public class Menu : MonoBehaviour
 		_contourEditor.Restart();
 	}
 
-	public void ShowPlayer()
-	{
-		if (transform.childCount < 1 && !_projection.gameObject.activeSelf)
-			GUI.Label(new Rect(Settings.ScreenW * 0.5f - 64, Settings.ScreenH * 0.5f - 32, 128, 64),
-				loadingMovie ? "Loading..." : "There are no movies available at this time.");
-		else if (_projection.gameObject.activeSelf) ContourEditor.DrawBlackouts(true);
-
-		if (!_projection.IsPlaying && !limbo)
-		{
-			Overlays(mediaFooter);
-			if (GUI.Button(BackButtonRect, backArrow, gantrySkin.customStyles[1]))
-			{
-				Debug.Log("Should be destroying previews...");
-				DestroyPreviews();
-				//SetMenu(categoryMenu, null, instance.categoryFooter, instance.gantrySkin.customStyles[1]);
-				Settings.ShowCursor(true);
-			}
-		}
-	}
 }

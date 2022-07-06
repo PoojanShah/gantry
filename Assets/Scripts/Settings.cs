@@ -16,9 +16,11 @@ public static class Settings
 	private const string QTS_DONGLE_KEYS_HASH = "DongleKeys";
 	private const string QTS_ROTATION_HASH = "Rotation";
 	private const string QTS_VOLUME_HASH = "Volume";
-	
+	private const string QTS_VERSION_HASH = "Version";
+
 	public static int initialScreenWidth;
 
+	public static Vector2 saveWindowSize = new Vector2(Settings.ScreenW * 0.5f, Settings.ScreenH * 0.5f);
 
 	public static string heartbeatServerAddress = "www.dtimotions.com/checkin.php",
 		clientLogin = "",
@@ -96,8 +98,8 @@ public static class Settings
 
 	public static int version
 	{
-		get { return PlayerPrefs.HasKey("Version") ? PlayerPrefs.GetInt("Version") : 1; }
-		set { PlayerPrefs.SetInt("Version", value); }
+		get => PlayerPrefs.HasKey(QTS_VERSION_HASH) ? PlayerPrefs.GetInt(QTS_VERSION_HASH) : 1;
+		set => PlayerPrefs.SetInt(QTS_VERSION_HASH, value);
 	}
 
 	public static MonitorMode monitorMode { get; set; } = MonitorMode.Single;
@@ -195,5 +197,4 @@ public static class Settings
 		return movieColors;
 	}
 
-	public static Vector2 saveWindowSize = new Vector2(Settings.ScreenW * 0.5f, Settings.ScreenH * 0.5f);
 }
