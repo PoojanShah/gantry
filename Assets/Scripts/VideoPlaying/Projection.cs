@@ -5,6 +5,7 @@ using System.Collections;
 using System.Linq;
 using Configs;
 using ContourEditorTool;
+using Core;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
 
@@ -126,6 +127,10 @@ namespace VideoPlaying
 		public void StartMovie(int mediaId = -1, int screenNum = 0, bool testMovie = false)
 		{
 			var clip = mediaId > -1? _mediaConfig.MediaFiles[mediaId] : _mediaConfig.GetFirstClip();
+
+			if (mediaId > -1)
+				CameraHelper.SetBackgroundColor(Settings.colorDefaults
+					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
 
 			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
