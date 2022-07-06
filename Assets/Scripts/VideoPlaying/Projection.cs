@@ -24,6 +24,14 @@ namespace VideoPlaying
 		public bool IsActive() => _gameObject.activeSelf;
 		public void SetActive(bool isActive) => _gameObject.SetActive(isActive);
 		public void SetTexture(Texture texture) => _renderer.sharedMaterial.mainTexture = texture;
+
+		public void Stop()
+		{
+			Player.Stop();
+			Player.clip = null;
+
+			_renderer.sharedMaterial.mainTexture = null;
+		}
 	}
 
 	public class Projection : MonoBehaviour
@@ -162,17 +170,6 @@ namespace VideoPlaying
 			}, false); //keep after configuration loading which creates new vertices.
 			IsPlayMode = true;
 
-			Debug.Log("In Play Mode. Projection main texture: " + _renderer.material.mainTexture +
-					  ", _screens[1] active: " + _screens[1].IsActive() + ", videoColor contains \"" + mediaFile.name +
-					  "\" key: " + Settings.videoColor.ContainsKey(mediaFile.name));
-
-			Debug.LogWarning(Settings.videoColor.ContainsKey(mediaFile.name)
-				? "\"" + mediaFile.name + "\"'s color \"" + Settings.videoColor[mediaFile.name] + "\" in colorDefaults: " +
-				  Settings.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name]) + ". Index: " +
-				  Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name]) +
-				  "\nColor defaults: " +
-				  Settings.colorDefaults.Select(kvp => kvp.Key + ":" + kvp.Value).ToList().Stringify()
-				: "\"" + mediaFile.name + "\" not in videoColor.");
 			if (Settings.useCueCore)
 				SRSUtilities.TCPMessage(
 					((Settings.videoColor.ContainsKey(mediaFile.name) &&
@@ -180,7 +177,7 @@ namespace VideoPlaying
 						? Settings.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
 						: UnityEngine.Random.Range(0, Settings.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					Settings.cuecoreIP, Settings.cuecorePort);
-			//Menu.Displayer = Menu.ShowPlayer;
+
 			Menu.limbo = false;
 			Settings.ShowCursor(false);
 
@@ -253,7 +250,7 @@ namespace VideoPlaying
 			}
 
 			var screen = _screens[screenNum];
-			screen.Player.Stop();
+			screen.Stop();
 		}
 
 		public void Rotate(int displayId = 0)

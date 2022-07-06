@@ -13,11 +13,11 @@ namespace Library
 	public class LibraryScreen : MonoBehaviour
 	{
 		[SerializeField] private Button _saveButton, _exitButton;
+		[SerializeField] private Toggle _extensionToggle;
 		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
 		[SerializeField] private Scrollbar _scrollbar;
 
-		private bool _isExtensionsVisible;
 		private Action _quitButtonAction;
 		private LibraryFile[] _files;
 		private MediaConfig _config;
@@ -26,6 +26,8 @@ namespace Library
 		{
 			_quitButtonAction = quitButtonAction;
 			_config = config;
+
+			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
 
 			gameObject.SetActive(true);
 
@@ -59,6 +61,7 @@ namespace Library
 		{
 			_saveButton.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
+			_extensionToggle.onValueChanged.RemoveAllListeners();
 
 			foreach (var libraryFile in _files)
 				libraryFile.Close();
@@ -76,17 +79,19 @@ namespace Library
 			_exitButton.onClick.AddListener(ExitButtonClicked);
 		}
 
-		public void ShowFileExtensions()
+		public void ShowFileExtensions(bool isShown)
 		{
-			_isExtensionsVisible = !_isExtensionsVisible;
+			var libraryLength = Settings.mediaLibrary.Length;
 
-			//for (var i = 0; i < _config.MediaFiles.Length; i++)
-			//{
-			//	var file = _files[i];
-			//	var title = _isExtensionsVisible ? ;
+			for (var i = 0; i < libraryLength; i++)
+			{
+				var file = _files[i];
+				var title = isShown
+					? Settings.mediaLibrary[i]
+					: Path.GetFileNameWithoutExtension(Settings.mediaLibrary[i]);
 
-			//	file.SetFileName(title);
-			//}
+				file.SetFileName(title);
+			}
 		}
 
 		private void OnColorClicked(GameObject clickedObject, bool isNextColor)
