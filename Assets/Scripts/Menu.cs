@@ -47,7 +47,7 @@ public class Menu : MonoBehaviour
 
 	public static bool limbo;
 	public static int heartbeatTriesRemaining = Settings.allowConnectionAttempts;
-	public Action Displayer;
+	
 
 	private static bool standbyForCommands = true;
 	private Action displayerWas;
@@ -74,7 +74,7 @@ public class Menu : MonoBehaviour
 	public AudioClip testAudioClip;
 	public Texture2D exitButton;
 	public static Rect windowPosition;
-	public static Vector2 saveWindowSize = new Vector2(Settings.menuScreenW * 0.5f, Settings.ScreenH * 0.5f);
+	public static Vector2 saveWindowSize = new Vector2(Settings.ScreenW * 0.5f, Settings.ScreenH * 0.5f);
 	public GameObject movieButtonPrefab;
 	public Texture2D missingIconTexture;
 
@@ -99,30 +99,18 @@ public class Menu : MonoBehaviour
 
 		// Settings.libraryDir = Settings.GetVideoFolder();
 		Settings.appDir = Application.persistentDataPath;
-		Settings.noPersistFile = Settings.appDir + SRSUtilities.slashChar + "halt.motions";
 #endif
-		foreach (Func<IEnumerator> f in new Func<IEnumerator>[] { UpdateCheck, DongleCheck }) StartCoroutine(f());
+		foreach (Func<IEnumerator> f in new Func<IEnumerator>[] { UpdateCheck}) StartCoroutine(f());
 		Settings.Load();
-		Settings.LoadLibraryAndCategories();
-		Settings.initialScreenWidth = Screen.currentResolution.width; //Screen.width;
+		
 		//Settings.dongleKeys=new string[]{"DE2E19C984E2925D","D85D6EA1539B7493"};
 
-		Debug.Log("Initial ScreenWidth: " + Settings.initialScreenWidth);
+		
 		(_projection = _projection ?? FindObjectOfType<Projection>()).gameObject.SetActive(false);
 
 		var categoryTextures = Resources.LoadAll<Texture2D>("categories");
 		var catList = new List<KeyValuePair<GUIContent, Action>>();
 
-
-		for (var i = 0; i < categoryTextures.Length; i++)
-		{
-			var _i = i;
-
-			catList.Add(new KeyValuePair<GUIContent, Action>(new GUIContent(categoryTextures[i]), () =>
-			{
-				Displayer = ShowPlayer;
-			}));
-		}
 
 		//categoryMenu = catList.ToArray();
 
@@ -191,8 +179,6 @@ public class Menu : MonoBehaviour
 		GUI.skin = gantrySkin;
 
 		Settings.NormalizeGUIMatrix();
-
-		Displayer?.Invoke();
 	}
 
 	private void Update()
@@ -228,29 +214,8 @@ public class Menu : MonoBehaviour
 	public void QuitApplication() => Application.Quit();
 	public void AdminPassChanged(string pass) => adminPass = pass;
 
-	public void OnAdminLogin()
-	{
-		if (adminPass != correctAdminPass)
-			return;
-
-		AdminMenu.SetActive(true);
-		AdminLogin.SetActive(false);
-
-		PassInputField.text = string.Empty;
-		adminPass = string.Empty;
-	}
-
-	public void ShowLibrary()
-	{
-		LibMenu.gameObject.SetActive(true);
-
-		Settings.LoadLibraryAndCategories();
-	}
-
 	public void EditContour()
 	{
-		Displayer = () => EditContour(0);
-
 		_drawUI = true;
 
 		UIObject.SetActive(false);
@@ -259,18 +224,18 @@ public class Menu : MonoBehaviour
 	public void ShowOptions()
 	{
 		superPass = string.Empty;
-		Displayer = OptionsMenu;
+		
 		UIObject.SetActive(false);
 		_drawUI = true;
 	}
 
 	public static void ResetWindowPosition()
 	{
-		Debug.Log("Menu.ResetWindowPosition() Settings.menuScreenW: " + Settings.menuScreenW + ", saveWindowSize.x: " +
-		          saveWindowSize.x);
+		Debug.Log("Menu.ResetWindowPosition() Settings.menuScreenW: " + Settings.ScreenW + ", saveWindowSize.x: " +
+		          Settings.saveWindowSize.x);
 
-		windowPosition = new Rect(Settings.menuScreenW * 0.5f - saveWindowSize.x * 0.5f,
-			Screen.height * 0.5f - saveWindowSize.y * 0.5f, saveWindowSize.x, saveWindowSize.y);
+		windowPosition = new Rect(Settings.ScreenW * 0.5f - Settings.saveWindowSize.x * 0.5f,
+			Screen.height * 0.5f - Settings.saveWindowSize.y * 0.5f, Settings.saveWindowSize.x, Settings.saveWindowSize.y);
 	}
 
 	private static string[][] ReadConfigFile(string fileName)
@@ -361,16 +326,6 @@ public class Menu : MonoBehaviour
 				                 "\", tries remaining: " + heartbeatTriesRemaining + "\n\n");
 				if (--heartbeatTriesRemaining <= 0)
 				{
-					Debug.LogWarning("Ran out of tries; quitting and creating \"" + Settings.noPersistFile + "\".");
-					try
-					{
-						File.Create(Settings.noPersistFile).Dispose();
-					}
-					catch (IOException e)
-					{
-						Debug.LogError(e);
-					}
-
 					Application.Quit();
 					yield break;
 				}
@@ -445,61 +400,6 @@ public class Menu : MonoBehaviour
 		Application.Quit();
 	}
 
-	private IEnumerator DongleCheck()
-	{
-		//Security feature
-		var p = new Process
-		{
-			StartInfo = new ProcessStartInfo
-			{
-				FileName = Settings.dongleChecker,
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				CreateNoWindow = true
-			}
-		};
-		while (true)
-		{
-			yield return
-				new WaitForSeconds(Settings
-					.dongleCheckInterval); //Allow us the initial period to get to the admin panel if we just started up.
-			if (!Settings.dongleCheck || Displayer == OptionsMenu)
-			{
-				Debug.Log("==================Skipping dongle security checks at " +
-				          DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ". dongleCheck: " + Settings.dongleCheck +
-				          "; in options menu: " + (Displayer == OptionsMenu) + "; silently looping.---");
-				continue;
-			}
-
-			Debug.Log("==================\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-			          " Menu.DongleCheck() probing USB port with keys: " + string.Join(",", Settings.dongleKeys));
-
-			if (!File.Exists(Settings.dongleChecker))
-			{
-				StartCoroutine(ReportAndQuit(Settings.heartbeatServerAddress,
-					"No dongle checker binary \"" + Settings.dongleChecker + "\"."));
-				yield break;
-			}
-
-			p.StartInfo.Arguments = string.Join(" ", Settings.dongleKeys);
-			p.Start();
-
-			while (!p.StandardOutput.EndOfStream)
-			{
-				var line = p.StandardOutput
-					.ReadLine(); //alternative: string output=p.StandardOutput.ReadToEnd();p.WaitForExit();
-				Debug.Log("Process returned: \"" + line + "\"");
-				if (line != "Gesetzlich")
-				{
-					StartCoroutine(ReportAndQuit(Settings.heartbeatServerAddress,
-						"Fehler mit dongle authentication; quitting and creating " + Settings.noPersistFile + "."));
-					yield break;
-				}
-				else Debug.Log(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ": Dongle check success.");
-			}
-		}
-	}
-
 	public static IEnumerator ReportAndQuit(string server, string msg)
 	{
 		Debug.Log("Menu.ReportAndQuit(" + server + "," + msg + ")");
@@ -512,7 +412,6 @@ public class Menu : MonoBehaviour
 		string ergebnis = w.text.Split("\n"[0])[0];
 		Debug.Log("Server \"" + server + "\" returned with:\n" + w.text + "\n\nergebnis: \"" + ergebnis +
 		          "\"\nerror: \"" + w.error + "\"\n");
-		File.Create(Settings.noPersistFile);
 		Application.Quit();
 	}
 
@@ -615,9 +514,6 @@ public class Menu : MonoBehaviour
 			if (GUI.Button(
 				    new Rect(windowPosition.width * 0.2f, windowPosition.height * 0.75f, windowPosition.width * 0.2f,
 					    32), "Yes")) Application.Quit();
-			else if (GUI.Button(
-				         new Rect(windowPosition.width * 0.6f, windowPosition.height * 0.75f,
-					         windowPosition.width * 0.2f, 32), "No")) Displayer = displayerWas;
 		}, "Confirmation");
 	}
 
@@ -646,9 +542,6 @@ public class Menu : MonoBehaviour
 			if (GUI.Button(
 				    new Rect(windowPosition.width * 0.2f, windowPosition.height * 0.75f, windowPosition.width * 0.2f,
 					    32), "Ok")) TryAdminPassword();
-			else if (GUI.Button(
-				         new Rect(windowPosition.width * 0.6f, windowPosition.height * 0.75f,
-					         windowPosition.width * 0.2f, 32), "Cancel")) Displayer = displayerWas;
 		}, "Confirmation");
 	}
 
@@ -664,115 +557,6 @@ public class Menu : MonoBehaviour
 
 	private static string soundTemp = string.Empty;
 	private static bool useSoundTemp = false;
-
-	private void OptionsMenu()
-	{
-		float lmargin = Settings.menuScreenW * 0.15f,
-			tmargin = Settings.ScreenH * 0.15f,
-			rowLevel = tmargin,
-			buttonHeight = 48,
-			rowHeight = 54, /*buttonWidth=32,*/
-			panelWidth = 256;
-		int rightOverflowWas = GUI.skin.toggle.overflow.right;
-		GUI.skin.toggle.border.left = 0;
-		GUI.skin.textField.overflow.bottom = -16;
-		GUI.enabled = superPass != correctSuperPass;
-		GUI.Label(new Rect(lmargin, rowLevel, panelWidth * 0.75f, buttonHeight * 0.5f),
-			"Super Administrator Password: ");
-		GUI.SetNextControlName("SuperAdminPass");
-		superPass = GUI.PasswordField(new Rect(lmargin + panelWidth * 0.75f, rowLevel, panelWidth, buttonHeight),
-			superPass, "*"[0], 16);
-
-		if (GUI.enabled = superPass == correctSuperPass)
-		{
-			GUI.Label(new Rect(lmargin, rowLevel += rowHeight, panelWidth * 0.5f, buttonHeight * 0.5f),
-				"Client E-mail: ");
-			Settings.clientLogin =
-				GUI.TextField(new Rect(lmargin + panelWidth * 0.5f, rowLevel, panelWidth, buttonHeight),
-					Settings.clientLogin, 16);
-			Settings.sound = Graphics.Toggle(new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight),
-				Settings.sound, "Sound");
-
-			try
-			{
-				if (!useSoundTemp)
-				{
-					Settings.volume = float.Parse(GUI.TextField(
-						new Rect(lmargin + panelWidth * 0.5f, rowLevel, panelWidth, buttonHeight), Settings.volume + "",
-						4));
-				}
-				else
-				{
-					soundTemp = GUI.TextField(new Rect(lmargin + panelWidth * 0.5f, rowLevel, panelWidth, buttonHeight),
-						soundTemp, 4);
-					Settings.volume = float.Parse(soundTemp);
-				}
-			}
-			catch (Exception e)
-			{
-				useSoundTemp = true;
-			}
-
-
-			Settings.persist = Graphics.Toggle(new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight),
-				Settings.persist, "Automatic Restart"); //"Automatic Restart: O"+(Settings.persist?"n":"ff"
-			Settings.rotation = Graphics.Toggle(new Rect(lmargin + panelWidth, rowLevel, panelWidth, buttonHeight),
-				Settings.rotation, "Rotation");
-			Settings.monitorMode = (Settings.MonitorMode)GUI.SelectionGrid(
-				new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight), (int)Settings.monitorMode,
-				Enum.GetNames(typeof(Settings.MonitorMode)).Select(n => n + " Monitor").ToArray(), 2);
-			Screen.fullScreen = Convert.ToBoolean(GUI.SelectionGrid(
-				new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight), Convert.ToInt32(Screen.fullScreen),
-				new string[] { "Windowed", "Full Screen" }, 2));
-			Settings.serverCheck = Graphics.Toggle(new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight),
-				Settings.serverCheck, "Online Server Checks");
-			GUI.enabled = Settings.dongleCheck =
-				Graphics.Toggle(new Rect(lmargin, rowLevel += rowHeight, panelWidth, buttonHeight),
-					Settings.dongleCheck, "Require Dongle");
-
-			for (int i = 0; i < Settings.dongleKeys.Length; i++)
-			{
-				GUI.Label(
-					new Rect(lmargin, rowLevel += rowHeight * (1 - (float)i * 0.5f), panelWidth * 0.5f,
-						buttonHeight * 0.5f), "SmartDongle P" + (i + 1) + ": ");
-				Settings.dongleKeys[i] =
-					GUI.TextField(new Rect(lmargin + panelWidth * 0.5f, rowLevel, panelWidth, buttonHeight),
-						Settings.dongleKeys[i], 16);
-			}
-
-			GUI.enabled = true;
-			GUI.enabled = Settings.useCueCore =
-				Graphics.Toggle(new Rect(lmargin, rowLevel += rowHeight, 32, buttonHeight), Settings.useCueCore,
-					"CueCore Dynamic Lighting", Vector2.one * 32); //Graphics.Toggle overwrites rect's width.
-			Settings.cuecoreIP =
-				GUI.TextField(
-					new Rect(lmargin + panelWidth * 0.3f, rowLevel += rowHeight, panelWidth * 0.7f, buttonHeight),
-					Settings.cuecoreIP, 15);
-			Settings.cuecorePort = Convert.ToInt32(GUI.TextField(
-				new Rect(lmargin + panelWidth * 1.15f + 8, rowLevel, panelWidth * 0.3f, buttonHeight),
-				Settings.cuecorePort.ToString(), 5));
-			for (int i = 0; i < Settings.dongleKeys.Length; i++)
-				GUI.Label(
-					new Rect(lmargin + i * (panelWidth + 8), rowLevel, panelWidth * 0.15f * (1 + 1.5f * (1 - i)),
-						buttonHeight * 0.5f), new string[] { "CueCore IP", "Port" }[i] + ": ");
-		}
-		else GUI.FocusControl("SuperAdminPass");
-
-		GUI.enabled = true;
-
-		if (GUI.Button(
-			    new Rect(Settings.menuScreenW - lmargin - panelWidth, Settings.ScreenH - rowHeight * 2,
-				    panelWidth * 0.5f, buttonHeight), "Back"))
-		{
-			//Why save here?
-			Settings.Save();
-			SetMenu();
-			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
-			_drawUI = false;
-		}
-
-		GUI.skin.toggle.overflow.right = rightOverflowWas;
-	}
 
 	public void SetMenu(KeyValuePair<GUIContent, Action>[] m = null, int[] disabled = null,
 		Texture2D background = null, GUIStyle style = null)
@@ -861,7 +645,7 @@ public class Menu : MonoBehaviour
 	private void EditContour(int screenNum)
 	{
 		Debug.Log("Menu.EditContour(" + screenNum + ")");
-		Displayer = null;
+		
 		_projection.transform.gameObject.SetActive(true);
 		_projection.IsEditing = true; //Keep before ContourEditor initialization.
 		menuBackground.SetActive(false);
