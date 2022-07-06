@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Core;
 using VideoPlaying;
 
 public static class Settings
@@ -28,7 +29,7 @@ public static class Settings
         binaryPath = appDir + SRSUtilities.slashChar + binaryFile,
         noPersistFile = appDir + SRSUtilities.slashChar + "halt.motions",
         newBinaryURL = "http://www.sauerburger.org/dti/" + binaryFile;
-    public static string[] library;
+    public static string[] mediaLibrary;
     public static float menuScreenW { get { return ScreenW / Mathf.Max(1, Projection.DisplaysAmount); } }
     public static float updatePeriod = 60, dongleCheckInterval = 30;//*60*1;//Check the server every minute or hour.
     public static int allowConnectionAttempts = 2;//24;
@@ -50,7 +51,7 @@ public static class Settings
             File.WriteAllText(configFile,t);
         }}
     public static string[] dongleKeys = new string[] { "DE2E19C984E2925D", "D85D6EA1539B7493" };
-    public static KeyValuePair<string, Color32>[] colorDefaults = new KeyValuePair<string, Color32>[]{//To retrieve key by index: colorDefaults.Cast<DictionaryEntry>().ElementAt(index);
+    public static KeyValuePair<string, Color32>[] colorDefaults = {
 		new KeyValuePair<string,Color32>("maroon",new Color32(128,0,0,255)),
         new KeyValuePair<string,Color32>("firebrick",new Color32(178,34,34,255)),
         new KeyValuePair<string,Color32>("crimson",new Color32(220,20,60,255)),
@@ -102,14 +103,8 @@ public static class Settings
     public static bool _persist = true;
     public static bool rotation = true;
     public static float volume = 1.0f;
-#if UNITY_EDITOR
-    public static string dataPath = "meshes";
-#elif UNITY_STANDALONE_LINUX
-    public static string dataPath="/home/motions/app/meshes";
-#else
-//public static string dataPath="C:\\motions\\meshes";
-  public static string dataPath="meshes";
-#endif
+    public static string dataPath = Application.dataPath + "/Videos/";
+
 #if UNITY_EDITOR
     public static string categoryFile = "categories.cfg"/*,unlockFile="unlocked.cfg"*/, configFile = "motions.cfg", commandFile = "cmd", libraryDir = Application.dataPath + "/Videos/", patientDir = "patient", thumbsDir = "Thumbs", testBackground = "file://Test.jpg", movieColorFile = "moviecolors.cfg";
 #elif UNITY_STANDALONE_LINUX
@@ -202,13 +197,27 @@ public static class Settings
 
     public static void LoadLibraryAndCategories()
     {
-        if (!Directory.Exists(libraryDir)) Debug.LogError("Library directory \"" + libraryDir + "\" not found.");
-        library = Directory.GetFiles(libraryDir, "*.*").Select(f => Path.GetFileName(f)).ToArray();
+        LoadMediaLibrary();
 
         if (File.Exists(movieColorFile)) videoColor = LoadMovieColors(movieColorFile);
-        for (int i = 0; i < library.Length; i++)
-            if (!videoColor.ContainsKey(library[i]))
-                videoColor[library[i]] = colorDefaults[i % colorDefaults.Length].Key;//Will catch new oggs that are in the library directory and not in the existing color directory.
+        for (int i = 0; i < mediaLibrary.Length; i++)
+            if (!videoColor.ContainsKey(mediaLibrary[i]))
+                videoColor[mediaLibrary[i]] = colorDefaults[i % colorDefaults.Length].Key;//Will catch new oggs that are in the mediaLibrary directory and not in the existing color directory.
+    }
+
+    private static void LoadMediaLibrary()
+    {
+	    if (!Directory.Exists(libraryDir)) 
+		    Debug.LogError("Library directory \"" + libraryDir + "\" not found.");
+
+	    var files = Directory.GetFiles(libraryDir, "*.*");
+	    var libraryTemp = new List<string>(files.Length);
+	    
+	    libraryTemp.AddRange(from file in files
+		    where !file.EndsWith(Constants.ExtensionMeta)
+		    select Path.GetFileName(file));
+
+	    mediaLibrary = libraryTemp.ToArray();
     }
 
     //public static string GetVideoFolder()
@@ -244,33 +253,31 @@ public static class Settings
 
     private static Dictionary<string, string> LoadMovieColors(string movieColorFile)
     {
-	    Debug.Log("Removed code LoadMovieColors");
+	    var movieColors = new Dictionary<string, string>();
 
-        Debug.Log("LoadMovieColors(\"" + movieColorFile + "\")");
-        string line;
-        StreamReader reader;
-        Dictionary<string, string> movieColors = new Dictionary<string, string>();
-        try
-        {
-            reader = new StreamReader(movieColorFile);
-            int c = 0;
-            while ((line = reader.ReadLine()) != null)
-            {
-                //Debug.Log("Line " + (c++) + ": \"" + line + "\", movieColors: " + movieColors.Stringify());
-                string[] mc = line.Trim().Split(":"[0]);//Should be moviename:colorname
-                if (mc.Length != 2)
-                {
-                    Debug.LogWarning("Ungueltiges MovieColor line: " + line);
-                    continue;
-                }
-                movieColors[mc[0]] = mc[1];
-            }
-            reader.Close();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Error loading file " + categoryFile + ": " + e.ToString());
-        }
-        return movieColors;
+	    try
+	    {
+		    var reader = new StreamReader(movieColorFile);
+		    int c = 0;
+		    while (reader.ReadLine() is { } line)
+		    {
+			    string[] mc = line.Trim().Split(":"[0]); //Should be moviename:colorname
+			    if (mc.Length != 2)
+			    {
+				    Debug.LogWarning("Ungueltiges MovieColor line: " + line);
+				    continue;
+			    }
+
+			    movieColors[mc[0]] = mc[1];
+		    }
+
+		    reader.Close();
+	    }
+	    catch (Exception e)
+	    {
+		    Debug.LogError("Error loading file " + categoryFile + ": " + e.ToString());
+	    }
+
+	    return movieColors;
     }
 }

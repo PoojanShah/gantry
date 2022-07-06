@@ -12,7 +12,8 @@ namespace Core
 			BoyHash = "Boy",
 			GirlHash = "Girl",
 			ManHash = "Man",
-			WomanHash = "Woman";
+			WomanHash = "Woman",
+			ExtensionMeta = ".meta";
 
 		public const float ScrollbarDefaultValue = 1.0f;
 	}

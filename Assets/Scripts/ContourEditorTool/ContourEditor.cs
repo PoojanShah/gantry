@@ -2097,7 +2097,7 @@ namespace ContourEditorTool
 					else
 						GUI.Window(0, Menu.windowPosition, (id) =>
 						{
-							string[] files = Directory.GetFiles(Settings.dataPath, "*.gantry");
+							var files = Directory.GetFiles(Settings.dataPath, "*.gantry");
 							Debug.Log(files.Length + " files.");
 							scrollPosition = GUI.BeginScrollView(
 								new Rect(0, 32, Menu.windowPosition.width - 8, Menu.windowPosition.height - 8 - 64 - 8),
