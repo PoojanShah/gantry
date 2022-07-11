@@ -13,7 +13,6 @@ public static class Settings
 	private const string QTS_SERVER_CHECK_HASH = "ServerCheck";
 	private const string QTS_USE_CUE_CORE_HASH = "UseCueCore";
 	private const string QTS_DONGLE_CHECK_HASH = "DongleCheck";
-	private const string QTS_DONGLE_KEYS_HASH = "DongleKeys";
 	private const string QTS_ROTATION_HASH = "Rotation";
 	private const string QTS_VOLUME_HASH = "Volume";
 	private const string QTS_VERSION_HASH = "Version";
@@ -54,7 +53,6 @@ public static class Settings
 		useCueCore =
 			false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
 
-	public static string[] dongleKeys = new string[] { "DE2E19C984E2925D", "D85D6EA1539B7493" };
 	public static bool sound = true;
 	public static bool _persist = true;
 	public static bool rotation = true;
@@ -121,7 +119,6 @@ public static class Settings
 		PlayerPrefs.SetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck));
 		PlayerPrefs.SetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore));
 		PlayerPrefs.SetInt(QTS_DONGLE_CHECK_HASH, Convert.ToInt32(dongleCheck));
-		PlayerPrefs.SetString(QTS_DONGLE_KEYS_HASH, string.Join(string.Empty, dongleKeys));
 		PlayerPrefs.SetInt(QTS_ROTATION_HASH, Convert.ToInt32(rotation));
 		PlayerPrefs.SetFloat(QTS_VOLUME_HASH, volume);
 	}
@@ -134,11 +131,7 @@ public static class Settings
 		serverCheck = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck)));
 		useCueCore = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore)));
 		dongleCheck = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_DONGLE_CHECK_HASH, Convert.ToInt32(dongleCheck)));
-		dongleKeys = new[]
-		{
-			PlayerPrefs.GetString(QTS_DONGLE_KEYS_HASH, string.Join(string.Empty, dongleKeys)).Substring(0, 16),
-			PlayerPrefs.GetString(QTS_DONGLE_KEYS_HASH, string.Join("", dongleKeys)).Substring(16, 16)
-		};
+
 		volume = PlayerPrefs.GetFloat(QTS_VOLUME_HASH, volume);
 	}
 
@@ -153,7 +146,7 @@ public static class Settings
 			if (!videoColor.ContainsKey(mediaLibrary[i]))
 				videoColor[mediaLibrary[i]] =
 					Constants.colorDefaults[i % Constants.colorDefaults.Length]
-						.Key; //Will catch new oggs that are in the mediaLibrary directory and not in the existing color directory.
+						.Key;
 	}
 
 	private static void LoadMediaLibrary()
