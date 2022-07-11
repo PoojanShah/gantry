@@ -22,8 +22,7 @@ namespace Screens
 			CuoCorePort = PlayerPrefs.GetInt(CUE_CORE_PORT_KEY, CuoCorePort);
 			OutputsNumber = PlayerPrefs.GetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
 			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
-			var sound = PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
-			IsSoundOn = Convert.ToBoolean(sound);
+			IsSoundOn = Convert.ToBoolean(PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn)));
 		}
 		
 		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
