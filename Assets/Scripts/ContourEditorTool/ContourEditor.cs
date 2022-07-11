@@ -2045,17 +2045,17 @@ namespace ContourEditorTool
 					{
 						//						saveName=GUI.TextField(new Rect(8,8,Screen.width*0.5f-16,32),saveName);
 						saveName = GUI.TextField(
-							new Rect(8, Settings.saveWindowSize.y * 0.5f - 16, Settings.saveWindowSize.x - 16, 32), saveName);
-						//for(int i=0;i<DisplaysAmount;i++)if(GUI.Toggle(new Rect(16,Settings.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
-						saveAsDefault = GUI.Toggle(new Rect(16, Settings.saveWindowSize.y * 0.5f + 32, 16, 16),
+							new Rect(8, UIHelper.saveWindowSize.y * 0.5f - 16, UIHelper.saveWindowSize.x - 16, 32), saveName);
+						//for(int i=0;i<DisplaysAmount;i++)if(GUI.Toggle(new Rect(16,UIHelper.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
+						saveAsDefault = GUI.Toggle(new Rect(16, UIHelper.saveWindowSize.y * 0.5f + 32, 16, 16),
 							saveAsDefault == (int)Settings.monitorMode,
 							"Set as Default " + (new string[] { "Gantry", "Wall" }[(int)Settings.monitorMode]) +
 							" Configuration")
 							? (int)Settings.monitorMode
 							: -1;
-						//						saveName=GUI.TextField(new Rect(16+8+8,Settings.saveWindowSize.y*0.5f+32,Settings.saveWindowSize.x-16,32),saveName);
+						//						saveName=GUI.TextField(new Rect(16+8+8,UIHelper.saveWindowSize.y*0.5f+32,UIHelper.saveWindowSize.x-16,32),saveName);
 						if (GUI.Button(
-							    new Rect(8, Settings.saveWindowSize.y - 8 - 32, Settings.saveWindowSize.x * 0.5f - 16, 32),
+							    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
 							    "Cancel"))
 						{
 							mode = Mode.normal;
@@ -2063,8 +2063,8 @@ namespace ContourEditorTool
 						}
 
 						if (GUI.Button(
-							    new Rect(Settings.saveWindowSize.x * 0.5f + 8, Settings.saveWindowSize.y - 8 - 32,
-								    Settings.saveWindowSize.x * 0.5f - 16, 32), "Save") /*&&!Menu.DraggingWindow*/)
+							    new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
+								    UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Save") /*&&!Menu.DraggingWindow*/)
 						{
 							SaveConfiguration(saveName);
 							Toolbar.clickedThisFrame = true;
@@ -2080,11 +2080,11 @@ namespace ContourEditorTool
 								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
 								"\" configuration?");
 							if (GUI.Button(
-								    new Rect(8, Settings.saveWindowSize.y - 8 - 32, Settings.saveWindowSize.x * 0.5f - 16, 32),
+								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
 								    "No")) fileToDelete = "";
 							else if (GUI.Button(
-								         new Rect(Settings.saveWindowSize.x * 0.5f + 8, Settings.saveWindowSize.y - 8 - 32,
-									         Settings.saveWindowSize.x * 0.5f - 16, 32), "Yes"))
+								         new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
+									         UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Yes"))
 							{
 								Debug.Log("Moving \"" + fileToDelete + "\" to \"" + backupDir + "/" +
 								          Path.GetFileName(fileToDelete) + "\".");
@@ -2099,20 +2099,20 @@ namespace ContourEditorTool
 
 							scrollPosition = GUI.BeginScrollView(
 								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
-								scrollPosition, new Rect(0, 0, Settings.saveWindowSize.x - 32, files.Length * 40));
+								scrollPosition, new Rect(0, 0, UIHelper.saveWindowSize.x - 32, files.Length * 40));
 							for (int i = 0; i < files.Length; i++)
-								if (GUI.Button(new Rect(8, i * 40, Settings.saveWindowSize.x - 64 - 8, 32), files[i]))
+								if (GUI.Button(new Rect(8, i * 40, UIHelper.saveWindowSize.x - 64 - 8, 32), files[i]))
 								{
 									LoadConfiguration(files[i]);
 									Toolbar.clickedThisFrame = true;
 									SaveDefaultConfiguration(files[i]);
 								}
-								else if (GUI.Button(new Rect(8 + Settings.saveWindowSize.x - 64 - 8, i * 40, 32, 32), "X"))
+								else if (GUI.Button(new Rect(8 + UIHelper.saveWindowSize.x - 64 - 8, i * 40, 32, 32), "X"))
 									fileToDelete = files[i];
 
 							GUI.EndScrollView();
 							if (GUI.Button(
-								    new Rect(8, Settings.saveWindowSize.y - 8 - 32, Settings.saveWindowSize.x * 0.5f - 16, 32),
+								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
 								    "Cancel"))
 							{
 								mode = Mode.normal;

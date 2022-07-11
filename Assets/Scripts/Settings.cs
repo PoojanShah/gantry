@@ -12,14 +12,12 @@ public static class Settings
 	private const string QTS_CUE_CORE_PORT_HASH = "CueCorePort";
 	private const string QTS_SERVER_CHECK_HASH = "ServerCheck";
 	private const string QTS_USE_CUE_CORE_HASH = "UseCueCore";
-	private const string QTS_DONGLE_CHECK_HASH = "DongleCheck";
 	private const string QTS_ROTATION_HASH = "Rotation";
 	private const string QTS_VOLUME_HASH = "Volume";
 	private const string QTS_VERSION_HASH = "Version";
 
 	public static int initialScreenWidth;
 
-	public static Vector2 saveWindowSize = new Vector2(Settings.ScreenW * 0.5f, Settings.ScreenH * 0.5f);
 
 	public static string heartbeatServerAddress = "www.dtimotions.com/checkin.php",
 		clientLogin = "",
@@ -43,13 +41,12 @@ public static class Settings
 	public static float updatePeriod = 60, dongleCheckInterval = 30; //*60*1;//Check the server every minute or hour.
 	public static int allowConnectionAttempts = 2; //24;
 	public static Dictionary<string, string> videoColor = new Dictionary<string, string>();
-	public static string cuecoreIP = "192.168.1.10", dongleChecker = appDir + SRSUtilities.slashChar + "motionsdongle";
+	public static string cuecoreIP = "192.168.1.10";
 	public static int cuecorePort = 7000;
 
 
 	public static bool
 		serverCheck = true,
-		dongleCheck = true,
 		useCueCore =
 			false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
 
@@ -118,7 +115,6 @@ public static class Settings
 		PlayerPrefs.SetInt(QTS_CUE_CORE_PORT_HASH, cuecorePort);
 		PlayerPrefs.SetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck));
 		PlayerPrefs.SetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore));
-		PlayerPrefs.SetInt(QTS_DONGLE_CHECK_HASH, Convert.ToInt32(dongleCheck));
 		PlayerPrefs.SetInt(QTS_ROTATION_HASH, Convert.ToInt32(rotation));
 		PlayerPrefs.SetFloat(QTS_VOLUME_HASH, volume);
 	}
@@ -130,7 +126,6 @@ public static class Settings
 		rotation = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_ROTATION_HASH, Convert.ToInt32(rotation)));
 		serverCheck = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck)));
 		useCueCore = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore)));
-		dongleCheck = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_DONGLE_CHECK_HASH, Convert.ToInt32(dongleCheck)));
 
 		volume = PlayerPrefs.GetFloat(QTS_VOLUME_HASH, volume);
 	}
