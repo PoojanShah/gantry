@@ -2,7 +2,6 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace Screens
 {
@@ -30,26 +29,9 @@ namespace Screens
 		{
 			_sound.isOn = OptionsSettings.Sound;
 			_rotation.isOn = OptionsSettings.Rotation;
-			_outputsNumber.value = OptionsSettings.NumberOfOutputs;
+			_outputsNumber.value = OptionsSettings.OutputsNumber;
 			_cuoCoreIp.text = OptionsSettings.CuoCoreIp;
 			_cuoCorePort.text = OptionsSettings.CuoCorePort.ToString();
-		}
-	}
-
-	public static class OptionsSettings
-	{
-		public static bool Sound, Rotation;
-		public static int NumberOfOutputs;
-		public static string CuoCoreIp = "192.168.1.10";
-		public static int CuoCorePort = 7000;
-
-		public static void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
-		{
-			Sound = sound;
-			Rotation = rotation;
-			NumberOfOutputs = outputsNumber;
-			CuoCoreIp = cuoCoreIp;
-			CuoCorePort = cuoCorePort;
 		}
 	}
 }
