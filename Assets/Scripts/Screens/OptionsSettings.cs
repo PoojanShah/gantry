@@ -3,27 +3,33 @@ using UnityEngine;
 
 namespace Screens
 {
-	public static class OptionsSettings
+	public class OptionsSettings
 	{
-		public static bool Sound, Rotation;
-		public static int OutputsNumber;
-		public static string CuoCoreIp = "192.168.1.10";
-		public static int CuoCorePort = 7000;
+		private const string CUO_CORE_IP_KEY = "CueCoreIP";
+		private const string CUE_CORE_PORT_KEY = "CueCorePort";
+		private const string OUTPUTS_NUMBER_KEY = "OutputsNumber";
+		private const string ROTATION_KEY = "Rotation";
+		private const string SOUND_KEY = "Sound";
+		
+		public bool IsSoundOn, IsRotationOn;
+		public int OutputsNumber;
+		public string CuoCoreIp = "192.168.1.10";
+		public int CuoCorePort = 7000;
 
-		public static void Init()
+		public void Init()
 		{
 			CuoCoreIp = PlayerPrefs.GetString("CueCoreIP", CuoCoreIp);
 			CuoCorePort = PlayerPrefs.GetInt("CueCorePort", CuoCorePort);
 			OutputsNumber = PlayerPrefs.GetInt("OutputsNumber", OutputsNumber);
-			Rotation = Convert.ToBoolean(PlayerPrefs.GetInt("Rotation", Convert.ToInt32(Rotation)));
-			var sound = PlayerPrefs.GetInt("Sound", Convert.ToInt32(Sound));
-			Sound = Convert.ToBoolean(sound);
+			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt("Rotation", Convert.ToInt32(IsRotationOn)));
+			var sound = PlayerPrefs.GetInt("Sound", Convert.ToInt32(IsSoundOn));
+			IsSoundOn = Convert.ToBoolean(sound);
 		}
 		
-		public static void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
+		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
 		{
-			Sound = sound;
-			Rotation = rotation;
+			IsSoundOn = sound;
+			IsRotationOn = rotation;
 			OutputsNumber = outputsNumber;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
@@ -31,13 +37,13 @@ namespace Screens
 			SaveToPlayerPrefs();
 		}
 
-		private static void SaveToPlayerPrefs()
+		private void SaveToPlayerPrefs()
 		{
-			PlayerPrefs.SetString("CueCoreIP", CuoCoreIp);
-			PlayerPrefs.SetInt("CueCorePort", CuoCorePort);
-			PlayerPrefs.SetInt("OutputsNumber", OutputsNumber);
-			PlayerPrefs.SetInt("Rotation", Convert.ToInt32(Rotation));
-			PlayerPrefs.SetInt("Sound", Convert.ToInt32(Sound));
+			PlayerPrefs.SetString(CUO_CORE_IP_KEY, CuoCoreIp);
+			PlayerPrefs.SetInt(CUE_CORE_PORT_KEY, CuoCorePort);
+			PlayerPrefs.SetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
+			PlayerPrefs.SetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn));
+			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 		}
 	}
 }

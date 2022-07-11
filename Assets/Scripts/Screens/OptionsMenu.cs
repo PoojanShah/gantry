@@ -13,27 +13,30 @@ namespace Screens
 		[SerializeField] private TMP_Dropdown _outputsNumber;
 		[SerializeField] private TMP_InputField _cuoCoreIp;
 		[SerializeField] private TMP_InputField _cuoCorePort;
+
+		private OptionsSettings _optionsSettings;
 		
 		public void Init()
 		{
-			SetDefaultValue();
+			_optionsSettings = new OptionsSettings();
+			_optionsSettings.Init();
+			
+			LoadValues(_optionsSettings);
 			
 			_cancelButton.onClick.AddListener(() =>
 			{
-				OptionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value, _cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
+				_optionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value, _cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
 				Destroy(gameObject);
 			});
 		}
 
-		private void SetDefaultValue()
+		private void LoadValues(OptionsSettings optionsSettings)
 		{
-			OptionsSettings.Init();
-			
-			_sound.isOn = OptionsSettings.Sound;
-			_rotation.isOn = OptionsSettings.Rotation;
-			_outputsNumber.value = OptionsSettings.OutputsNumber;
-			_cuoCoreIp.text = OptionsSettings.CuoCoreIp;
-			_cuoCorePort.text = OptionsSettings.CuoCorePort.ToString();
+			_sound.isOn = optionsSettings.IsSoundOn;
+			_rotation.isOn = optionsSettings.IsRotationOn;
+			_outputsNumber.value = optionsSettings.OutputsNumber;
+			_cuoCoreIp.text = optionsSettings.CuoCoreIp;
+			_cuoCorePort.text = optionsSettings.CuoCorePort.ToString();
 		}
 	}
 }
