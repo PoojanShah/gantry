@@ -27,6 +27,8 @@ namespace Screens
 
 		private void SetDefaultValue()
 		{
+			OptionsSettings.Init();
+			
 			_sound.isOn = OptionsSettings.Sound;
 			_rotation.isOn = OptionsSettings.Rotation;
 			_outputsNumber.value = OptionsSettings.OutputsNumber;
