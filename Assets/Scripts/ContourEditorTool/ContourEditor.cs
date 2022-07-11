@@ -2157,7 +2157,6 @@ namespace ContourEditorTool
 			WipeBlackouts();
 			_projection.IsEditing = false;
 			//Menu.SetMenu();
-			Menu._drawUI = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
 			SetToolbarAvailable(false);
 

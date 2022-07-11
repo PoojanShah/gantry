@@ -168,7 +168,6 @@ namespace VideoPlaying
 						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					Settings.cuecoreIP, Settings.cuecorePort);
 
-			Menu.limbo = false;
 			Settings.ShowCursor(false);
 
 			do
