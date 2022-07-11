@@ -16,13 +16,13 @@ namespace Screens
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
 
-		public void Init()
+		public OptionsSettings()
 		{
-			CuoCoreIp = PlayerPrefs.GetString("CueCoreIP", CuoCoreIp);
-			CuoCorePort = PlayerPrefs.GetInt("CueCorePort", CuoCorePort);
-			OutputsNumber = PlayerPrefs.GetInt("OutputsNumber", OutputsNumber);
-			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt("Rotation", Convert.ToInt32(IsRotationOn)));
-			var sound = PlayerPrefs.GetInt("Sound", Convert.ToInt32(IsSoundOn));
+			CuoCoreIp = PlayerPrefs.GetString(CUO_CORE_IP_KEY, CuoCoreIp);
+			CuoCorePort = PlayerPrefs.GetInt(CUE_CORE_PORT_KEY, CuoCorePort);
+			OutputsNumber = PlayerPrefs.GetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
+			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
+			var sound = PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 			IsSoundOn = Convert.ToBoolean(sound);
 		}
 		

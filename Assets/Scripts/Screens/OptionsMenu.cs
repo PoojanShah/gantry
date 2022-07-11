@@ -19,7 +19,6 @@ namespace Screens
 		public void Init()
 		{
 			_optionsSettings = new OptionsSettings();
-			_optionsSettings.Init();
 			
 			LoadValues(_optionsSettings);
 			
