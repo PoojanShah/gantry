@@ -158,7 +158,7 @@ public static class Settings
 
 	private static void LoadMediaLibrary()
 	{
-		var files = Directory.GetFiles(libraryDir, "*.*");
+		var files = Directory.GetFiles(libraryDir, Constants.AllFilesPattern);
 		var libraryTemp = new List<string>(files.Length);
 
 		libraryTemp.AddRange(from file in files

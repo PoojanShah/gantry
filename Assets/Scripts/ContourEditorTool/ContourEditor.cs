@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using VideoPlaying;
+using Core;
 
 namespace ContourEditorTool
 {
@@ -2075,7 +2076,6 @@ namespace ContourEditorTool
 					if (fileToDelete != "")
 						GUI.Window(0, Menu.windowPosition, (id) =>
 						{
-							//string[] files=Directory.GetFiles(Settings.dataPath,"*.gantry");
 							GUI.Label(
 								new Rect(0, 32, Menu.windowPosition.width - 8, Menu.windowPosition.height - 8 - 64 - 8),
 								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
@@ -2096,8 +2096,8 @@ namespace ContourEditorTool
 					else
 						GUI.Window(0, Menu.windowPosition, (id) =>
 						{
-							var files = Directory.GetFiles(Settings.dataPath, "*.gantry");
-							Debug.Log(files.Length + " files.");
+							var files = Directory.GetFiles(Settings.dataPath, Constants.GantryExtension);
+
 							scrollPosition = GUI.BeginScrollView(
 								new Rect(0, 32, Menu.windowPosition.width - 8, Menu.windowPosition.height - 8 - 64 - 8),
 								scrollPosition, new Rect(0, 0, Settings.saveWindowSize.x - 32, files.Length * 40));
