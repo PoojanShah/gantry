@@ -90,7 +90,7 @@ namespace ContourEditorTool
 				{
 					Debug.Log("Tool.OnSingleClick(" + p + ") (Vertex mode)");
 					RaycastHit hit;
-					if (!Physics.Raycast(Camera.main.ScreenPointToRay(SRSUtilities.adjustedMousePosition), out hit,
+					if (!Physics.Raycast(CameraHelper.Camera.ScreenPointToRay(SRSUtilities.adjustedMousePosition), out hit,
 						    Mathf.Infinity, 1 << LayerMask.NameToLayer("Projection")))
 					{
 						Debug.Log("Mouse didn't hit anything; deselecting.");
@@ -507,7 +507,7 @@ namespace ContourEditorTool
 			instance.lassoLine.positionCount = 2; //instance.lassoLine.SetVertexCount(2);
 			for (int i = 0; i < 2; i++)
 			{
-				lassoPoints.Add(Camera.main.ScreenToWorldPoint(p) + Camera.main.transform.forward);
+				lassoPoints.Add(CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward);
 				instance.lassoLine.SetPosition(i, lassoPoints[i]);
 			}
 		}
@@ -515,9 +515,9 @@ namespace ContourEditorTool
 		private static void AddSelectionLassoPunkt(Vector3 p)
 		{
 			if (lassoPoints.Count < 1)
-				lassoPoints.Add(Camera.main.ScreenToWorldPoint(p) +
-				                Camera.main.transform.forward); //Repeat the first one to start wit zwei.
-			lassoPoints.Add(Camera.main.ScreenToWorldPoint(p) + Camera.main.transform.forward);
+				lassoPoints.Add(CameraHelper.Camera.ScreenToWorldPoint(p) +
+				                CameraHelper.Camera.transform.forward); //Repeat the first one to start wit zwei.
+			lassoPoints.Add(CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward);
 			lines.Add(
 				(GameObject.Instantiate(instance.lassoLine.gameObject, Vector3.zero, Quaternion.identity) as GameObject)
 				.GetComponent<LineRenderer>());
@@ -531,7 +531,7 @@ namespace ContourEditorTool
 
 		private static void UpdateSelectionLasso(Vector3 p)
 		{
-			lassoPoints[lassoPoints.Count - 1] = Camera.main.ScreenToWorldPoint(p) + Camera.main.transform.forward;
+			lassoPoints[lassoPoints.Count - 1] = CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward;
 			lines.Last().SetPosition(1, lassoPoints[lassoPoints.Count - 1]);
 		}
 
@@ -559,10 +559,10 @@ namespace ContourEditorTool
 					for (int p = 0; p < lassoPoints.Count; p++)
 					{
 						if (SRSUtilities.Intersect(
-							    Camera.main.WorldToScreenPoint(vertexDots[i].transform.position),
+							    CameraHelper.Camera.WorldToScreenPoint(vertexDots[i].transform.position),
 							    Vector2.zero,
-							    Camera.main.WorldToScreenPoint(lassoPoints[p]),
-							    Camera.main.WorldToScreenPoint(lassoPoints[(p + 1) % lassoPoints.Count])
+							    CameraHelper.Camera.WorldToScreenPoint(lassoPoints[p]),
+							    CameraHelper.Camera.WorldToScreenPoint(lassoPoints[(p + 1) % lassoPoints.Count])
 						    ))
 							intersections++;
 					}
@@ -610,11 +610,11 @@ namespace ContourEditorTool
 					for (int t = 0; t < triangles.Length - 3; t++)
 						if (SRSUtilities.PointInTriangle(p.FlipY(),
 							    lassoObject.transform.InverseTransformPoint(
-								    Camera.main.WorldToScreenPoint(verts[triangles[t]])),
+								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t]])),
 							    lassoObject.transform.InverseTransformPoint(
-								    Camera.main.WorldToScreenPoint(verts[triangles[t + 1]])),
+								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t + 1]])),
 							    lassoObject.transform.InverseTransformPoint(
-								    Camera.main.WorldToScreenPoint(verts[triangles[t + 2]]))))
+								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t + 2]]))))
 							return true;
 					return false;
 				}
@@ -631,7 +631,7 @@ namespace ContourEditorTool
 				get
 				{
 					return lassoObject != null
-						? Camera.main.WorldToScreenPoint(lassoObject.transform.position).ToVector2XZ()
+						? CameraHelper.Camera.WorldToScreenPoint(lassoObject.transform.position).ToVector2XZ()
 						: rect.position;
 				}
 				set
@@ -640,7 +640,7 @@ namespace ContourEditorTool
 					if (lassoObject != null)
 					{
 						Vector3 p3d =
-							lassoObject.transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(value));
+							lassoObject.transform.InverseTransformPoint(CameraHelper.Camera.ScreenToWorldPoint(value));
 						lassoObject.transform.position = new Vector3(p3d.x, 0, p3d.z);
 					}
 					else rect.position = value;
@@ -655,7 +655,7 @@ namespace ContourEditorTool
 				{
 					Vector3[] verts = blackouts[selected].lassoObject.GetComponent<MeshFilter>().mesh.vertices;
 					for (int i = 0; i < verts.Length; i++)
-						verts[i] += Camera.main.ScreenToWorldPoint(by) - Camera.main.ScreenToWorldPoint(Vector2.zero);
+						verts[i] += CameraHelper.Camera.ScreenToWorldPoint(by) - CameraHelper.Camera.ScreenToWorldPoint(Vector2.zero);
 					blackouts[selected].lassoObject.GetComponent<MeshFilter>().mesh.vertices = verts;
 				}
 				else blackouts[selected].screenPosition += by;
@@ -1441,7 +1441,7 @@ namespace ContourEditorTool
 			Debug.Log("Projection.AddLassoPoint(" + p + ")");
 			if (lassoBlackout == null)
 				blackouts.Add(lassoBlackout = new Blackout() { farbe = c.WithAlpha(editingLassoAlpha) });
-			lassoPoints.Add(Camera.main.ScreenToWorldPoint(p) + Camera.main.transform.forward);
+			lassoPoints.Add(CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward);
 			UpdateLasso();
 			Debug.Log("Projection.AddLassoPoint(" + p + ") anschluß. lassoBlackout: " + lassoBlackout +
 			          ",lassoPoints.Count: " + lassoPoints.Count);
@@ -1457,7 +1457,7 @@ namespace ContourEditorTool
 				return;
 			}
 
-			lassoPoints[lassoPoints.Count - 1] = Camera.main.ScreenToWorldPoint(p) + Camera.main.transform.forward;
+			lassoPoints[lassoPoints.Count - 1] = CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward;
 			UpdateLasso();
 		}
 
@@ -1568,13 +1568,13 @@ namespace ContourEditorTool
 					r.width += 8;
 					r.height += 8;
 					for (int i = 0; i < vertexDots.Count; i++)
-						if (r.Contains(Camera.main.WorldToScreenPoint(vertexDots[i].transform.position)) &&
+						if (r.Contains(CameraHelper.Camera.WorldToScreenPoint(vertexDots[i].transform.position)) &&
 						    !deleted.Contains(i))
 							SelectVertex(i);
 					break;
 				case Shape.ellipse:
 					for (int i = 0; i < vertexDots.Count; i++)
-						if (r.EllipseContains(Camera.main.WorldToScreenPoint(vertexDots[i].transform.position)) &&
+						if (r.EllipseContains(CameraHelper.Camera.WorldToScreenPoint(vertexDots[i].transform.position)) &&
 						    !deleted.Contains(i))
 							SelectVertex(i);
 					break;
@@ -1780,11 +1780,11 @@ namespace ContourEditorTool
 					convergingEdgeWorld = new Vector2(rendererBounds.center.x, rendererBounds.center.z) + Vector2.up *
 						(!mirror[1]
 							? (rendererBounds.extents.z *
-							   (Input.mousePosition.y > Camera.main.WorldToScreenPoint(rendererBounds.center).y
+							   (Input.mousePosition.y > CameraHelper.Camera.WorldToScreenPoint(rendererBounds.center).y
 								   ? -1
 								   : 1))
 							: 0);
-					//convergingScreenEdge=Camera.main.WorldToScreenPoint(rendererBounds.center);
+					//convergingScreenEdge=CameraHelper.Camera.WorldToScreenPoint(rendererBounds.center);
 					convergingEdgeScreen = screenRectSnapshot.center;
 					break;
 				case ScaleMode.horizontal: //Horizontal-converging Perspective
@@ -1792,14 +1792,14 @@ namespace ContourEditorTool
 					                      Vector2.right * (!mirror[0]
 						                      ? (rendererBounds.extents.x *
 						                         (Input.mousePosition.x >
-						                          Camera.main.WorldToScreenPoint(rendererBounds.center).x
+						                          CameraHelper.Camera.WorldToScreenPoint(rendererBounds.center).x
 							                         ? -1
 							                         : 1) * 0.75f)
 						                      : 0);
-					//convergingScreenEdge=Camera.main.WorldToScreenPoint(rendererBounds.center);
+					//convergingScreenEdge=CameraHelper.Camera.WorldToScreenPoint(rendererBounds.center);
 					convergingEdgeScreen =
 						screenRectSnapshot
-							.center /*+Vector2.right*(mirror[0]?(screenRectSnapshot.size.x*0.5f*(Input.mousePosition.x>Camera.main.WorldToScreenPoint(rendererBounds.center).x?-1:1)):0)*/
+							.center /*+Vector2.right*(mirror[0]?(screenRectSnapshot.size.x*0.5f*(Input.mousePosition.x>CameraHelper.Camera.WorldToScreenPoint(rendererBounds.center).x?-1:1)):0)*/
 						;
 					break;
 				case ScaleMode.normal:
@@ -1912,9 +1912,9 @@ namespace ContourEditorTool
 			}
 
 			return SRSUtilities.RectAround(
-				Camera.main.WorldToScreenPoint(new Vector3(vertexDots.Min((vd) => vd.transform.position.x),
+				CameraHelper.Camera.WorldToScreenPoint(new Vector3(vertexDots.Min((vd) => vd.transform.position.x),
 					vertexDots.Min((vd) => vd.transform.position.y), vertexDots.Max((vd) => vd.transform.position.z))),
-				Camera.main.WorldToScreenPoint(new Vector3(vertexDots.Max((vd) => vd.transform.position.x),
+				CameraHelper.Camera.WorldToScreenPoint(new Vector3(vertexDots.Max((vd) => vd.transform.position.x),
 					vertexDots.Max((vd) => vd.transform.position.y), vertexDots.Min((vd) => vd.transform.position.z)))
 			);
 		}
@@ -2130,7 +2130,7 @@ namespace ContourEditorTool
 							GUI.DrawTexture(
 								new Rect(
 									(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
-										Mathf.Sign(Camera.main.transform.position.x)) - 1),
+										Mathf.Sign(CameraHelper.Camera.transform.position.x)) - 1),
 									i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
 									i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
 					GUI.color = Color.white;
