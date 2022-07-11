@@ -469,7 +469,6 @@ namespace ContourEditorTool
 		public GameObject vertexDotPrefab, lassoBlackoutPrefab;
 		public Texture2D ellipse, activeVertex, inactiveVertex;
 		public Texture2D[] backgrounds;
-		public GUISkin gantrySkin;
 
 		public enum ToolMode
 		{
@@ -2007,7 +2006,7 @@ namespace ContourEditorTool
 		{
 			DrawBlackouts();
 			//if (HideOldUI) return;
-			GUI.skin = gantrySkin;
+			//GUI.skin = gantrySkin;
 
 
 			if (originalColumns < minDensity)
@@ -2024,7 +2023,7 @@ namespace ContourEditorTool
 							for (int i = 0; i < densityOptions.Length; i++)
 							{
 								if (GUI.Button(new Rect(breite / 8 + (breite + breite / 8) * i, 20, breite, 64),
-									    densityOptions[i].ToString(), gantrySkin.customStyles[5]))
+									    densityOptions[i].ToString()))
 								{
 									Debug.Log("SET DENSITY OPTION TO: " + densityOptions[i]);
 									SetToolbarAvailable(true);
@@ -2079,7 +2078,7 @@ namespace ContourEditorTool
 							GUI.Label(
 								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
 								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
-								"\" configuration?", gantrySkin.customStyles[2]);
+								"\" configuration?");
 							if (GUI.Button(
 								    new Rect(8, Settings.saveWindowSize.y - 8 - 32, Settings.saveWindowSize.x * 0.5f - 16, 32),
 								    "No")) fileToDelete = "";

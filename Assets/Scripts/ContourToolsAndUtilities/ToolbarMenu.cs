@@ -17,7 +17,6 @@ public class ToolbarMenu
     }
     public int selectedCategory = 0, unfurledMenu = -1;
     public int[] selectedSubitems;
-    private GUIStyle style = null;
     //private bool unfurled=false,holdMode=false;
     //private bool holdMode=false;
     public bool unfurled { get { return unfurledMenu > -1; } }
@@ -51,7 +50,6 @@ public class ToolbarMenu
         //this.buttonSize=buttonSize>0?buttonSize:Toolbar.defaultButtonSize;
         this.buttonSize = buttonSize != default(Vector2) ? buttonSize : Toolbar.defaultButtonSize;
         this.buttonMargin = buttonMargin > 0 ? buttonMargin : Toolbar.defaultButtonMargin;
-        this.style = style ?? Toolbar.gantrySkin.button;
         this.sticky = sticky;
         selectedCategory = sticky ? 0 : -1;
         selectedSubitems = new int[items.Length];
@@ -88,7 +86,7 @@ public class ToolbarMenu
                     GUI.enabled = false;
                 }
                 if (GUI.Button(new Rect(p.x + (vertical ? buttonSize.x * j * (direction ? 1 : -1) + anfang : 0),
-                                       p.y + (!vertical ? buttonSize.y * j * (direction ? 1 : -1) + anfang : 0), buttonSize.x, buttonSize.y), items[i][j].buttonContent, style) && !unfurling)
+                                       p.y + (!vertical ? buttonSize.y * j * (direction ? 1 : -1) + anfang : 0), buttonSize.x, buttonSize.y), items[i][j].buttonContent) && !unfurling)
                 {
                     Toolbar.clickedThisFrame = true;
                     if (unfurledMenu != i) unfurledMenu = i;

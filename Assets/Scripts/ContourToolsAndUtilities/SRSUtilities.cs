@@ -20,13 +20,7 @@ public static class SRSUtilities:System.Object{
 		}
 		f();
 	}
-    private static GUISkin _darkAgesSkin;
-    private static GUISkin darkAgesSkin{
-        get{
-            if(_darkAgesSkin==null)_darkAgesSkin=Resources.Load<GUISkin>("Dark Ages");
-            return _darkAgesSkin;
-        }
-    }
+    
 //	static public IEnumerator CallInSeconds(Action f,float seconds){
 //		Debug.Log("SRSUtilities.CallInSeconds("+f.ToString()+", "+seconds+")");
 //		yield return null;//new WaitForSeconds(seconds);
@@ -44,9 +38,10 @@ public static class SRSUtilities:System.Object{
         StretchedLabel(r,text,GUI.skin.label,stretchBy);
     }
     public static float CalcStretchedFontHeight(GUIStyle style,string text,float width,float stretchedBy){
-//        float height=darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width);
-//        return height-(stretchedBy-1)*height;
-        return darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width-(stretchedBy-1)*width);
+        //        float height=darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width);
+        //        return height-(stretchedBy-1)*height;
+        //return darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width-(stretchedBy-1)*width);
+        return 10.0f;
     }
     public static void StretchedLabel(Rect r,string text,GUIStyle style,float stretchBy){
         Matrix4x4 matrixBackup=GUI.matrix;

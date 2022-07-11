@@ -15,11 +15,9 @@ public class Toolbar : Draggable2D
     private bool vertical = true;//,direction=true;//Getue
     public bool isNeedToShow;
     public InfoDisplay info;
-    public static GUISkin gantrySkin;
     private static Rect tooltipRect = new Rect(Screen.width * 0.5f - 128, Screen.height - 64, 256, 32);
     private void Awake()
     {
-        gantrySkin = Resources.Load<GUISkin>("Gantry Skin");
         info = GetComponent<InfoDisplay>();
         
         isNeedToShow = false;
@@ -66,9 +64,9 @@ public class Toolbar : Draggable2D
         //GUI.color=Color.white;
         //GUI.Box(tooltipRect,Graphics.schwarz1x1);
         tooltipRect.position = SRSUtilities.adjustedFlipped + Vector2.one * 16;
-        tooltipRect.size = gantrySkin.customStyles[4].CalcSize(new GUIContent(tip)) + new Vector2(16, 4);
+        //tooltipRect.size = gantrySkin.customStyles[4].CalcSize(new GUIContent(tip)) + new Vector2(16, 4);
         GUI.DrawTexture(tooltipRect, Graphics.schwarz1x1);
-        GUI.Label(tooltipRect, tip, gantrySkin.customStyles[4]);
+        GUI.Label(tooltipRect, tip);
     }
     //public int[] selectedCategory{
     //    get{
@@ -97,13 +95,13 @@ public class Toolbar : Draggable2D
             return;
         
         GUI.depth = -1;
-        GUI.skin = gantrySkin;
+        //GUI.skin = gantrySkin;
         GUI.color = Color.white;
         tooltip = "";
         clickedThisFrame = false;
         if (!ContourEditor.HideOldUI)
         {
-            GUI.Box(rect, "Tools", gantrySkin.window);
+            GUI.Box(rect, "Tools");
             Vector2 p = rect.position + new Vector2(menuMargin, titleBarHeight + menuMargin);
             
             if (menus.Length > 0)

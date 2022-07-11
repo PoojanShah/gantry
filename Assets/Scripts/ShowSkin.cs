@@ -5,14 +5,13 @@ using System.Collections;
 /// Helper script to show what a skin actually looks like
 /// To use, throw on a GameObject and edit your skin asset while the game is running.
 public class ShowSkin : MonoBehaviour {
-	public GUISkin skin;
 	public float elemWidth = 100, elemHeight = 30;
 	public Texture2D testIcon;
 	bool testBool;
 	int selection;
 	void OnGUI () {
 		// Assign this skin to the GUI. If it is null, the GUI will use the builtin skin
-		GUI.skin = skin;
+		//GUI.skin = skin;
 
 		// Read back which skin the GUI is actually using
 		GUISkin sk = GUI.skin;
