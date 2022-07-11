@@ -20,7 +20,7 @@ namespace Screens
 			
 			_cancelButton.onClick.AddListener(() =>
 			{
-				OptionsSettings.Save(_sound,_rotation, _outputsNumber.value, _cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
+				OptionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value, _cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
 				Destroy(gameObject);
 			});
 		}
