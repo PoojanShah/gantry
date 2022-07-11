@@ -821,7 +821,7 @@ namespace ContourEditorTool
 							() =>
 							{
 								mode = Mode.save;
-								Menu.ResetWindowPosition();
+								UIHelper.ResetWindowPosition();
 								saveAsDefault = -1;
 								SRSUtilities.guiMatrixNormalized = false;
 							},
@@ -833,7 +833,7 @@ namespace ContourEditorTool
 							() =>
 							{
 								mode = Mode.load;
-								Menu.ResetWindowPosition();
+								UIHelper.ResetWindowPosition();
 								SRSUtilities.guiMatrixNormalized = false;
 							},
 						shortcut = new KeyCode[] { KeyCode.L }
@@ -1050,7 +1050,7 @@ namespace ContourEditorTool
 		public void Restart(int screenNum = -1)
 		{
 			//Start Anew.
-			Menu.ResetWindowPosition();
+			UIHelper.ResetWindowPosition();
 			originalColumns = -1;
 			//AddUndoStep();
 		}
@@ -2017,7 +2017,7 @@ namespace ContourEditorTool
 				SRSUtilities.NormalizeGUIMatrix();
 				if (!HideOldUI)
 				{
-					GUI.Window(0, new Rect(Menu.windowPosition.position + Vector2.up * 256, Menu.windowPosition.size),
+					GUI.Window(0, new Rect(UIHelper.WindowPosition.position + Vector2.up * 256, UIHelper.WindowPosition.size),
 						(id) =>
 						{
 							float breite = 32 + 32 / Mathf.Max(Projection.DisplaysAmount, 1);
@@ -2042,7 +2042,7 @@ namespace ContourEditorTool
 			switch (mode)
 			{
 				case Mode.save:
-					GUI.Window(0, Menu.windowPosition, (id) =>
+					GUI.Window(0, UIHelper.WindowPosition, (id) =>
 					{
 						//						saveName=GUI.TextField(new Rect(8,8,Screen.width*0.5f-16,32),saveName);
 						saveName = GUI.TextField(
@@ -2074,10 +2074,10 @@ namespace ContourEditorTool
 					break;
 				case Mode.load:
 					if (fileToDelete != "")
-						GUI.Window(0, Menu.windowPosition, (id) =>
+						GUI.Window(0, UIHelper.WindowPosition, (id) =>
 						{
 							GUI.Label(
-								new Rect(0, 32, Menu.windowPosition.width - 8, Menu.windowPosition.height - 8 - 64 - 8),
+								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
 								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
 								"\" configuration?", gantrySkin.customStyles[2]);
 							if (GUI.Button(
@@ -2094,12 +2094,12 @@ namespace ContourEditorTool
 							}
 						}, "Load a Configuration");
 					else
-						GUI.Window(0, Menu.windowPosition, (id) =>
+						GUI.Window(0, UIHelper.WindowPosition, (id) =>
 						{
 							var files = Directory.GetFiles(Settings.dataPath, Constants.GantryExtension);
 
 							scrollPosition = GUI.BeginScrollView(
-								new Rect(0, 32, Menu.windowPosition.width - 8, Menu.windowPosition.height - 8 - 64 - 8),
+								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
 								scrollPosition, new Rect(0, 0, Settings.saveWindowSize.x - 32, files.Length * 40));
 							for (int i = 0; i < files.Length; i++)
 								if (GUI.Button(new Rect(8, i * 40, Settings.saveWindowSize.x - 64 - 8, 32), files[i]))
@@ -2156,7 +2156,6 @@ namespace ContourEditorTool
 			instance.gameObject.SetActive(false);
 			WipeBlackouts();
 			_projection.IsEditing = false;
-			//Menu.SetMenu();
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
 			SetToolbarAvailable(false);
 
