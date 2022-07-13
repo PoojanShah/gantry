@@ -495,6 +495,15 @@ namespace ContourEditorTool
 			}
 		}
 
+		public void SetDensity(int densityOption)
+		{
+			Debug.Log("SET DENSITY OPTION TO: " + densityOption);
+			SetToolbarAvailable(true);
+			originalColumns = columns = densityOption;
+			Reset(-1, true, true);
+			Toolbar.clickedThisFrame = true;
+		}
+		
 		private static void DrawEllipseAround(Vector2 a, Vector2 b)
 		{
 			GUI.DrawTexture(new Rect(a.x, a.y, b.x - a.x, b.y - a.y), instance.ellipse);
@@ -2016,7 +2025,8 @@ namespace ContourEditorTool
 				SRSUtilities.NormalizeGUIMatrix();
 				if (!HideOldUI)
 				{
-					GUI.Window(0, new Rect(UIHelper.WindowPosition.position + Vector2.up * 256, UIHelper.WindowPosition.size),
+					//TODO: function add to ContourEditorUI, delete it on clean fase 
+					/*GUI.Window(0, new Rect(UIHelper.WindowPosition.position + Vector2.up * 256, UIHelper.WindowPosition.size),
 						(id) =>
 						{
 							float breite = 32 + 32 / Mathf.Max(Projection.DisplaysAmount, 1);
@@ -2032,7 +2042,7 @@ namespace ContourEditorTool
 									Toolbar.clickedThisFrame = true;
 								}
 							}
-						}, "Choose Screen Density");
+						}, "Choose Screen Density");*/
 				}
 
 				return;
