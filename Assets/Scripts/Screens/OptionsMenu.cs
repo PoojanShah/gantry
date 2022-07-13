@@ -22,8 +22,12 @@ namespace Screens
 			
 			_exitButton.onClick.AddListener(() =>
 			{
-				_optionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value,
-					_cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
+				_optionsSettings.Save(_sound.isOn,
+					_rotation.isOn,
+					_outputsNumber.value,
+					_cuoCoreIp.text,
+					Convert.ToInt32(_cuoCorePort.text));
+				
 				Destroy(gameObject);
 			});
 		}
