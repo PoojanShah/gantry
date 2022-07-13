@@ -1,18 +1,17 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Screens
 {
 	public class OptionsMenu : MonoBehaviour
 	{
-		[SerializeField] private Button _cancelButton;
-		[SerializeField] private Toggle _sound;
-		[SerializeField] private Toggle _rotation;
+		[SerializeField] private Button _exitButton;
+		[SerializeField] private Toggle _sound,_rotation;
 		[SerializeField] private TMP_Dropdown _outputsNumber;
-		[SerializeField] private TMP_InputField _cuoCoreIp;
-		[SerializeField] private TMP_InputField _cuoCorePort;
+		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort;
 
 		private OptionsSettings _optionsSettings;
 		
@@ -22,9 +21,10 @@ namespace Screens
 			
 			LoadValues(_optionsSettings);
 			
-			_cancelButton.onClick.AddListener(() =>
+			_exitButton.onClick.AddListener(() =>
 			{
-				_optionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value, _cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
+				_optionsSettings.Save(_sound.isOn,_rotation.isOn, _outputsNumber.value,
+					_cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
 				Destroy(gameObject);
 			});
 		}
