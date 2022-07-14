@@ -146,9 +146,9 @@ namespace Screens
 
 		private void PlayVideo(MediaContent content)
 		{
-			_playAction?.Invoke(content);
-
 			Object.Destroy(_currentScreen);
+
+			_playAction?.Invoke(content);
 		}
 
 		private void OpenPatternsEditor()

@@ -31,7 +31,7 @@ namespace VideoPlaying
 			if (!_projection.IsPlaying)
 				return;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
 			if(!Input.GetKeyDown(KeyCode.Escape))
 				return;
 #elif UNITY_ANDROID
