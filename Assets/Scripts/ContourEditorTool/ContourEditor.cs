@@ -2158,20 +2158,15 @@ namespace ContourEditorTool
 
 		private static void SaveConfiguration(string fileName)
 		{
-			Debug.Log("Projection.SaveConfiguration(" + fileName + ")");
-			if (!Directory.Exists(Application.dataPath)) 
-				Directory.CreateDirectory(Application.dataPath);
-
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
-			if (!fileName.StartsWith(Settings.dataPath + "/")) 
-				fileName = Settings.dataPath + "/" + fileName;
+			var path = Settings.gantryPatternsPath + fileName;
 
 			BinaryWriter bw;
 			try
 			{
-				bw = new BinaryWriter(new FileStream(fileName, FileMode.OpenOrCreate));
+				bw = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate));
 			}
 			catch (IOException e)
 			{
