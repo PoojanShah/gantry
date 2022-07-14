@@ -18,6 +18,7 @@ namespace Core
 			WomanHash = "Woman",
 			ExtensionMeta = ".meta",
 			GantryExtension = ".gantry",
+			GantrySearchPattern = "*.gantry",
 			AllFilesPattern = "*.*";
 
 		public const float ScrollbarDefaultValue = 1.0f;

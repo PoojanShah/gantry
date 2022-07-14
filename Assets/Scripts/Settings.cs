@@ -34,7 +34,11 @@ public static class Settings
 	public static float volume = 1.0f;
 	public static string dataPath = Directory.GetParent(Application.dataPath).ToString();
 
-
+#if UNITY_EDITOR
+	public static string gantryPatternsPath = dataPath + "/Build/meshes/";
+#elif UNITY_STANDALONE_WIN
+	public static string gantryPatternsPath = dataPath + "/meshes/";
+#endif
 	public static string colorsConfigPath = dataPath + "/moviecolors.cfg";
 
 	public enum MonitorMode

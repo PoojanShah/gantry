@@ -1981,7 +1981,7 @@ namespace ContourEditorTool
 		private static string saveName = "";
 
 		Vector2 scrollPosition = Vector2.zero;
-		private static string fileToDelete = "";
+		private static string fileToDelete = string.Empty;
 #if UNITY_EDITOR
 		private static string backupDir = "../bkp";
 #else
@@ -2069,7 +2069,7 @@ namespace ContourEditorTool
 					}, "Choose Save Name");
 					break;
 				case Mode.load:
-					if (fileToDelete != "")
+					if (!string.IsNullOrEmpty(fileToDelete))
 						GUI.Window(0, UIHelper.WindowPosition, (id) =>
 						{
 							GUI.Label(
@@ -2092,7 +2092,7 @@ namespace ContourEditorTool
 					else
 						GUI.Window(0, UIHelper.WindowPosition, (id) =>
 						{
-							var files = Directory.GetFiles(Settings.dataPath, Constants.GantryExtension);
+							var files = Directory.GetFiles(Settings.gantryPatternsPath, Constants.GantrySearchPattern);
 
 							scrollPosition = GUI.BeginScrollView(
 								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
@@ -2159,15 +2159,14 @@ namespace ContourEditorTool
 		private static void SaveConfiguration(string fileName)
 		{
 			Debug.Log("Projection.SaveConfiguration(" + fileName + ")");
-			if (!Directory.Exists(Application.dataPath)) Directory.CreateDirectory(Application.dataPath);
-			if (!Directory.Exists(Application.dataPath))
-			{
-				Debug.LogError("Failed to create directory: " + Application.dataPath);
-				return;
-			}
+			if (!Directory.Exists(Application.dataPath)) 
+				Directory.CreateDirectory(Application.dataPath);
 
-			if (!fileName.EndsWith(".gantry")) fileName += ".gantry";
-			if (!fileName.StartsWith(Settings.dataPath + "/")) fileName = Settings.dataPath + "/" + fileName;
+			if (!fileName.EndsWith(Constants.GantryExtension)) 
+				fileName += Constants.GantryExtension;
+
+			if (!fileName.StartsWith(Settings.dataPath + "/")) 
+				fileName = Settings.dataPath + "/" + fileName;
 
 			BinaryWriter bw;
 			try
