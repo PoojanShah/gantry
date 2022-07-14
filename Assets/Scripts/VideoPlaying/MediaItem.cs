@@ -1,4 +1,5 @@
 using System;
+using Media;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,12 +11,12 @@ namespace VideoPlaying
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Button _button;
 
-		private int _id;
-		private Action<int> _onClick;
+		private MediaContent _content;
+		private Action<MediaContent> _onClick;
 
-		public void Init(int id, Action<int> onClickAction, string videoTitle)
+		public void Init(MediaContent content, Action<MediaContent> onClickAction, string videoTitle)
 		{
-			_id = id;
+			_content = content;
 			_onClick = onClickAction;
 
 			_title.text = videoTitle;
@@ -25,7 +26,7 @@ namespace VideoPlaying
 
 		private void ItemClicked()
 		{
-			_onClick?.Invoke(_id);
+			_onClick?.Invoke(_content);
 
 			_button.onClick.RemoveAllListeners();
 

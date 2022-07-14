@@ -4,6 +4,7 @@ using Common;
 using Configs;
 using Core;
 using Library;
+using Media;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -13,21 +14,23 @@ namespace Screens
 	{
 		private const byte QTS_POPUP_ID = 2;
 		private readonly Action<Action> _openEditorAction;
-		private readonly Action<int> _playAction;
+		private readonly Action<MediaContent> _playAction;
 		private readonly Transform _canvasTransform;
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
+		private readonly MediaContent[] _media;
 
 		private GameObject _currentScreen;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
-			Action<int> playAction, Action<Action> openEditorAction)
+			Action<MediaContent> playAction, Action<Action> openEditorAction, MediaContent[] media)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
 			_canvasTransform = canvasTransform;
 			_playAction = playAction;
 			_openEditorAction = openEditorAction;
+			_media = media;
 
 			OpenWindow(ScreenType.MainMenu);
 		}
@@ -88,8 +91,8 @@ namespace Screens
 		private void InitMainMenu(GameObject screen)
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaConfig, _factory);
+			mainMenu.Init(_media, PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaItemPrefab, _factory);
 		}
 		
 		private void InitAdminMenu(GameObject screen)
@@ -141,9 +144,9 @@ namespace Screens
 			}, type);
 		}
 
-		private void PlayVideo(int videoId)
+		private void PlayVideo(MediaContent content)
 		{
-			_playAction?.Invoke(videoId);
+			_playAction?.Invoke(content);
 
 			Object.Destroy(_currentScreen);
 		}

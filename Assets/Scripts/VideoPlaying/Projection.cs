@@ -42,8 +42,6 @@ namespace VideoPlaying
 		[SerializeField] private VideoPlayerScreen[] _screens;
 		[SerializeField] private Renderer _renderer;
 
-		private MediaConfig _mediaConfig;
-
 		public bool IsEditing
 		{
 			get => _contourEditor != null && _contourEditor.enabled;
@@ -82,10 +80,8 @@ namespace VideoPlaying
 
 		public bool IsPlaying => gameObject.activeSelf && !IsEditing;
 
-		public void Init(MediaConfig config)
+		public void Init()
 		{
-			_mediaConfig = config;
-
 			GetComponent<MeshFilter>().mesh.Clear();
 
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
@@ -123,13 +119,11 @@ namespace VideoPlaying
 		public bool IsScreenPlaying(VideoPlayerScreen playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
-		public void StartMovie(int mediaId = -1, int screenNum = 0, bool testMovie = false)
+		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
 		{
-			var clip = _mediaConfig.MediaFiles[mediaId];
-
-			if (mediaId > -1)
-				CameraHelper.SetBackgroundColor(Constants.colorDefaults
-					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
+			//if (mediaId > -1)
+			//	CameraHelper.SetBackgroundColor(Constants.colorDefaults
+			//		.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
 
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
@@ -137,7 +131,7 @@ namespace VideoPlaying
 			gameObject.SetActive(true);
 
 			StopCoroutine("LoadAndPlayExternalResource");
-			StartCoroutine(LoadAndPlayExternalResource(clip, screenNum));
+			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, screenNum));
 			GetComponent<Toolbar>().enabled = GetComponent<InfoDisplay>().enabled = false;
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}

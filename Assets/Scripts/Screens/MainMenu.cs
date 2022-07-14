@@ -1,8 +1,10 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Configs;
 using Core;
+using Media;
 using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
@@ -17,12 +19,12 @@ namespace Screens
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_Text _currentPatternTitle, _debug;
 
-		public void Init(Action<int> playVideoAction, Action onSettingAction, Action onQuitAction, MediaConfig media, ICommonFactory factory)
+		public void Init(MediaContent[] media, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			InitMediaItems(media, factory, playVideoAction);
+			InitMediaItems(media, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
 
@@ -41,12 +43,13 @@ namespace Screens
 			_currentPatternTitle.text = QTS_PATTERN_TITLE + title;
 		}
 
-		private void InitMediaItems(MediaConfig config, ICommonFactory commonFactory, Action<int> playVideoAction)
+		private void InitMediaItems(IReadOnlyList<MediaContent> media, ICommonFactory commonFactory,
+			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
-			for (var i = 0; i < config.MediaFiles.Length; i++)
+			for (var i = 0; i < media.Count; i++)
 			{
-				var videoItem = commonFactory.InstantiateObject<MediaItem>(config.MediaItemPrefab, _parent);
-				videoItem.Init(i, playVideoAction, config.MediaFiles[i].Name);
+				var videoItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
+				videoItem.Init(media[i], playVideoAction, media[i].Name);
 			}
 		}
 	}

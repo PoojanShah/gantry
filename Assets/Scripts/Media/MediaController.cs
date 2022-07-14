@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Configs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Video;
@@ -14,22 +13,33 @@ namespace Media
 
 		private const bool IsLocalStorage = true;
 		private const string UrlLocal = "http://192.168.1.114/GantryMedia/Videos/";
+		public MediaContent[] MediaFiles { get; private set; }
 
-		private string GetMediaPath()
+		public MediaController()
 		{
-			return Directory.GetParent(Application.dataPath) + "/Media/";
+			LoadMediaFromLocalStorage();
 		}
 
-		public MediaController(MediaConfig config)
+		public void InitMediaContent(string[] paths)
 		{
-			LoadMediaInfoFromLocalStorage(config);
+			MediaFiles = new MediaContent[paths.Length];
+
+			for (var i = 0; i < paths.Length; i++)
+			{
+				MediaFiles[i] = new MediaContent
+				{
+					Path = paths[i],
+					Name = Path.GetFileNameWithoutExtension(paths[i]),
+					IsVideo = Path.GetExtension(paths[i]) == ".mp4"
+				};
+			}
 		}
 
-		private void LoadMediaInfoFromLocalStorage(MediaConfig mediaConfig)
+		private void LoadMediaFromLocalStorage()
 		{
 			var files = Directory.GetFiles(UrlUnity);
 
-			mediaConfig.InitMediaContent(files);
+			InitMediaContent(files);
 		}
 
 		private async Task<byte[]> LoadVideo(string path)
@@ -42,5 +52,7 @@ namespace Media
 
 			return www.downloadHandler.data;
 		}
+
+		private string GetMediaPath() => Directory.GetParent(Application.dataPath) + "/Media/";
 	}
 }

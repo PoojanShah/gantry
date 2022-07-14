@@ -24,11 +24,12 @@ namespace Common
 			CameraHelper.Init();
 
 			_factory = new CommonFactory();
+			_mediaController = new MediaController();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
-				_mainConfig.MediaConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
+				() => _screensManager.OpenWindow(ScreenType.MainMenu));
 			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
-			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _contourEditorController.Show);
-			_mediaController = new MediaController(_mainConfig.MediaConfig);
+			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
+				_contourEditorController.Show, _mediaController.MediaFiles);
 
 			InitSettings();
 		}
