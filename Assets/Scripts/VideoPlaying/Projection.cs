@@ -121,9 +121,9 @@ namespace VideoPlaying
 
 		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
 		{
-			//if (mediaId > -1)
-			//	CameraHelper.SetBackgroundColor(Constants.colorDefaults
-			//		.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
+			CameraHelper.SetBackgroundColor(Constants.colorDefaults
+				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[int.Parse(mediaToPlay.Name)]])
+				.Value);
 
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
@@ -196,21 +196,16 @@ namespace VideoPlaying
 
 						if (content.IsVideo)
 						{
-							//movie
 							var player = _screens[i].Player;
-							if (content.Content != null)
-								player.clip = (VideoClip)content.Content;
-							else
-								player.url = content.Path;
-
+							player.url = content.Path;
 							player.isLooping = true;
 							player.Play();
-							Debug.Log(Settings.videoColor.ContainsKey(content.Name));
 						}
 						else
 						{
-							Debug.Log("Photo");
-							//_screens[i].SetTexture(content as Texture);
+							var loadImageFromFile = MediaController.LoadImageFromFile(content.Path);
+							_screens[i].Player.Stop();
+							_screens[i].SetTexture(loadImageFromFile);
 						}
 					}
 

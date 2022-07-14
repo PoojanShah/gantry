@@ -23,6 +23,8 @@ namespace Core
 		public const float ScrollbarDefaultValue = 1.0f;
 
 		public static KeyValuePair<string, Color32>[] colorDefaults = {
+			new("white",new Color32(255,255,255,255)),
+			new("black",new Color32(0,0,0,255)),
 			new("maroon",new Color32(128,0,0,255)),
 			new("firebrick",new Color32(178,34,34,255)),
 			new("crimson",new Color32(220,20,60,255)),

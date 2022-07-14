@@ -35,6 +35,16 @@ namespace Media
 			}
 		}
 
+		public static Texture2D LoadImageFromFile(string path)
+		{
+			var bytes = File.ReadAllBytes(path);
+
+			var texture = new Texture2D(2, 2);
+			texture.LoadImage(bytes);
+
+			return texture;
+		}
+
 		private void LoadMediaFromLocalStorage()
 		{
 			var files = Directory.GetFiles(UrlUnity);
