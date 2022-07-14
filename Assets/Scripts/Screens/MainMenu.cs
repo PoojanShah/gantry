@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Configs;
 using Core;
 using Media;
 using TMPro;
@@ -28,7 +27,7 @@ namespace Screens
 
 			InitCurrentConfigTitle();
 
-			_debug.text = Directory.GetParent(Application.dataPath).ToString();
+			_debug.text = Settings.dataPath;
 		}
 
 		private void InitCurrentConfigTitle()
@@ -43,13 +42,13 @@ namespace Screens
 			_currentPatternTitle.text = QTS_PATTERN_TITLE + title;
 		}
 
-		private void InitMediaItems(IReadOnlyList<MediaContent> media, ICommonFactory commonFactory,
+		private void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
 			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
-			for (var i = 0; i < media.Count; i++)
+			foreach (var mediaFile in media)
 			{
 				var videoItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
-				videoItem.Init(media[i], playVideoAction, media[i].Name);
+				videoItem.Init(mediaFile, playVideoAction, mediaFile.Name);
 			}
 		}
 	}

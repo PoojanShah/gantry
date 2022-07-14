@@ -9,10 +9,12 @@ namespace Media
 {
 	public class MediaController
 	{
-		public const string UrlUnity = "G:/GantryMedia/";
+#if UNITY_EDITOR
+		public static readonly string LibraryPath = Settings.dataPath + "/Build/GantryMedia/";
+#elif UNITY_STANDALONE_WIN
+		public static readonly string LibraryPath = Settings.dataPath + "/GantryMedia/";
+#endif
 
-		private const bool IsLocalStorage = true;
-		private const string UrlLocal = "http://192.168.1.114/GantryMedia/Videos/";
 		public MediaContent[] MediaFiles { get; private set; }
 
 		public MediaController()
@@ -47,22 +49,9 @@ namespace Media
 
 		private void LoadMediaFromLocalStorage()
 		{
-			var files = Directory.GetFiles(UrlUnity);
+			var files = Directory.GetFiles(LibraryPath);
 
 			InitMediaContent(files);
 		}
-
-		private async Task<byte[]> LoadVideo(string path)
-		{
-			var www = UnityWebRequest.Get(path);
-			www.SendWebRequest();
-
-			while (!www.isDone)
-				await Task.Delay(1);
-
-			return www.downloadHandler.data;
-		}
-
-		private string GetMediaPath() => Directory.GetParent(Application.dataPath) + "/Media/";
 	}
 }

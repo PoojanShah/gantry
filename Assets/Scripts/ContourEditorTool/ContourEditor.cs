@@ -701,10 +701,6 @@ namespace ContourEditorTool
 
 			instance = this;
 
-			Debug.Log("Projection.Awake(); columns: " + columns + ",Settings.dataPath: " + Settings.dataPath +
-			          ",Application.persistentDataPath: " + Application.persistentDataPath);
-			//projection=GetComponent<Projection>();
-			//saveFile=Settings.dataPath+"/save.gantry";
 			GetComponent<MeshFilter>().mesh.Clear();
 			GetComponent<InfoDisplay>().rect.x = Screen.width - GetComponent<InfoDisplay>().rect.width;
 			scaling = false;
@@ -2139,14 +2135,6 @@ namespace ContourEditorTool
 
 					break;
 			}
-		}
-
-		private static IEnumerator LoadImage()
-		{
-			WWW www = new WWW(Settings.testBackground);
-			yield return www;
-			instance.GetComponent<Renderer>().material.mainTexture = www.texture;
-			background = instance.backgrounds.Length;
 		}
 
 		private void SaveAndQuitToMenu()

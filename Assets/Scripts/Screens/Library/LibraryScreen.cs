@@ -115,7 +115,7 @@ namespace Library
 		{
 			try
 			{
-				var sw = new StreamWriter(Settings.movieColorFile);
+				var sw = new StreamWriter(Settings.colorsConfigPath);
 
 				foreach (var kvp in Settings.videoColor)
 					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
@@ -124,7 +124,7 @@ namespace Library
 			}
 			catch (Exception e)
 			{
-				Debug.LogError("Error writing file " + Settings.movieColorFile + Core.Constants.Colon + e);
+				Debug.LogError("Error writing file " + Settings.colorsConfigPath + Core.Constants.Colon + e);
 			}
 
 			_quitButtonAction?.Invoke();

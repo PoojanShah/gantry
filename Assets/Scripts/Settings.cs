@@ -19,62 +19,23 @@ public static class Settings
 
 	public static int initialScreenWidth;
 
-
-	public static string heartbeatServerAddress = "www.dtimotions.com/checkin.php",
-		clientLogin = "",
-		dlServeraddress = "http://www.dtimotions.com",
-
-#if UNITY_EDITOR
-		appDir = ".",
-		binaryFile = "Motions-Linux.x86_64",
-#elif UNITY_STANDALONE_LINUX
-        appDir = "/home/motions/app",
-        binaryFile = "Motions-Linux.x86_64",
-#else
-        appDir = ".",
-        binaryFile = "Motions-Win64.exe",
-#endif
-		binaryPath = appDir + SRSUtilities.slashChar + binaryFile,
-		newBinaryURL = "http://www.sauerburger.org/dti/" + binaryFile;
-
 	public static string[] mediaLibrary;
 
-	public static float updatePeriod = 60, dongleCheckInterval = 30; //*60*1;//Check the server every minute or hour.
-	public static int allowConnectionAttempts = 2; //24;
 	public static Dictionary<string, string> videoColor = new Dictionary<string, string>();
 	public static string cuecoreIP = "192.168.1.10";
 	public static int cuecorePort = 7000;
 
 
-	public static bool
-		serverCheck = true,
-		useCueCore =
-			false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
+	public static bool serverCheck = true, useCueCore = false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
 
 	public static bool sound = true;
 	public static bool _persist = true;
 	public static bool rotation = true;
 	public static float volume = 1.0f;
-	public static string dataPath = Application.dataPath + "/Videos/";
+	public static string dataPath = Directory.GetParent(Application.dataPath).ToString();
 
-#if UNITY_EDITOR
-	public static string configFile = "motions.cfg",
-		commandFile = "cmd",
-		libraryDir = MediaController.UrlUnity,
-		patientDir = "patient",
-		thumbsDir = "Thumbs",
-		testBackground = "file://Test.jpg",
-		movieColorFile = "moviecolors.cfg";
-#elif UNITY_STANDALONE_LINUX
-  public static string unlockFile = "/etc/motions/unlocked.cfg",configFile = "/etc/motions/motions.cfg",commandFile =
- "/var/www/run/motions.cmd",libraryDir = "/usr/share/motions/Movies",patientDir =
- "/var/www/html/images/patient",thumbsDir = "/var/www/html/images/thumbs",appDir = "/home/motions/app",testBackground =
- "file://"+appDir+"/Test.jpg",movieColorFile = "/etc/motions/moviecolors.cfg";
-#else
-  public static string unlockFile = "C:\\motions\\unlocked.cfg",configFile = "C:\\motions\\motions.cfg",commandFile =
- "C:\\motions\\cmd",libraryDir = "Movies",patientDir = "patient",thumbsDir = "Thumbs",testBackground =
- "file:///Test.jpg",movieColorFile = "C:\\motions\\moviecolors.cfg";
-#endif
+
+	public static string colorsConfigPath = dataPath + "/moviecolors.cfg";
 
 	public enum MonitorMode
 	{
@@ -82,15 +43,7 @@ public static class Settings
 		Dual
 	};
 
-	public enum ScreenMode
-	{
-		gantry = 0,
-		wall,
-		gantrywall
-	};
-
 	public static float originalScaleX = (float)Screen.width / (float)Screen.height;
-
 
 	public static int version
 	{
@@ -99,10 +52,6 @@ public static class Settings
 	}
 
 	public static MonitorMode monitorMode { get; set; } = MonitorMode.Single;
-
-	public static ScreenMode screenMode { get; set; }
-	public static void NormalizeGUIMatrix() => SRSUtilities.NormalizeGUIMatrix();
-
 
 	public static void ShowCursor(bool isShow = true)
 	{
@@ -131,12 +80,12 @@ public static class Settings
 		volume = PlayerPrefs.GetFloat(QTS_VOLUME_HASH, volume);
 	}
 
-	public static void LoadLibraryAndCategories()
+	public static void LoadLibrary()
 	{
 		LoadMediaLibrary();
 
-		if (File.Exists(movieColorFile))
-			videoColor = LoadMovieColors(movieColorFile);
+		if (File.Exists(colorsConfigPath))
+			videoColor = LoadMovieColors(colorsConfigPath);
 
 		for (var i = 0; i < mediaLibrary.Length; i++)
 			if (!videoColor.ContainsKey(mediaLibrary[i]))
@@ -147,7 +96,7 @@ public static class Settings
 
 	private static void LoadMediaLibrary()
 	{
-		var files = Directory.GetFiles(libraryDir, Constants.AllFilesPattern);
+		var files = Directory.GetFiles(MediaController.LibraryPath, Constants.AllFilesPattern);
 		var libraryTemp = new List<string>(files.Length);
 
 		libraryTemp.AddRange(from file in files

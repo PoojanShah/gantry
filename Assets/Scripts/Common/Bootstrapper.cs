@@ -36,9 +36,8 @@ namespace Common
 
 		private static void InitSettings()
 		{
-			Settings.appDir = Application.persistentDataPath;
 			Settings.Load();
-			Settings.LoadLibraryAndCategories();
+			Settings.LoadLibrary();
 			Settings.initialScreenWidth = Screen.currentResolution.width;
 		}
 	}
