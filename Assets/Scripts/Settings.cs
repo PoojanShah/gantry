@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Core;
+using Media;
 
 public static class Settings
 {
@@ -59,7 +60,7 @@ public static class Settings
 #if UNITY_EDITOR
 	public static string configFile = "motions.cfg",
 		commandFile = "cmd",
-		libraryDir = Application.dataPath + "/Videos/",
+		libraryDir = MediaController.UrlUnity,
 		patientDir = "patient",
 		thumbsDir = "Thumbs",
 		testBackground = "file://Test.jpg",

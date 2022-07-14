@@ -1,6 +1,6 @@
+using System.IO;
+using Media;
 using UnityEngine;
-using UnityEngine.Video;
-using Object = UnityEngine.Object;
 
 namespace Configs
 {
@@ -8,8 +8,22 @@ namespace Configs
 	public class MediaConfig : ScriptableObject
 	{
 		public GameObject MediaItemPrefab;
-		public Object[] MediaFiles;
 
-		public VideoClip GetFirstClip() => MediaFiles[0] as VideoClip;
+		public MediaContent[] MediaFiles { get; private set; }
+
+		public void InitMediaContent(string[] paths)
+		{
+			MediaFiles = new MediaContent[paths.Length];
+
+			for (var i = 0; i < paths.Length; i++)
+			{
+				MediaFiles[i] = new MediaContent
+				{
+					Path = paths[i], 
+					Name = Path.GetFileNameWithoutExtension(paths[i]),
+					IsVideo = Path.GetExtension(paths[i]) == ".mp4"
+				};
+			}
+		}
 	}
 }

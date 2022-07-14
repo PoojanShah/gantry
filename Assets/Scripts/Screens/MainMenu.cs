@@ -15,7 +15,7 @@ namespace Screens
 
 		[SerializeField] private Button _settingButton, _exitButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle;
+		[SerializeField] private TMP_Text _currentPatternTitle, _debug;
 
 		public void Init(Action<int> playVideoAction, Action onSettingAction, Action onQuitAction, MediaConfig media, ICommonFactory factory)
 		{
@@ -25,6 +25,8 @@ namespace Screens
 			InitMediaItems(media, factory, playVideoAction);
 
 			InitCurrentConfigTitle();
+
+			_debug.text = Directory.GetParent(Application.dataPath).ToString();
 		}
 
 		private void InitCurrentConfigTitle()
@@ -44,7 +46,7 @@ namespace Screens
 			for (var i = 0; i < config.MediaFiles.Length; i++)
 			{
 				var videoItem = commonFactory.InstantiateObject<MediaItem>(config.MediaItemPrefab, _parent);
-				videoItem.Init(i, playVideoAction, config.MediaFiles[i].name);
+				videoItem.Init(i, playVideoAction, config.MediaFiles[i].Name);
 			}
 		}
 	}

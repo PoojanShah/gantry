@@ -12,16 +12,10 @@ namespace Screens
 		[SerializeField] private Button _libraryButton;
 		[SerializeField] private Button _exitButton;
 
-		public void Init(Action<int> onPlayAction, Action onEditMapAction, Action onOptionAction, Action onLibraryAction,
+		public void Init(Action onEditMapAction, Action onOptionAction, Action onLibraryAction,
 			Action onExitAction)
 		{
-			_playButton.onClick.AddListener(() =>
-			{
-				onPlayAction?.Invoke(0);
-
-				Destroy(gameObject);
-			});
-
+			_playButton.onClick.AddListener(() => onExitAction?.Invoke());
 			_editMapButton.onClick.AddListener(() => { onEditMapAction?.Invoke(); });
 			_optionButton.onClick.AddListener(() => { onOptionAction?.Invoke(); });
 			_libraryButton.onClick.AddListener(() => { onLibraryAction?.Invoke(); });

@@ -6,6 +6,7 @@ using System.Linq;
 using Configs;
 using ContourEditorTool;
 using Core;
+using Media;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
 
@@ -124,13 +125,12 @@ namespace VideoPlaying
 
 		public void StartMovie(int mediaId = -1, int screenNum = 0, bool testMovie = false)
 		{
-			var clip = mediaId > -1? _mediaConfig.MediaFiles[mediaId] : _mediaConfig.GetFirstClip();
+			var clip = _mediaConfig.MediaFiles[mediaId];
 
 			if (mediaId > -1)
 				CameraHelper.SetBackgroundColor(Constants.colorDefaults
 					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
 
-			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
 			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * 5);
@@ -142,14 +142,13 @@ namespace VideoPlaying
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}
 
-		private IEnumerator LoadAndPlayExternalResource(Object mediaFile, int screenNum = 0, int slide = -1)
+		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0, int slide = -1)
 		{
-			var isVideo = mediaFile is VideoClip;
 			//Slide of -1 is a movie; resourceName is the ogg file name if movie, patient folder name if slide.
 			//stopSlides=true;//slide<0;//Clever reliance on the fact that an existing loop will finish in less time than this one, unless they happened to click this on the exact frame of it in which case it'll be equal.
 			int thisLoop = ++currentSlideLoop;
 			string[] slides = null, extensions = { "ogg", "jpg", "png", "" };
-			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + mediaFile.name + "\"," + screenNum + "," + slide + ");");
+			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + content.Name + "\"," + screenNum + "," + slide + ");");
 			gameObject.SetActive(true);
 			enabled = false;
 			_renderer.enabled = false;
@@ -162,9 +161,9 @@ namespace VideoPlaying
 
 			if (Settings.useCueCore)
 				SRSUtilities.TCPMessage(
-					((Settings.videoColor.ContainsKey(mediaFile.name) &&
-					  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name])
-						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
+					((Settings.videoColor.ContainsKey(content.Name) &&
+					  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[content.Name])
+						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[content.Name])
 						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					Settings.cuecoreIP, Settings.cuecorePort);
 
@@ -181,7 +180,7 @@ namespace VideoPlaying
 					if (i == screenNum || screenNum >= DisplaysAmount)
 					{
 						//{Debug.Log("___ i: "+i+", displayId: "+displayId+", DisplaysAmount: "+DisplaysAmount+", (i==displayId||displayId>=DisplaysAmount): "+(i==displayId||displayId>=DisplaysAmount)+", (i==displayId): "+(i==displayId)+", (displayId>=DisplaysAmount): "+(displayId>=DisplaysAmount));
-						Debug.Log("--Playing \"" + mediaFile.name + "\" on screen " + i + ". (displayId: " + screenNum +
+						Debug.Log("--Playing \"" + content.Name + "\" on screen " + i + ". (displayId: " + screenNum +
 								  "), DisplaysAmount: " + DisplaysAmount);
 						_screens[i].SetActive(true);
 						if (IsScreenPlayingById(i)) StopMovie(i);
@@ -201,19 +200,23 @@ namespace VideoPlaying
 								_contourEditor.Reset(i);
 						}
 
-						if (isVideo)
+						if (content.IsVideo)
 						{
 							//movie
 							var player = _screens[i].Player;
-							player.clip = (VideoClip)mediaFile;
+							if (content.Content != null)
+								player.clip = (VideoClip)content.Content;
+							else
+								player.url = content.Path;
+
 							player.isLooping = true;
 							player.Play();
-							Debug.Log(Settings.videoColor.ContainsKey(mediaFile.name));
+							Debug.Log(Settings.videoColor.ContainsKey(content.Name));
 						}
 						else
 						{
 							Debug.Log("Photo");
-							_screens[i].SetTexture(mediaFile as Texture);
+							//_screens[i].SetTexture(content as Texture);
 						}
 					}
 

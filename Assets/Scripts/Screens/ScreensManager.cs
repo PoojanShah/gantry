@@ -95,8 +95,7 @@ namespace Screens
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
-			adminMenu.Init(PlayVideo, 
-				OpenPatternsEditor, 
+			adminMenu.Init(OpenPatternsEditor, 
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
 				() => OpenWindow(ScreenType.LibraryMenu),
 				() => OpenWindow(ScreenType.MainMenu));

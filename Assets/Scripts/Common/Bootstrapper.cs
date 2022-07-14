@@ -1,6 +1,7 @@
 using Configs;
 using ContourEditorTool;
 using Core;
+using Media;
 using Screens;
 using UnityEngine;
 using VideoPlaying;
@@ -16,6 +17,7 @@ namespace Common
 		private ScreensManager _screensManager;
 		private ProjectionController _projectionController;
 		private ContourEditorController _contourEditorController;
+		private MediaController _mediaController;
 		
 		private void Awake()
 		{
@@ -26,6 +28,7 @@ namespace Common
 				_mainConfig.MediaConfig, () => _screensManager.OpenWindow(ScreenType.MainMenu));
 			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play, _contourEditorController.Show);
+			_mediaController = new MediaController(_mainConfig.MediaConfig);
 
 			InitSettings();
 		}
