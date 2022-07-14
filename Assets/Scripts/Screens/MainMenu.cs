@@ -16,7 +16,7 @@ namespace Screens
 
 		[SerializeField] private Button _settingButton, _exitButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle, _debug;
+		[SerializeField] private TMP_Text _currentPatternTitle;
 
 		public void Init(MediaContent[] media, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
@@ -26,8 +26,6 @@ namespace Screens
 			InitMediaItems(media, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
-
-			_debug.text = Settings.dataPath;
 		}
 
 		private void InitCurrentConfigTitle()
