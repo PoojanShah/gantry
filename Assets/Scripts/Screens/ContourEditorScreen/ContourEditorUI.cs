@@ -11,7 +11,7 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private DensityButton[] _densityButtons;
 		[SerializeField] private GameObject _setDensityPanel;
 		[Header("Toolbar")]
-		[SerializeField] private int a;
+		[SerializeField] private ToolButton test;
 		
 		private void Start()
 		{
@@ -24,6 +24,12 @@ namespace Screens.ContourEditorScreen
 					_setDensityPanel.SetActive(false);
 				});
 			}
+			
+			test.Button.onClick.AddListener(() =>
+			{
+				ContourEditor.instance.toolbar.menus[1].SelectItemFromUI((int) test.number.x, (int) test.number.y);
+				ContourEditor.instance.MouseUp();
+			});
 		}
 		
 	}
@@ -32,6 +38,13 @@ namespace Screens.ContourEditorScreen
 	public struct DensityButton
 	{
 		public int Density;
+		public Button Button;
+	}
+
+	[Serializable]
+	public struct ToolButton
+	{
+		public Vector2 number;
 		public Button Button;
 	}
 }

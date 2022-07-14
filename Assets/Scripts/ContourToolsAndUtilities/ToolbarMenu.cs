@@ -103,6 +103,13 @@ public class ToolbarMenu
         return p;
     }
 
+    public void SelectItemFromUI(int i, int j)
+    {
+        Toolbar.clickedThisFrame = true;
+        SelectItem(i, j);
+        Debug.Log("Button ZZZZZZZZZZZZZZZZZhit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
+    }
+    
     //Setting contour editor based on toolbar.
     public void SelectItem(int i, int j/*,bool unfurl=false*/)
     {

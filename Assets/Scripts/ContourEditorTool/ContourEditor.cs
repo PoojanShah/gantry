@@ -1609,7 +1609,7 @@ namespace ContourEditorTool
 			get { return toolBehaviour[(int)toolMode]; }
 		}
 
-		private void MouseUp()
+		public void MouseUp()
 		{
 			Debug.Log("Projection.MouseUp(); downPoint: " + downPoint + ",beyond threshold: " +
 			          (Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) > groupSelectThreshold) +
