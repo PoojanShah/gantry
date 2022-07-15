@@ -1,21 +1,24 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Video;
 
 namespace Media
 {
 	public class MediaController
 	{
-
+		private const string QTS_URL = "http://192.168.1.114/GantryMedia/";
+		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
+		private static readonly string[] AllowedExtensions = { ".jpg", ".mp4" };
 
 		public MediaContent[] MediaFiles { get; private set; }
 
 		public MediaController()
 		{
 			LoadMediaFromLocalStorage();
+
+			LoadMediaFromServer();
 		}
 
 		public void InitMediaContent(string[] paths)
@@ -49,5 +52,29 @@ namespace Media
 
 			InitMediaContent(files);
 		}
+
+		private static void LoadMediaFromServer()
+		{
+			var request = WebRequest.Create(QTS_URL);
+			var response = request.GetResponse();
+			var regex = new Regex(QTS_REGEX_PATTERN);
+
+			using var reader = new StreamReader(response.GetResponseStream()!);
+
+			var result = reader.ReadToEnd();
+			var matches = regex.Matches(result);
+			var mediaUrls = new List<string>(matches.Count);
+
+			foreach (Match match in matches)
+			{
+				var path = match.ToString();
+
+				if (IsExtensionMatched(path))
+					mediaUrls.Add(QTS_URL + match.Groups["name"]);
+			}
+		}
+
+		private static bool IsExtensionMatched(string path) =>
+			path.Contains(AllowedExtensions[0]) || path.Contains(AllowedExtensions[1]);
 	}
 }

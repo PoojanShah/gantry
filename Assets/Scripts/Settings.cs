@@ -16,23 +16,17 @@ public static class Settings
 
 	public static Dictionary<string, string> videoColor = new Dictionary<string, string>();
 
-
-	public static bool serverCheck = true, useCueCore = false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
-
-	public static bool sound = true;
-	public static bool _persist = true;
 	public static bool rotation = true;
-	public static float volume = 1.0f;
-
-	public static string dataPath = Directory.GetParent(Application.dataPath).ToString();
-	public static string colorsConfigPath = dataPath + "/moviecolors.cfg";
+	
+	public static string buildPath = Directory.GetParent(Application.dataPath).ToString();
+	public static string colorsConfigPath = buildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
-	public static readonly string MediaPath = dataPath + "/Build/GantryMedia/";
-	public static string gantryPatternsPath = dataPath + "/Build/meshes/";
+	public static readonly string MediaPath = buildPath + "/Build/GantryMedia/";
+	public static string gantryPatternsPath = buildPath + "/Build/meshes/";
 #elif UNITY_STANDALONE_WIN
-	public static readonly string MediaPath = dataPath + "/GantryMedia/";
-	public static string gantryPatternsPath = dataPath + "/meshes/";
+	public static readonly string MediaPath = buildPath + "/GantryMedia/";
+	public static string gantryPatternsPath = buildPath + "/meshes/";
 #endif
 
 	public enum MonitorMode
