@@ -153,13 +153,13 @@ namespace VideoPlaying
 			}, false); //keep after configuration loading which creates new vertices.
 			IsPlayMode = true;
 
-			if (Settings.useCueCore)
-				SRSUtilities.TCPMessage(
-					((Settings.videoColor.ContainsKey(content.Name) &&
-					  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[content.Name])
-						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[content.Name])
-						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
-					Settings.cuecoreIP, Settings.cuecorePort);
+			//if (Settings.useCueCore)
+			//	SRSUtilities.TCPMessage(
+			//		((Settings.videoColor.ContainsKey(content.Name) &&
+			//		  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[content.Name])
+			//			? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[content.Name])
+			//			: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
+			//		Settings.cuecoreIP, Settings.cuecorePort);
 
 			Settings.ShowCursor(false);
 

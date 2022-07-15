@@ -9,11 +9,7 @@ namespace Media
 {
 	public class MediaController
 	{
-#if UNITY_EDITOR
-		public static readonly string LibraryPath = Settings.dataPath + "/Build/GantryMedia/";
-#elif UNITY_STANDALONE_WIN
-		public static readonly string LibraryPath = Settings.dataPath + "/GantryMedia/";
-#endif
+
 
 		public MediaContent[] MediaFiles { get; private set; }
 
@@ -49,7 +45,7 @@ namespace Media
 
 		private void LoadMediaFromLocalStorage()
 		{
-			var files = Directory.GetFiles(LibraryPath);
+			var files = Directory.GetFiles(Settings.MediaPath);
 
 			InitMediaContent(files);
 		}

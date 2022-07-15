@@ -36,7 +36,6 @@ namespace Common
 
 		private static void InitSettings()
 		{
-			Settings.Load();
 			Settings.LoadLibrary();
 			Settings.initialScreenWidth = Screen.currentResolution.width;
 		}
