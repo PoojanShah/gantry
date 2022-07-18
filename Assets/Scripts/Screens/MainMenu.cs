@@ -19,9 +19,11 @@ namespace Screens
 		[SerializeField] private TMP_Text _currentPatternTitle;
 
 		private List<MediaItem> _mediaItems;
+		private MediaController _mediaController;
 
 		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
+			_mediaController = mediaController;
 			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
@@ -71,7 +73,7 @@ namespace Screens
 			{
 				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
 				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
-				mediaItem.SetInteractable(false);
+				mediaItem.SetInteractable(!_mediaController.IsDownloading);
 
 				_mediaItems.Add(mediaItem);
 			}

@@ -44,22 +44,12 @@ namespace Screens
 
 			var instance = _factory.InstantiateObject<Transform>(screen.Prefab, _canvasTransform).gameObject;
 
-			if (IsPopup(type))
-			{
-				//_currentPopup.Init();
-			}
-			else
-			{
-				Object.Destroy(_currentScreen);
+			Object.Destroy(_currentScreen);
 
-				//_currentScreen.Init();
-				_currentScreen = instance;
-			}
+			_currentScreen = instance;
 
 			return instance;
 		}
-
-		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
 
 		public void OpenWindow(ScreenType type)
 		{

@@ -16,6 +16,7 @@ namespace Media
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
 		private static readonly string[] AllowedExtensions = { ".jpg", ".mp4" };
 
+		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
 		public MediaController() => LoadMediaFromLocalStorage();
@@ -57,6 +58,7 @@ namespace Media
 			var request = WebRequest.Create(QTS_URL);
 			var response = request.GetResponse();
 			var regex = new Regex(QTS_REGEX_PATTERN);
+			const string regexHash = "name";
 
 			using var reader = new StreamReader(response.GetResponseStream()!);
 
@@ -69,7 +71,7 @@ namespace Media
 				var path = match.ToString();
 
 				if (IsExtensionMatched(path))
-					mediaUrls.Add(QTS_URL + match.Groups["name"].ToString().Trim());
+					mediaUrls.Add(QTS_URL + match.Groups[regexHash].ToString().Trim());
 			}
 
 			CheckFilesForDownload(mediaUrls);
@@ -114,8 +116,6 @@ namespace Media
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 
-					Debug.Log($"{url} downloaded and saved");
-
 					LoadMediaFromLocalStorage();
 
 					OnMediaFileDownloaded?.Invoke();
@@ -123,6 +123,8 @@ namespace Media
 			}
 
 			OnDownloadCompleted?.Invoke();
+
+			IsDownloading = false;
 		}
 		
 		private static bool IsExtensionMatched(string path) =>
