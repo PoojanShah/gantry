@@ -31,17 +31,23 @@ namespace Common
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
 				_contourEditorController.Show, _mediaController);
 
-			_mediaController.OnMediaDownloaded += ReloadMedia;
+			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
+			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
+
+			_mediaController.LoadMediaFromServer();
 
 			InitSettings();
 		}
 
 		private void OnDestroy()
 		{
-			_mediaController.OnMediaDownloaded -= ReloadMedia;
+			_mediaController.OnMediaFileDownloaded -= ReloadMediaFile;
+			_mediaController.OnDownloadCompleted -= ActivateLoadingItems;
 		}
 
-		private void ReloadMedia()
+		private void ActivateLoadingItems() => _screensManager.SetMediaInteractable();
+
+		private void ReloadMediaFile()
 		{
 			Settings.LoadLibrary();
 

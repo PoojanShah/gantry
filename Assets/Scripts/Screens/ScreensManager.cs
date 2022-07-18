@@ -101,6 +101,12 @@ namespace Screens
 			mainMenu.ClearMediaItems();
 			mainMenu.InitMediaItems(media, factory, mediaPrefab, PlayVideo);
 		}
+
+		public void SetMediaInteractable()
+		{
+			var mainMenu = _currentScreen.GetComponent<MainMenu>();
+			mainMenu.SetMediaInteractable();
+		}
 		
 		private void InitAdminMenu(GameObject screen)
 		{

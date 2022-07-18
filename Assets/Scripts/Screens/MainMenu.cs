@@ -30,6 +30,18 @@ namespace Screens
 			InitCurrentConfigTitle();
 		}
 
+		public void SetMediaInteractable()
+		{
+			foreach (var mediaItem in _mediaItems)
+				mediaItem.SetInteractable(true);
+		}
+
+		private void OnDestroy()
+		{
+			_settingButton.onClick.RemoveAllListeners();
+			_exitButton.onClick.RemoveAllListeners();
+		}
+
 		public void ClearMediaItems()
 		{
 			foreach (var mediaItem in _mediaItems)
@@ -59,6 +71,7 @@ namespace Screens
 			{
 				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
 				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
+				mediaItem.SetInteractable(false);
 
 				_mediaItems.Add(mediaItem);
 			}

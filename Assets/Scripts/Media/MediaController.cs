@@ -11,19 +11,14 @@ namespace Media
 {
 	public class MediaController
 	{
-		public event Action OnMediaDownloaded;
+		public event Action OnMediaFileDownloaded, OnDownloadCompleted;
 		private const string QTS_URL = "http://192.168.1.114/GantryMedia/";
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
 		private static readonly string[] AllowedExtensions = { ".jpg", ".mp4" };
 
 		public MediaContent[] MediaFiles { get; private set; }
 
-		public MediaController()
-		{
-			LoadMediaFromLocalStorage();
-
-			LoadMediaFromServer();
-		}
+		public MediaController() => LoadMediaFromLocalStorage();
 
 		public void InitMediaContent(string[] paths)
 		{
@@ -57,7 +52,7 @@ namespace Media
 			InitMediaContent(files);
 		}
 
-		private void LoadMediaFromServer()
+		public void LoadMediaFromServer()
 		{
 			var request = WebRequest.Create(QTS_URL);
 			var response = request.GetResponse();
@@ -123,9 +118,11 @@ namespace Media
 
 					LoadMediaFromLocalStorage();
 
-					OnMediaDownloaded?.Invoke();
+					OnMediaFileDownloaded?.Invoke();
 				}
 			}
+
+			OnDownloadCompleted?.Invoke();
 		}
 		
 		private static bool IsExtensionMatched(string path) =>
