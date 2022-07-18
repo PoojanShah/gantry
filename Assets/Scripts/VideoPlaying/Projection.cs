@@ -178,17 +178,17 @@ namespace VideoPlaying
 								  "), DisplaysAmount: " + DisplaysAmount);
 						_screens[i].SetActive(true);
 						if (IsScreenPlayingById(i)) StopMovie(i);
-						if (PlayerPrefs.HasKey("DefaultConfiguration-" + i) &&
-							File.Exists(PlayerPrefs.GetString("DefaultConfiguration-" + i)))
+						if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
+							File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
 						{
-							_contourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
+							_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), i);
 
-							Debug.Log("DefaultConfiguration-" + i + ": " +
-									  PlayerPrefs.GetString("DefaultConfiguration-" + i));
+							Debug.Log(Constants.DefaultConfigHash + ": " +
+							          PlayerPrefs.GetString(Constants.DefaultConfigHash));
 						}
 						else
 						{
-							Debug.Log("No saved configuration found for \"DefaultConfiguration-" + i + "\"");
+							Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
 
 							if (IsEditing)
 								_contourEditor.Reset(i);

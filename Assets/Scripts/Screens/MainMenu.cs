@@ -54,7 +54,7 @@ namespace Screens
 
 		private void InitCurrentConfigTitle()
 		{
-			const string defaultConfigKey = "DefaultConfiguration-" + Constants.ZeroString;
+			const string defaultConfigKey = Constants.DefaultConfigHash;
 
 			if (!PlayerPrefs.HasKey(defaultConfigKey) || !File.Exists(PlayerPrefs.GetString(defaultConfigKey)))
 				return;

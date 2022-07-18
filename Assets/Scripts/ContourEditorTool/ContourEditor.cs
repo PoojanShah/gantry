@@ -2222,7 +2222,7 @@ namespace ContourEditorTool
 
 		private static void SaveDefaultConfiguration(string fileName)
 		{
-			PlayerPrefs.SetString("DefaultConfiguration-" + 0, fileName);
+			PlayerPrefs.SetString(Constants.DefaultConfigHash, fileName);
 			PlayerPrefs.Save();
 		}
 
