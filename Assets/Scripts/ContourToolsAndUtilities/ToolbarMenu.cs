@@ -9,7 +9,7 @@ public class ToolbarMenu
     public float buttonMargin = 4;
     public Toolbar owner;
     //public Dictionary<GUIContent,Action>[] items;//If non-sticky, the Action of the first item is unnecessary, and will be executed upon the (temporary) unraveling of its contents, which is otherwise its only purpose.
-    Item[][] items;//If non-sticky, the Action of the first item is unnecessary, and will be executed upon the (temporary) unraveling of its contents, which is otherwise its only purpose.
+    public Item[][] items;//If non-sticky, the Action of the first item is unnecessary, and will be executed upon the (temporary) unraveling of its contents, which is otherwise its only purpose.
     public Item ItemByTooltip(string tt)
     {
         for (int i = 0; i < items.Length; i++) for (int j = 0; j < items[i].Length; j++) if (items[i][j].buttonContent.tooltip == tt) return items[i][j];
@@ -107,7 +107,7 @@ public class ToolbarMenu
     {
         Toolbar.clickedThisFrame = true;
         SelectItem(i, j);
-        Debug.Log("Button ZZZZZZZZZZZZZZZZZhit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
+        Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
     }
     
     //Setting contour editor based on toolbar.
