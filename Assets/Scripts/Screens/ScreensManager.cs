@@ -18,19 +18,19 @@ namespace Screens
 		private readonly Transform _canvasTransform;
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
-		private readonly MediaContent[] _media;
+		private readonly MediaController _mediaController;
 
 		private GameObject _currentScreen;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
-			Action<MediaContent> playAction, Action<Action> openEditorAction, MediaContent[] media)
+			Action<MediaContent> playAction, Action<Action> openEditorAction, MediaController mediaController)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
 			_canvasTransform = canvasTransform;
 			_playAction = playAction;
 			_openEditorAction = openEditorAction;
-			_media = media;
+			_mediaController = mediaController;
 
 			OpenWindow(ScreenType.MainMenu);
 		}
@@ -91,8 +91,15 @@ namespace Screens
 		private void InitMainMenu(GameObject screen)
 		{
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(_media, PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+			mainMenu.Init(_mediaController, PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
 				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaItemPrefab, _factory);
+		}
+
+		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
+		{
+			var mainMenu = _currentScreen.GetComponent<MainMenu>();
+			mainMenu.ClearMediaItems();
+			mainMenu.InitMediaItems(media, factory, mediaPrefab, PlayVideo);
 		}
 		
 		private void InitAdminMenu(GameObject screen)

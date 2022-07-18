@@ -18,14 +18,24 @@ namespace Screens
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_Text _currentPatternTitle;
 
-		public void Init(MediaContent[] media, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
+		private List<MediaItem> _mediaItems;
+
+		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			InitMediaItems(media, factory, mediaPrefab, playVideoAction);
+			InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
+		}
+
+		public void ClearMediaItems()
+		{
+			foreach (var mediaItem in _mediaItems)
+				Destroy(mediaItem.gameObject);
+
+			_mediaItems.Clear();
 		}
 
 		private void InitCurrentConfigTitle()
@@ -40,13 +50,17 @@ namespace Screens
 			_currentPatternTitle.text = QTS_PATTERN_TITLE + title;
 		}
 
-		private void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
+		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
 			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
+			_mediaItems = new List<MediaItem>();
+
 			foreach (var mediaFile in media)
 			{
-				var videoItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
-				videoItem.Init(mediaFile, playVideoAction, mediaFile.Name);
+				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
+				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
+
+				_mediaItems.Add(mediaItem);
 			}
 		}
 	}

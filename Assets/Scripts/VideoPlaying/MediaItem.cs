@@ -24,13 +24,7 @@ namespace VideoPlaying
 			_button.onClick.AddListener(ItemClicked);
 		}
 
-		private void ItemClicked()
-		{
-			_onClick?.Invoke(_content);
-
-			_button.onClick.RemoveAllListeners();
-
-			Destroy(gameObject);
-		}
+		private void OnDestroy() => _button.onClick.RemoveAllListeners();
+		private void ItemClicked() => _onClick?.Invoke(_content);
 	}
 }

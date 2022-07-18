@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -10,6 +11,7 @@ namespace Media
 {
 	public class MediaController
 	{
+		public event Action OnMediaDownloaded;
 		private const string QTS_URL = "http://192.168.1.114/GantryMedia/";
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
 		private static readonly string[] AllowedExtensions = { ".jpg", ".mp4" };
@@ -78,17 +80,17 @@ namespace Media
 			CheckFilesForDownload(mediaUrls);
 		}
 
-		private static void CheckFilesForDownload(IReadOnlyCollection<string> urls)
+		private void CheckFilesForDownload(IReadOnlyCollection<string> urls)
 		{
-			if (!Directory.Exists(Settings.DownloadedMediaPath))
-				Directory.CreateDirectory(Settings.DownloadedMediaPath);
+			if (!Directory.Exists(Settings.MediaPath))
+				Directory.CreateDirectory(Settings.MediaPath);
 
 			var mediaToDownload = new List<string>(urls.Count);
 
 			foreach (var url in urls)
 			{
 				var fileName = Path.GetFileName(url).Trim();
-				var downloadPath = Path.Combine(Settings.DownloadedMediaPath, fileName);
+				var downloadPath = Path.Combine(Settings.MediaPath, fileName);
 				
 				if(File.Exists(downloadPath))
 					continue;
@@ -99,7 +101,7 @@ namespace Media
 			DownloadAndSaveFiles(mediaToDownload);
 		}
 
-		private static async void DownloadAndSaveFiles(IEnumerable<string> urls)
+		private async void DownloadAndSaveFiles(IEnumerable<string> urls)
 		{
 			foreach (var url in urls)
 			{
@@ -113,11 +115,15 @@ namespace Media
 					Debug.Log(www.error);
 				else
 				{
-					var savePath = Path.Combine(Settings.DownloadedMediaPath, Path.GetFileName(url));
+					var savePath = Path.Combine(Settings.MediaPath, Path.GetFileName(url));
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 
 					Debug.Log($"{url} downloaded and saved");
+
+					LoadMediaFromLocalStorage();
+
+					OnMediaDownloaded?.Invoke();
 				}
 			}
 		}

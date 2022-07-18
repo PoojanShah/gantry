@@ -22,12 +22,10 @@ public static class Settings
 	public static string colorsConfigPath = buildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
-	public static readonly string MediaPath = buildPath + "/Build/GantryMedia/";
-	public static readonly string DownloadedMediaPath = buildPath + "/Build/DownloadedGantryMedia/";
+	public static readonly string MediaPath = buildPath + "/Build/DownloadedGantryMedia/";
 	public static string gantryPatternsPath = buildPath + "/Build/meshes/";
 #elif UNITY_STANDALONE_WIN
-	public static readonly string MediaPath = buildPath + "/GantryMedia/";
-	public static readonly string DownloadedMediaPath = buildPath + "/DownloadedGantryMedia/";
+	public static readonly string MediaPath = buildPath + "/DownloadedGantryMedia/";
 	public static string gantryPatternsPath = buildPath + "/meshes/";
 #endif
 

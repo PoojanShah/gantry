@@ -29,9 +29,24 @@ namespace Common
 				() => _screensManager.OpenWindow(ScreenType.MainMenu));
 			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController.Show, _mediaController.MediaFiles);
+				_contourEditorController.Show, _mediaController);
+
+			_mediaController.OnMediaDownloaded += ReloadMedia;
 
 			InitSettings();
+		}
+
+		private void OnDestroy()
+		{
+			_mediaController.OnMediaDownloaded -= ReloadMedia;
+		}
+
+		private void ReloadMedia()
+		{
+			Settings.LoadLibrary();
+
+			_screensManager.ReloadMediaItems(_mediaController.MediaFiles, _factory, _mainConfig.MediaItemPrefab,
+				_projectionController.Play);
 		}
 
 		private static void InitSettings()
