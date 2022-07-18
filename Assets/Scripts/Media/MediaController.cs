@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Media
 {
@@ -53,7 +55,7 @@ namespace Media
 			InitMediaContent(files);
 		}
 
-		private static void LoadMediaFromServer()
+		private void LoadMediaFromServer()
 		{
 			var request = WebRequest.Create(QTS_URL);
 			var response = request.GetResponse();
@@ -70,10 +72,56 @@ namespace Media
 				var path = match.ToString();
 
 				if (IsExtensionMatched(path))
-					mediaUrls.Add(QTS_URL + match.Groups["name"]);
+					mediaUrls.Add(QTS_URL + match.Groups["name"].ToString().Trim());
 			}
+
+			CheckFilesForDownload(mediaUrls);
 		}
 
+		private static void CheckFilesForDownload(IReadOnlyCollection<string> urls)
+		{
+			if (!Directory.Exists(Settings.DownloadedMediaPath))
+				Directory.CreateDirectory(Settings.DownloadedMediaPath);
+
+			var mediaToDownload = new List<string>(urls.Count);
+
+			foreach (var url in urls)
+			{
+				var fileName = Path.GetFileName(url).Trim();
+				var downloadPath = Path.Combine(Settings.DownloadedMediaPath, fileName);
+				
+				if(File.Exists(downloadPath))
+					continue;
+
+				mediaToDownload.Add(url);
+			}
+
+			DownloadAndSaveFiles(mediaToDownload);
+		}
+
+		private static async void DownloadAndSaveFiles(IEnumerable<string> urls)
+		{
+			foreach (var url in urls)
+			{
+				using var www = UnityWebRequest.Get(url);
+				www.SendWebRequest();
+
+				while (!www.isDone)
+					await Task.Delay(1);
+
+				if ((int) www.result > 1)
+					Debug.Log(www.error);
+				else
+				{
+					var savePath = Path.Combine(Settings.DownloadedMediaPath, Path.GetFileName(url));
+
+					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
+
+					Debug.Log($"{url} downloaded and saved");
+				}
+			}
+		}
+		
 		private static bool IsExtensionMatched(string path) =>
 			path.Contains(AllowedExtensions[0]) || path.Contains(AllowedExtensions[1]);
 	}

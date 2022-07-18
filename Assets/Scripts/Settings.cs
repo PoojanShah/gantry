@@ -23,9 +23,11 @@ public static class Settings
 
 #if UNITY_EDITOR
 	public static readonly string MediaPath = buildPath + "/Build/GantryMedia/";
+	public static readonly string DownloadedMediaPath = buildPath + "/Build/DownloadedGantryMedia/";
 	public static string gantryPatternsPath = buildPath + "/Build/meshes/";
 #elif UNITY_STANDALONE_WIN
 	public static readonly string MediaPath = buildPath + "/GantryMedia/";
+	public static readonly string DownloadedMediaPath = buildPath + "/DownloadedGantryMedia/";
 	public static string gantryPatternsPath = buildPath + "/meshes/";
 #endif
 
