@@ -33,6 +33,9 @@ namespace Library
 
 		private void InitMediaItems(ICommonFactory commonFactory)
 		{
+			if (Settings.mediaLibrary == null || Settings.mediaLibrary.Length == 0)
+				return;
+
 			_files = new LibraryFile[Settings.mediaLibrary.Length];
 
 			for (var i = 0; i < Settings.mediaLibrary.Length; i++)
@@ -56,10 +59,13 @@ namespace Library
 			_exitButton.onClick.RemoveAllListeners();
 			_extensionToggle.onValueChanged.RemoveAllListeners();
 
-			foreach (var libraryFile in _files)
-				libraryFile.Close();
+			if (_files != null)
+			{
+				foreach (var libraryFile in _files)
+					libraryFile.Close();
 
-			_files = null;
+				_files = null;
+			}
 
 			gameObject.SetActive(false);
 

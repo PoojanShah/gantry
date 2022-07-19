@@ -34,6 +34,9 @@ namespace Screens
 
 		public void SetMediaInteractable()
 		{
+			if(_mediaItems == null || _mediaItems.Count < 1)
+				return;
+
 			foreach (var mediaItem in _mediaItems)
 				mediaItem.SetInteractable(true);
 		}
@@ -67,6 +70,9 @@ namespace Screens
 		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
 			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
+			if (media == null)
+				return;
+
 			_mediaItems = new List<MediaItem>();
 
 			foreach (var mediaFile in media)

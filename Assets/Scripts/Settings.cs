@@ -52,6 +52,9 @@ public static class Settings
 		if (File.Exists(colorsConfigPath))
 			videoColor = LoadMovieColors(colorsConfigPath);
 
+		if(mediaLibrary == null || mediaLibrary.Length == 0)
+			return;
+
 		for (var i = 0; i < mediaLibrary.Length; i++)
 			if (!videoColor.ContainsKey(mediaLibrary[i]))
 				videoColor[mediaLibrary[i]] =
@@ -61,6 +64,9 @@ public static class Settings
 
 	private static void LoadMediaLibrary()
 	{
+		if(!Directory.Exists(MediaPath))
+			return;
+
 		var files = Directory.GetFiles(MediaPath, Constants.AllFilesPattern);
 		var libraryTemp = new List<string>(files.Length);
 

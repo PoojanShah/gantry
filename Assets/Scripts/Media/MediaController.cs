@@ -50,6 +50,9 @@ namespace Media
 
 		private void LoadMediaFromLocalStorage()
 		{
+			if(!Directory.Exists(Settings.MediaPath))
+				return;
+
 			var files = Directory.GetFiles(Settings.MediaPath);
 
 			InitMediaContent(files);
