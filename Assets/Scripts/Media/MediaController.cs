@@ -14,7 +14,9 @@ namespace Media
 		public event Action OnMediaFileDownloaded, OnDownloadCompleted;
 		private const string QTS_URL = "http://192.168.1.114/GantryMedia/";
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
-		private static readonly string[] AllowedExtensions = { ".jpg", ".mp4" };
+		private const string QTS_IMAGE_EXTENSION = ".jpg";
+		private const string QTS_VIDEO_EXTENSION = ".mp4";
+		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
 
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
@@ -31,7 +33,7 @@ namespace Media
 				{
 					Path = paths[i],
 					Name = Path.GetFileNameWithoutExtension(paths[i]),
-					IsVideo = Path.GetExtension(paths[i]) == ".mp4"
+					IsVideo = Path.GetExtension(paths[i]) == QTS_VIDEO_EXTENSION
 				};
 			}
 		}
@@ -56,25 +58,43 @@ namespace Media
 		public void LoadMediaFromServer()
 		{
 			var request = WebRequest.Create(QTS_URL);
-			var response = request.GetResponse();
-			var regex = new Regex(QTS_REGEX_PATTERN);
-			const string regexHash = "name";
-
-			using var reader = new StreamReader(response.GetResponseStream()!);
-
-			var result = reader.ReadToEnd();
-			var matches = regex.Matches(result);
-			var mediaUrls = new List<string>(matches.Count);
-
-			foreach (Match match in matches)
+			try
 			{
-				var path = match.ToString();
+				var response = request.GetResponse();
+				var regex = new Regex(QTS_REGEX_PATTERN);
+				const string regexHash = "name";
 
-				if (IsExtensionMatched(path))
-					mediaUrls.Add(QTS_URL + match.Groups[regexHash].ToString().Trim());
+				using var reader = new StreamReader(response.GetResponseStream()!);
+
+				var result = reader.ReadToEnd();
+				var matches = regex.Matches(result);
+				var mediaUrls = new List<string>(matches.Count);
+
+				foreach (Match match in matches)
+				{
+					var path = match.ToString();
+
+					if (IsExtensionMatched(path))
+						mediaUrls.Add(QTS_URL + match.Groups[regexHash].ToString().Trim());
+				}
+
+				CheckFilesForDownload(mediaUrls);
 			}
+			catch (Exception e)
+			{
+				Debug.Log(e);
+			}
+			finally
+			{
+				CompleteDownloading();
+			}
+		}
 
-			CheckFilesForDownload(mediaUrls);
+		private void CompleteDownloading()
+		{
+			OnDownloadCompleted?.Invoke();
+
+			IsDownloading = false;
 		}
 
 		private void CheckFilesForDownload(IReadOnlyCollection<string> urls)
@@ -122,9 +142,7 @@ namespace Media
 				}
 			}
 
-			OnDownloadCompleted?.Invoke();
-
-			IsDownloading = false;
+			CompleteDownloading();
 		}
 		
 		private static bool IsExtensionMatched(string path) =>
