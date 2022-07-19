@@ -165,6 +165,5 @@ namespace Screens
 
 			Object.Destroy(_currentScreen);
 		}
-
 	}
 }
