@@ -15,6 +15,13 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private Transform _toolBarTransform;
 		[SerializeField] private int _notInstrumentsBlockId = 2;
 
+		[Header("Save popup")] 
+		[SerializeField] private SavePopUp _savePopUp;
+		[SerializeField] private Button _saveButton;
+		[Header("Load popup")] 
+		[SerializeField] private LoadPopUp _loadPopUp;
+		[SerializeField] private Button _loadButton;
+
 		private Action _hideLines;
 		
 		private void Start()
@@ -46,7 +53,15 @@ namespace Screens.ContourEditorScreen
 				}
 			};
 
+			_saveButton.onClick.AddListener(() => 
+				_savePopUp.gameObject.SetActive(true));
+			
+			_loadButton.onClick.AddListener(() =>
+				_loadPopUp.gameObject.SetActive(true));
+			
 			_toolBarTransform.gameObject.SetActive(false);
+			_savePopUp.gameObject.SetActive(false);
+			_loadPopUp.gameObject.SetActive(false);
 		}
 
 		private void InitToolBarBlock(ToolBarLinesBlock block)

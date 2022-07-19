@@ -2177,7 +2177,14 @@ namespace ContourEditorTool
 			toolbar.info.isNeedToShow = isAvailable;
 		}
 
-		private static void SaveConfiguration(string fileName)
+		public static void LoadConfigurationByName(string name)
+		{
+			instance.LoadConfiguration(name);
+			Toolbar.clickedThisFrame = true;
+			SaveDefaultConfiguration(name);
+		}
+		
+		public static void SaveConfiguration(string fileName)
 		{
 			Debug.Log("Projection.SaveConfiguration(" + fileName + ")");
 			if (!Directory.Exists(Application.dataPath)) Directory.CreateDirectory(Application.dataPath);
