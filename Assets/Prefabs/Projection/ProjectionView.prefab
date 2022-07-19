@@ -1276,8 +1276,8 @@ RectTransform:
   m_Father: {fileID: 3945856326069889142}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.1, y: 0.1}
+  m_AnchorMax: {x: 0.9, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1309,7 +1309,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Edit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1336,11 +1336,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 13.9
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -3951,6 +3951,10 @@ MonoBehaviour:
         Button: {fileID: 1558523287503753796}
         ToolTip: 
       ToolsTransform: {fileID: 5794252974398406344}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
     - LineNumber: 1
       MainButton: {fileID: 2335847694540508893}
       Instruments:
@@ -3964,6 +3968,10 @@ MonoBehaviour:
         Button: {fileID: 954410396057633438}
         ToolTip: 
       ToolsTransform: {fileID: 4853093385608782992}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
     - LineNumber: 2
       MainButton: {fileID: 6080800203579209563}
       Instruments:
@@ -3977,6 +3985,10 @@ MonoBehaviour:
         Button: {fileID: 7247635318093354808}
         ToolTip: 
       ToolsTransform: {fileID: 7969658136073795571}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
     - LineNumber: 3
       MainButton: {fileID: 4911584075014356135}
       Instruments:
@@ -3990,28 +4002,36 @@ MonoBehaviour:
         Button: {fileID: 6691708056686004251}
         ToolTip: 
       ToolsTransform: {fileID: 3885689300675894712}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
   - Name: Patterns
     BlockNumber: 1
     Lines:
     - LineNumber: 0
       MainButton: {fileID: 6835335178698570577}
       Instruments:
-      - ID: 1
+      - ID: 0
         Button: {fileID: 1935919493459166953}
         ToolTip: 
-      - ID: 2
+      - ID: 1
         Button: {fileID: 673562517807537818}
         ToolTip: 
-      - ID: 3
+      - ID: 2
         Button: {fileID: 3367071835368888656}
         ToolTip: 
-      - ID: 4
+      - ID: 3
         Button: {fileID: 7364770405781367115}
         ToolTip: 
-      - ID: 5
+      - ID: 4
         Button: {fileID: 1249072566365865616}
         ToolTip: 
       ToolsTransform: {fileID: 8841388894338876115}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
   - Name: Edit
     BlockNumber: 2
     Lines:
@@ -4031,6 +4051,10 @@ MonoBehaviour:
         Button: {fileID: 1847262172500190870}
         ToolTip: 
       ToolsTransform: {fileID: 2220770987892943915}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
     - LineNumber: 1
       MainButton: {fileID: 4714053745768480781}
       Instruments:
@@ -4044,6 +4068,10 @@ MonoBehaviour:
         Button: {fileID: 6744003533745100956}
         ToolTip: 
       ToolsTransform: {fileID: 1826241099988129983}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
     - LineNumber: 2
       MainButton: {fileID: 1612689736226762384}
       Instruments:
@@ -4060,8 +4088,12 @@ MonoBehaviour:
         Button: {fileID: 106712401778034352}
         ToolTip: 
       ToolsTransform: {fileID: 6624411422592773104}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
   _toolBarTransform: {fileID: 2866573975199365564}
-  _instrumentsBlockId: 0
+  _notInstrumentsBlockId: 2
 --- !u!1 &2819677749452687460
 GameObject:
   m_ObjectHideFlags: 0
@@ -4246,7 +4278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.36862746}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5740,7 +5772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.36862746}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6107,7 +6139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.36862746}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9190,8 +9222,8 @@ RectTransform:
   m_Father: {fileID: 2684371738222712907}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.1, y: 0.1}
+  m_AnchorMax: {x: 0.9, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9223,7 +9255,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: View
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9250,11 +9282,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 11.25
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -11714,8 +11746,8 @@ RectTransform:
   m_Father: {fileID: 411337845060646704}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.1, y: 0.1}
+  m_AnchorMax: {x: 0.9, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -11747,7 +11779,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: File
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11774,11 +11806,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 14.8
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
