@@ -1957,9 +1957,9 @@ namespace ContourEditorTool
 				{
 					//Lasso blackouts have their own meshes on objects of which the 3D engine will take care.
 					Rect r = adjusted
-						? new Rect(b.rect.x * Settings.ScreenW / Screen.width,
-							b.rect.y * Settings.ScreenH / Screen.height, b.rect.width * Settings.ScreenW / Screen.width,
-							b.rect.height * Settings.ScreenH / Screen.height)
+						? new Rect(b.rect.x * Settings.ScreenWidth / Screen.width,
+							b.rect.y * Settings.ScreenHeight / Screen.height, b.rect.width * Settings.ScreenWidth / Screen.width,
+							b.rect.height * Settings.ScreenHeight / Screen.height)
 						: b.rect;
 					Graphics.DrawColoredTexture(r, b.elliptical ? Graphics.filledEllipse : Graphics.weiss1x1,
 						b.farbe.WithAlpha(Blackout.selected > -1 && b == blackouts[Blackout.selected]
@@ -2092,7 +2092,7 @@ namespace ContourEditorTool
 					else
 						GUI.Window(0, UIHelper.WindowPosition, (id) =>
 						{
-							var files = Directory.GetFiles(Settings.gantryPatternsPath, Constants.GantrySearchPattern);
+							var files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
 
 							scrollPosition = GUI.BeginScrollView(
 								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
@@ -2161,7 +2161,7 @@ namespace ContourEditorTool
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
-			var path = Settings.gantryPatternsPath + fileName;
+			var path = Settings.GantryPatternsPath + fileName;
 
 			BinaryWriter bw;
 			try

@@ -4,29 +4,28 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Core;
-using Media;
 
 public static class Settings
 {
-	public const int ScreenW = 1024, ScreenH = 768, slideInterval = 15;
+	public const int ScreenWidth = 1024, ScreenHeight = 768, slideInterval = 15;
 
-	public static int initialScreenWidth;
+	public static int InitialScreenWidth;
 
-	public static string[] mediaLibrary;
+	public static string[] MediaLibrary;
 
-	public static Dictionary<string, string> videoColor = new Dictionary<string, string>();
+	public static Dictionary<string, string> VideoColors = new();
 
-	public static bool rotation = true;
+	public static bool IsRotation = true;
 	
-	public static string buildPath = Directory.GetParent(Application.dataPath).ToString();
-	public static string colorsConfigPath = buildPath + "/moviecolors.cfg";
+	public static string BuildPath = Directory.GetParent(Application.dataPath).ToString();
+	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
-	public static readonly string MediaPath = buildPath + "/Build/DownloadedGantryMedia/";
-	public static string gantryPatternsPath = buildPath + "/Build/meshes/";
+	public static readonly string MediaPath = BuildPath + "/Build/DownloadedGantryMedia/";
+	public static string GantryPatternsPath = BuildPath + "/Build/meshes/";
 #elif UNITY_STANDALONE_WIN
-	public static readonly string MediaPath = buildPath + "/DownloadedGantryMedia/";
-	public static string gantryPatternsPath = buildPath + "/meshes/";
+	public static readonly string MediaPath = BuildPath + "/DownloadedGantryMedia/";
+	public static string GantryPatternsPath = BuildPath + "/meshes/";
 #endif
 
 	public enum MonitorMode
@@ -49,15 +48,15 @@ public static class Settings
 	{
 		LoadMediaLibrary();
 
-		if (File.Exists(colorsConfigPath))
-			videoColor = LoadMovieColors(colorsConfigPath);
+		if (File.Exists(ColorsConfigPath))
+			VideoColors = LoadMovieColors(ColorsConfigPath);
 
-		if(mediaLibrary == null || mediaLibrary.Length == 0)
+		if(MediaLibrary == null || MediaLibrary.Length == 0)
 			return;
 
-		for (var i = 0; i < mediaLibrary.Length; i++)
-			if (!videoColor.ContainsKey(mediaLibrary[i]))
-				videoColor[mediaLibrary[i]] =
+		for (var i = 0; i < MediaLibrary.Length; i++)
+			if (!VideoColors.ContainsKey(MediaLibrary[i]))
+				VideoColors[MediaLibrary[i]] =
 					Constants.colorDefaults[i % Constants.colorDefaults.Length]
 						.Key;
 	}
@@ -74,7 +73,7 @@ public static class Settings
 			where !file.EndsWith(Constants.ExtensionMeta)
 			select Path.GetFileName(file));
 
-		mediaLibrary = libraryTemp.ToArray();
+		MediaLibrary = libraryTemp.ToArray();
 	}
 
 	private static Dictionary<string, string> LoadMovieColors(string movieColorFile)

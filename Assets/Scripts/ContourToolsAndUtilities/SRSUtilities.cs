@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Linq;
 public static class SRSUtilities:System.Object{
     static private float stretchFactor=0.875f;
-//	public static float ScreenW=1024,ScreenH=768;
+//	public static float ScreenWidth=1024,ScreenHeight=768;
 	public static float ScreenW=1280,ScreenH=1024;
 	static public IEnumerator CallInFrames(Action f,int frames){
 		Debug.Log("SRSUtilities.CallInFrames("+f.ToString()+", "+frames+")");
@@ -99,7 +99,7 @@ public static class SRSUtilities:System.Object{
     }
 	public static bool guiMatrixNormalized=false;
     public static void NormalizeGUIMatrix(){
-        GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3((float)1.0*Screen.width/Settings.ScreenW,(float)1.0*Screen.height/Settings.ScreenH,1.0f));
+        GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3((float)1.0*Screen.width/Settings.ScreenWidth,(float)1.0*Screen.height/Settings.ScreenHeight,1.0f));
 //		guiMatrixNormalized=true;
     }
     public static void ApplyToAllMaterials(GameObject o,Action<Material> a){
@@ -221,15 +221,15 @@ public static class SRSUtilities:System.Object{
 		return from+(to-from)*lerp;
 	}
 	public static Vector2 adjustedMousePosition{
-//		get{return new Vector2(Input.mousePosition.x*Settings.ScreenW/Screen.width,Input.mousePosition.y*Settings.ScreenH/Screen.height);}
+//		get{return new Vector2(Input.mousePosition.x*Settings.ScreenWidth/Screen.width,Input.mousePosition.y*Settings.ScreenHeight/Screen.height);}
 //		get{return Input.mousePosition;}
-		//get{return GUI.matrix==Matrix4x4.identity?(Vector2)Input.mousePosition:new Vector2(Input.mousePosition.x*Settings.ScreenW/Screen.width,Input.mousePosition.y*Settings.ScreenH/Screen.height);}
+		//get{return GUI.matrix==Matrix4x4.identity?(Vector2)Input.mousePosition:new Vector2(Input.mousePosition.x*Settings.ScreenWidth/Screen.width,Input.mousePosition.y*Settings.ScreenHeight/Screen.height);}
 		get{return (Vector2)Input.mousePosition;}
 	}
 	public static Vector2 adjustedFlipped{
         get{return adjustedMousePosition.FlipY();}
-        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenH)-adjustedMousePosition.y);}
-        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenH)-adjustedMousePosition.y);}
+        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenHeight)-adjustedMousePosition.y);}
+        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenHeight)-adjustedMousePosition.y);}
 
     }
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action){

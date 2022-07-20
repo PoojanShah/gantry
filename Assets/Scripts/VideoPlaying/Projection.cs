@@ -122,7 +122,7 @@ namespace VideoPlaying
 		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
 		{
 			CameraHelper.SetBackgroundColor(Constants.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[int.Parse(mediaToPlay.Name)]])
+				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[int.Parse(mediaToPlay.Name)]])
 				.Value);
 
 			IsEditing = false;
@@ -136,21 +136,18 @@ namespace VideoPlaying
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}
 
-		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0, int slide = -1)
+		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0)
 		{
-			//Slide of -1 is a movie; resourceName is the ogg file name if movie, patient folder name if slide.
-			//stopSlides=true;//slide<0;//Clever reliance on the fact that an existing loop will finish in less time than this one, unless they happened to click this on the exact frame of it in which case it'll be equal.
-			int thisLoop = ++currentSlideLoop;
-			string[] slides = null, extensions = { "ogg", "jpg", "png", "" };
-			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + content.Name + "\"," + screenNum + "," + slide + ");");
 			gameObject.SetActive(true);
 			enabled = false;
 			_renderer.enabled = false;
+
 			transform.ApplyRecursively(t =>
 			{
-			/*Debug.Log("Processing: "+t.name+", test: "+t.name.StartsWith("Vertex"));*/
+				/*Debug.Log("Processing: "+t.name+", test: "+t.name.StartsWith("Vertex"));*/
 				t.gameObject.SetActive(!t.name.StartsWith("Vertex"));
 			}, false); //keep after configuration loading which creates new vertices.
+
 			IsPlayMode = true;
 
 			//if (Settings.useCueCore)
@@ -163,58 +160,44 @@ namespace VideoPlaying
 
 			Settings.ShowCursor(false);
 
-			do
+			yield return new WaitForEndOfFrame();
+
+			for (var i = 0; i < DisplaysAmount; i++)
 			{
-				yield return new WaitForEndOfFrame();
+				if (i != screenNum && screenNum < DisplaysAmount) 
+					continue;
 
-				if (thisLoop != currentSlideLoop)
-					break; //Catch race condition in case we stopped it while loading.
+				_screens[i].SetActive(true);
 
-				for (int i = 0; i < DisplaysAmount; i++)
-					if (i == screenNum || screenNum >= DisplaysAmount)
-					{
-						//{Debug.Log("___ i: "+i+", displayId: "+displayId+", DisplaysAmount: "+DisplaysAmount+", (i==displayId||displayId>=DisplaysAmount): "+(i==displayId||displayId>=DisplaysAmount)+", (i==displayId): "+(i==displayId)+", (displayId>=DisplaysAmount): "+(displayId>=DisplaysAmount));
-						Debug.Log("--Playing \"" + content.Name + "\" on screen " + i + ". (displayId: " + screenNum +
-								  "), DisplaysAmount: " + DisplaysAmount);
-						_screens[i].SetActive(true);
-						if (IsScreenPlayingById(i)) StopMovie(i);
-						if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
-							File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
-						{
-							_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), i);
-
-							Debug.Log(Constants.DefaultConfigHash + ": " +
-							          PlayerPrefs.GetString(Constants.DefaultConfigHash));
-						}
-						else
-						{
-							Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
-
-							if (IsEditing)
-								_contourEditor.Reset(i);
-						}
-
-						if (content.IsVideo)
-						{
-							var player = _screens[i].Player;
-							player.url = content.Path;
-							player.isLooping = true;
-							player.Play();
-						}
-						else
-						{
-							var loadImageFromFile = MediaController.LoadImageFromFile(content.Path);
-							_screens[i].Player.Stop();
-							_screens[i].SetTexture(loadImageFromFile);
-						}
-					}
-
-				if (slide > -1)
+				if (IsScreenPlayingById(i))
+					StopMovie(i);
+				if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
+				    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
 				{
-					yield return new WaitForSeconds(Settings.slideInterval);
-					slide = (slide + 1) % slides.Length;
+					_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), i);
 				}
-			} while (slide > -1 && thisLoop == currentSlideLoop);
+				else
+				{
+					Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
+
+					if (IsEditing)
+						_contourEditor.Reset(i);
+				}
+
+				if (content.IsVideo)
+				{
+					var player = _screens[i].Player;
+					player.url = content.Path;
+					player.isLooping = true;
+					player.Play();
+				}
+				else
+				{
+					var loadImageFromFile = MediaController.LoadImageFromFile(content.Path);
+					_screens[i].Player.Stop();
+					_screens[i].SetTexture(loadImageFromFile);
+				}
+			}
 		}
 
 		public void StopMovie(int screenNum = -1)
