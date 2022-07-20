@@ -4746,26 +4746,6 @@ MonoBehaviour:
   - Name: Edit
     BlockNumber: 2
     Lines:
-    - LineNumber: 0
-      MainButton: {fileID: 7714267702552948468}
-      Instruments:
-      - ID: 1
-        Button: {fileID: 2336029615511059256}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 4825450733710441307}
-        ToolTip: 
-      - ID: 3
-        Button: {fileID: 3725230139410040882}
-        ToolTip: 
-      - ID: 4
-        Button: {fileID: 1847262172500190870}
-        ToolTip: 
-      ToolsTransform: {fileID: 2220770987892943915}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
     - LineNumber: 1
       MainButton: {fileID: 4714053745768480781}
       Instruments:
@@ -4779,6 +4759,20 @@ MonoBehaviour:
         Button: {fileID: 6744003533745100956}
         ToolTip: 
       ToolsTransform: {fileID: 1826241099988129983}
+      lastButton:
+        ID: 0
+        Button: {fileID: 0}
+        ToolTip: 
+    - LineNumber: 0
+      MainButton: {fileID: 7714267702552948468}
+      Instruments:
+      - ID: 3
+        Button: {fileID: 3725230139410040882}
+        ToolTip: 
+      - ID: 4
+        Button: {fileID: 1847262172500190870}
+        ToolTip: 
+      ToolsTransform: {fileID: 2220770987892943915}
       lastButton:
         ID: 0
         Button: {fileID: 0}
