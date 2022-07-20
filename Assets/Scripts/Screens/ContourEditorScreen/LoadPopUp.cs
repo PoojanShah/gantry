@@ -27,7 +27,7 @@ namespace Screens.ContourEditorScreen
 		{
 			_buttons = new List<Button>();
 			
-			_files = Directory.GetFiles(Settings.dataPath, Constants.TempGantryExtension);
+			_files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantryExtension);
 
 			for (var i = 0; i < _files.Length; i++)
 			{

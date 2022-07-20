@@ -2182,6 +2182,8 @@ namespace ContourEditorTool
 			BinaryWriter bw;
 			try
 			{
+				if (!Directory.Exists(path))
+					Directory.CreateDirectory(path);
 				bw = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate));
 			}
 			catch (IOException e)
