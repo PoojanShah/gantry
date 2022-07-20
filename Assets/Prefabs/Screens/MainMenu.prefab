@@ -258,6 +258,7 @@ MonoBehaviour:
   _exitButton: {fileID: 1877378983834163915}
   _parent: {fileID: 126831262276293187}
   _currentPatternTitle: {fileID: 7459504218213183249}
+  _debug: {fileID: 0}
 --- !u!1 &1877378983834163917
 GameObject:
   m_ObjectHideFlags: 0

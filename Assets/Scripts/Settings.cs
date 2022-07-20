@@ -7,72 +7,25 @@ using Core;
 
 public static class Settings
 {
-	public const int ScreenW = 1024, ScreenH = 768, slideInterval = 15;
-	private const string QTS_CUE_CORE_IP_HASH = "CueCoreIP";
-	private const string QTS_CUE_CORE_PORT_HASH = "CueCorePort";
-	private const string QTS_SERVER_CHECK_HASH = "ServerCheck";
-	private const string QTS_USE_CUE_CORE_HASH = "UseCueCore";
-	private const string QTS_ROTATION_HASH = "Rotation";
-	private const string QTS_VOLUME_HASH = "Volume";
-	private const string QTS_VERSION_HASH = "Version";
+	public const int ScreenWidth = 1024, ScreenHeight = 768, slideInterval = 15;
 
-	public static int initialScreenWidth;
+	public static int InitialScreenWidth;
 
+	public static string[] MediaLibrary;
 
-	public static string heartbeatServerAddress = "www.dtimotions.com/checkin.php",
-		clientLogin = "",
-		dlServeraddress = "http://www.dtimotions.com",
+	public static Dictionary<string, string> VideoColors = new();
+
+	public static bool IsRotation = true;
+	
+	public static string BuildPath = Directory.GetParent(Application.dataPath).ToString();
+	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
-		appDir = ".",
-		binaryFile = "Motions-Linux.x86_64",
-#elif UNITY_STANDALONE_LINUX
-        appDir = "/home/motions/app",
-        binaryFile = "Motions-Linux.x86_64",
-#else
-        appDir = ".",
-        binaryFile = "Motions-Win64.exe",
-#endif
-		binaryPath = appDir + SRSUtilities.slashChar + binaryFile,
-		newBinaryURL = "http://www.sauerburger.org/dti/" + binaryFile;
-
-	public static string[] mediaLibrary;
-
-	public static float updatePeriod = 60, dongleCheckInterval = 30; //*60*1;//Check the server every minute or hour.
-	public static int allowConnectionAttempts = 2; //24;
-	public static Dictionary<string, string> videoColor = new Dictionary<string, string>();
-	public static string cuecoreIP = "192.168.1.10";
-	public static int cuecorePort = 7000;
-
-
-	public static bool
-		serverCheck = true,
-		useCueCore =
-			false; //Whether or not to shut down if we don't hear from the master server. We only turn off for demonstration environments.
-
-	public static bool sound = true;
-	public static bool _persist = true;
-	public static bool rotation = true;
-	public static float volume = 1.0f;
-	public static string dataPath = Application.dataPath + "/Videos/";
-
-#if UNITY_EDITOR
-	public static string configFile = "motions.cfg",
-		commandFile = "cmd",
-		libraryDir = Application.dataPath + "/Videos/",
-		patientDir = "patient",
-		thumbsDir = "Thumbs",
-		testBackground = "file://Test.jpg",
-		movieColorFile = "moviecolors.cfg";
-#elif UNITY_STANDALONE_LINUX
-  public static string unlockFile = "/etc/motions/unlocked.cfg",configFile = "/etc/motions/motions.cfg",commandFile =
- "/var/www/run/motions.cmd",libraryDir = "/usr/share/motions/Movies",patientDir =
- "/var/www/html/images/patient",thumbsDir = "/var/www/html/images/thumbs",appDir = "/home/motions/app",testBackground =
- "file://"+appDir+"/Test.jpg",movieColorFile = "/etc/motions/moviecolors.cfg";
-#else
-  public static string unlockFile = "C:\\motions\\unlocked.cfg",configFile = "C:\\motions\\motions.cfg",commandFile =
- "C:\\motions\\cmd",libraryDir = "Movies",patientDir = "patient",thumbsDir = "Thumbs",testBackground =
- "file:///Test.jpg",movieColorFile = "C:\\motions\\moviecolors.cfg";
+	public static readonly string MediaPath = BuildPath + "/Build/DownloadedGantryMedia/";
+	public static string GantryPatternsPath = BuildPath + "/Build/meshes/";
+#elif UNITY_STANDALONE_WIN
+	public static readonly string MediaPath = BuildPath + "/DownloadedGantryMedia/";
+	public static string GantryPatternsPath = BuildPath + "/meshes/";
 #endif
 
 	public enum MonitorMode
@@ -81,27 +34,9 @@ public static class Settings
 		Dual
 	};
 
-	public enum ScreenMode
-	{
-		gantry = 0,
-		wall,
-		gantrywall
-	};
-
 	public static float originalScaleX = (float)Screen.width / (float)Screen.height;
 
-
-	public static int version
-	{
-		get => PlayerPrefs.HasKey(QTS_VERSION_HASH) ? PlayerPrefs.GetInt(QTS_VERSION_HASH) : 1;
-		set => PlayerPrefs.SetInt(QTS_VERSION_HASH, value);
-	}
-
 	public static MonitorMode monitorMode { get; set; } = MonitorMode.Single;
-
-	public static ScreenMode screenMode { get; set; }
-	public static void NormalizeGUIMatrix() => SRSUtilities.NormalizeGUIMatrix();
-
 
 	public static void ShowCursor(bool isShow = true)
 	{
@@ -109,51 +44,36 @@ public static class Settings
 		Cursor.visible = isShow;
 	}
 
-	public static void Save()
-	{
-		PlayerPrefs.SetString(QTS_CUE_CORE_IP_HASH, cuecoreIP);
-		PlayerPrefs.SetInt(QTS_CUE_CORE_PORT_HASH, cuecorePort);
-		PlayerPrefs.SetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck));
-		PlayerPrefs.SetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore));
-		PlayerPrefs.SetInt(QTS_ROTATION_HASH, Convert.ToInt32(rotation));
-		PlayerPrefs.SetFloat(QTS_VOLUME_HASH, volume);
-	}
-
-	public static void Load()
-	{
-		cuecoreIP = PlayerPrefs.GetString(QTS_CUE_CORE_IP_HASH, cuecoreIP);
-		cuecorePort = PlayerPrefs.GetInt(QTS_CUE_CORE_PORT_HASH, cuecorePort);
-		rotation = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_ROTATION_HASH, Convert.ToInt32(rotation)));
-		serverCheck = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_SERVER_CHECK_HASH, Convert.ToInt32(serverCheck)));
-		useCueCore = Convert.ToBoolean(PlayerPrefs.GetInt(QTS_USE_CUE_CORE_HASH, Convert.ToInt32(useCueCore)));
-
-		volume = PlayerPrefs.GetFloat(QTS_VOLUME_HASH, volume);
-	}
-
-	public static void LoadLibraryAndCategories()
+	public static void LoadLibrary()
 	{
 		LoadMediaLibrary();
 
-		if (File.Exists(movieColorFile))
-			videoColor = LoadMovieColors(movieColorFile);
+		if (File.Exists(ColorsConfigPath))
+			VideoColors = LoadMovieColors(ColorsConfigPath);
 
-		for (var i = 0; i < mediaLibrary.Length; i++)
-			if (!videoColor.ContainsKey(mediaLibrary[i]))
-				videoColor[mediaLibrary[i]] =
+		if(MediaLibrary == null || MediaLibrary.Length == 0)
+			return;
+
+		for (var i = 0; i < MediaLibrary.Length; i++)
+			if (!VideoColors.ContainsKey(MediaLibrary[i]))
+				VideoColors[MediaLibrary[i]] =
 					Constants.colorDefaults[i % Constants.colorDefaults.Length]
 						.Key;
 	}
 
 	private static void LoadMediaLibrary()
 	{
-		var files = Directory.GetFiles(libraryDir, Constants.AllFilesPattern);
+		if(!Directory.Exists(MediaPath))
+			return;
+
+		var files = Directory.GetFiles(MediaPath, Constants.AllFilesPattern);
 		var libraryTemp = new List<string>(files.Length);
 
 		libraryTemp.AddRange(from file in files
 			where !file.EndsWith(Constants.ExtensionMeta)
 			select Path.GetFileName(file));
 
-		mediaLibrary = libraryTemp.ToArray();
+		MediaLibrary = libraryTemp.ToArray();
 	}
 
 	private static Dictionary<string, string> LoadMovieColors(string movieColorFile)

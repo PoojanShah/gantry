@@ -33,16 +33,19 @@ namespace Library
 
 		private void InitMediaItems(ICommonFactory commonFactory)
 		{
-			_files = new LibraryFile[Settings.mediaLibrary.Length];
+			if (Settings.MediaLibrary == null || Settings.MediaLibrary.Length == 0)
+				return;
 
-			for (var i = 0; i < Settings.mediaLibrary.Length; i++)
+			_files = new LibraryFile[Settings.MediaLibrary.Length];
+
+			for (var i = 0; i < Settings.MediaLibrary.Length; i++)
 			{
 				var libraryItemInstance = commonFactory.InstantiateObject<LibraryFile>(_exampleFile, _contentHolder);
 				libraryItemInstance.name = i.ToString();
 				libraryItemInstance.Init(OnColorClicked);
-				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(Settings.mediaLibrary[i]));
-				libraryItemInstance.SetColorText(Settings.videoColor[Settings.mediaLibrary[i]], Constants.colorDefaults
-					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[i]]).Value);
+				libraryItemInstance.SetFileName(Path.GetFileNameWithoutExtension(Settings.MediaLibrary[i]));
+				libraryItemInstance.SetColorText(Settings.VideoColors[Settings.MediaLibrary[i]], Constants.colorDefaults
+					.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[i]]).Value);
 				libraryItemInstance.SetParent(_contentHolder.transform);
 
 				_files[i] = libraryItemInstance;
@@ -56,10 +59,13 @@ namespace Library
 			_exitButton.onClick.RemoveAllListeners();
 			_extensionToggle.onValueChanged.RemoveAllListeners();
 
-			foreach (var libraryFile in _files)
-				libraryFile.Close();
+			if (_files != null)
+			{
+				foreach (var libraryFile in _files)
+					libraryFile.Close();
 
-			_files = null;
+				_files = null;
+			}
 
 			gameObject.SetActive(false);
 
@@ -74,14 +80,14 @@ namespace Library
 
 		public void ShowFileExtensions(bool isShown)
 		{
-			var libraryLength = Settings.mediaLibrary.Length;
+			var libraryLength = Settings.MediaLibrary.Length;
 
 			for (var i = 0; i < libraryLength; i++)
 			{
 				var file = _files[i];
 				var title = isShown
-					? Settings.mediaLibrary[i]
-					: Path.GetFileNameWithoutExtension(Settings.mediaLibrary[i]);
+					? Settings.MediaLibrary[i]
+					: Path.GetFileNameWithoutExtension(Settings.MediaLibrary[i]);
 
 				file.SetFileName(title);
 			}
@@ -115,16 +121,16 @@ namespace Library
 		{
 			try
 			{
-				var sw = new StreamWriter(Settings.movieColorFile);
+				var sw = new StreamWriter(Settings.ColorsConfigPath);
 
-				foreach (var kvp in Settings.videoColor)
+				foreach (var kvp in Settings.VideoColors)
 					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
 
 				sw.Close();
 			}
 			catch (Exception e)
 			{
-				Debug.LogError("Error writing file " + Settings.movieColorFile + Core.Constants.Colon + e);
+				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
 			}
 
 			_quitButtonAction?.Invoke();
@@ -134,16 +140,16 @@ namespace Library
 
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
 		{
-			Settings.videoColor[Settings.mediaLibrary[index]] = Constants
+			Settings.VideoColors[Settings.MediaLibrary[index]] = Constants
 				.colorDefaults[
 					SRSUtilities.Wrap(
 						Constants.colorDefaults.IndexOfFirstMatch(cd =>
-							cd.Key == Settings.videoColor[Settings.mediaLibrary[index]]) + (next ? 1 : -1),
+							cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]) + (next ? 1 : -1),
 						Constants.colorDefaults.Length)].Key;
 
-			var colorTitle = Settings.videoColor[Settings.mediaLibrary[index]];
+			var colorTitle = Settings.VideoColors[Settings.MediaLibrary[index]];
 			var color = Constants.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[index]]).Value;
+				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]).Value;
 
 			libFile.SetColorText(colorTitle, color);
 		}

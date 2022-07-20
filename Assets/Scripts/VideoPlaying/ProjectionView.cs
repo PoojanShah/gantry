@@ -1,6 +1,7 @@
 using System;
 using Configs;
 using ContourEditorTool;
+using Media;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -13,14 +14,14 @@ namespace VideoPlaying
 
 		private Action _stopAction;
 
-		public void Init(MediaConfig mediaConfig, Action stopAction)
+		public void Init(Action stopAction)
 		{
 			_stopAction = stopAction;
 
-			_projection.Init(mediaConfig);
+			_projection.Init();
 		}
 
-		public void Play(int videoId) => _projection.StartMovie(videoId);
+		public void Play(MediaContent content) => _projection.StartMovie(content);
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);
 		public Projection GetProjection() => _projection;
 		private void Update() => InputHandler();
@@ -30,7 +31,7 @@ namespace VideoPlaying
 			if (!_projection.IsPlaying)
 				return;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
 			if(!Input.GetKeyDown(KeyCode.Escape))
 				return;
 #elif UNITY_ANDROID

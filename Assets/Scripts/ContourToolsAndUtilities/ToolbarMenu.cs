@@ -81,7 +81,7 @@ public class ToolbarMenu
             {
                 GUI.color = sticky && selectedCategory == i && items[i][j].selected ? selectedCategoryFarbe : Color.white;
                 GUI.enabled = !items[i][j].disabled;
-                if (i == 3 && !Settings.rotation)
+                if (i == 3 && !Settings.IsRotation)
                 {
                     GUI.enabled = false;
                 }

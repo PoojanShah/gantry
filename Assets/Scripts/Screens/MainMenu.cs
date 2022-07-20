@@ -1,8 +1,9 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Configs;
 using Core;
+using Media;
 using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
@@ -17,19 +18,46 @@ namespace Screens
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_Text _currentPatternTitle;
 
-		public void Init(Action<int> playVideoAction, Action onSettingAction, Action onQuitAction, MediaConfig media, ICommonFactory factory)
+		private List<MediaItem> _mediaItems;
+		private MediaController _mediaController;
+
+		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
+			_mediaController = mediaController;
 			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			InitMediaItems(media, factory, playVideoAction);
+			InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
 		}
 
+		public void SetMediaInteractable()
+		{
+			if(_mediaItems == null || _mediaItems.Count < 1)
+				return;
+
+			foreach (var mediaItem in _mediaItems)
+				mediaItem.SetInteractable(true);
+		}
+
+		private void OnDestroy()
+		{
+			_settingButton.onClick.RemoveAllListeners();
+			_exitButton.onClick.RemoveAllListeners();
+		}
+
+		public void ClearMediaItems()
+		{
+			foreach (var mediaItem in _mediaItems)
+				Destroy(mediaItem.gameObject);
+
+			_mediaItems.Clear();
+		}
+
 		private void InitCurrentConfigTitle()
 		{
-			const string defaultConfigKey = "DefaultConfiguration-" + Constants.ZeroString;
+			const string defaultConfigKey = Constants.DefaultConfigHash;
 
 			if (!PlayerPrefs.HasKey(defaultConfigKey) || !File.Exists(PlayerPrefs.GetString(defaultConfigKey)))
 				return;
@@ -39,12 +67,21 @@ namespace Screens
 			_currentPatternTitle.text = QTS_PATTERN_TITLE + title;
 		}
 
-		private void InitMediaItems(MediaConfig config, ICommonFactory commonFactory, Action<int> playVideoAction)
+		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
+			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
-			for (var i = 0; i < config.MediaFiles.Length; i++)
+			if (media == null)
+				return;
+
+			_mediaItems = new List<MediaItem>();
+
+			foreach (var mediaFile in media)
 			{
-				var videoItem = commonFactory.InstantiateObject<MediaItem>(config.MediaItemPrefab, _parent);
-				videoItem.Init(i, playVideoAction, config.MediaFiles[i].name);
+				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
+				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
+				mediaItem.SetInteractable(!_mediaController.IsDownloading);
+
+				_mediaItems.Add(mediaItem);
 			}
 		}
 	}

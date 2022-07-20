@@ -5,25 +5,20 @@ namespace Core
 {
 	public static class Constants
 	{
-		public const string ZeroString = "0",
-			Colon = ":",
-			Comma = ",",
-			ClosingBracket = ")",
-			OpeningBracket = "(",
+		public const string Colon = ":",
 			CorrectAdminPassword = "Kim41",
 			CorrectSuperPassword = "Jas375",
-			BoyHash = "Boy",
-			GirlHash = "Girl",
-			ManHash = "Man",
-			WomanHash = "Woman",
 			ExtensionMeta = ".meta",
 			GantryExtension = ".gantry",
-			TempGantryExtension = "*.gantrey",
+			GantrySearchPattern = "*.gantry",
 			AllFilesPattern = "*.*";
 
+		public const string DefaultConfigHash = "DefaultConfiguration";
 		public const float ScrollbarDefaultValue = 1.0f;
 
 		public static KeyValuePair<string, Color32>[] colorDefaults = {
+			new("white",new Color32(255,255,255,255)),
+			new("black",new Color32(0,0,0,255)),
 			new("maroon",new Color32(128,0,0,255)),
 			new("firebrick",new Color32(178,34,34,255)),
 			new("crimson",new Color32(220,20,60,255)),

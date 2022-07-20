@@ -6,7 +6,7 @@ namespace Configs
 	public class MainConfig : ScriptableObject
 	{
 		public GameObject ProjectionSetup;
-		public MediaConfig MediaConfig;
+		public GameObject MediaItemPrefab;
 		public ScreensConfig ScreensConfig;
 	}
 }

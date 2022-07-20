@@ -6,6 +6,7 @@ using System.Linq;
 using Configs;
 using ContourEditorTool;
 using Core;
+using Media;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
 
@@ -40,8 +41,6 @@ namespace VideoPlaying
 
 		[SerializeField] private VideoPlayerScreen[] _screens;
 		[SerializeField] private Renderer _renderer;
-
-		private MediaConfig _mediaConfig;
 
 		public bool IsEditing
 		{
@@ -81,10 +80,8 @@ namespace VideoPlaying
 
 		public bool IsPlaying => gameObject.activeSelf && !IsEditing;
 
-		public void Init(MediaConfig config)
+		public void Init()
 		{
-			_mediaConfig = config;
-
 			GetComponent<MeshFilter>().mesh.Clear();
 
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
@@ -122,107 +119,85 @@ namespace VideoPlaying
 		public bool IsScreenPlaying(VideoPlayerScreen playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
-		public void StartMovie(int mediaId = -1, int screenNum = 0, bool testMovie = false)
+		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
 		{
-			var clip = mediaId > -1? _mediaConfig.MediaFiles[mediaId] : _mediaConfig.GetFirstClip();
+			CameraHelper.SetBackgroundColor(Constants.colorDefaults
+				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[int.Parse(mediaToPlay.Name)]])
+				.Value);
 
-			if (mediaId > -1)
-				CameraHelper.SetBackgroundColor(Constants.colorDefaults
-					.FirstOrDefault(cd => cd.Key == Settings.videoColor[Settings.mediaLibrary[mediaId]]).Value);
-
-			Debug.Log("Projection.StartMovie(\"" + clip.name + "\"," + screenNum + "," + testMovie + "); timeScale: " + Time.timeScale);
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
 			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * 5);
 			gameObject.SetActive(true);
 
 			StopCoroutine("LoadAndPlayExternalResource");
-			StartCoroutine(LoadAndPlayExternalResource(clip, screenNum));
+			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, screenNum));
 			GetComponent<Toolbar>().enabled = GetComponent<InfoDisplay>().enabled = false;
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}
 
-		private IEnumerator LoadAndPlayExternalResource(Object mediaFile, int screenNum = 0, int slide = -1)
+		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0)
 		{
-			var isVideo = mediaFile is VideoClip;
-			//Slide of -1 is a movie; resourceName is the ogg file name if movie, patient folder name if slide.
-			//stopSlides=true;//slide<0;//Clever reliance on the fact that an existing loop will finish in less time than this one, unless they happened to click this on the exact frame of it in which case it'll be equal.
-			int thisLoop = ++currentSlideLoop;
-			string[] slides = null, extensions = { "ogg", "jpg", "png", "" };
-			Debug.Log("Projection.LoadAndPlayExternalResource(\"" + mediaFile.name + "\"," + screenNum + "," + slide + ");");
 			gameObject.SetActive(true);
 			enabled = false;
 			_renderer.enabled = false;
+
 			transform.ApplyRecursively(t =>
 			{
-			/*Debug.Log("Processing: "+t.name+", test: "+t.name.StartsWith("Vertex"));*/
+				/*Debug.Log("Processing: "+t.name+", test: "+t.name.StartsWith("Vertex"));*/
 				t.gameObject.SetActive(!t.name.StartsWith("Vertex"));
 			}, false); //keep after configuration loading which creates new vertices.
+
 			IsPlayMode = true;
 
-			if (Settings.useCueCore)
-				SRSUtilities.TCPMessage(
-					((Settings.videoColor.ContainsKey(mediaFile.name) &&
-					  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[mediaFile.name])
-						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[mediaFile.name])
-						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
-					Settings.cuecoreIP, Settings.cuecorePort);
+			//if (Settings.useCueCore)
+			//	SRSUtilities.TCPMessage(
+			//		((Settings.videoColor.ContainsKey(content.Name) &&
+			//		  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[content.Name])
+			//			? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[content.Name])
+			//			: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
+			//		Settings.cuecoreIP, Settings.cuecorePort);
 
 			Settings.ShowCursor(false);
 
-			do
+			yield return new WaitForEndOfFrame();
+
+			for (var i = 0; i < DisplaysAmount; i++)
 			{
-				yield return new WaitForEndOfFrame();
+				if (i != screenNum && screenNum < DisplaysAmount) 
+					continue;
 
-				if (thisLoop != currentSlideLoop)
-					break; //Catch race condition in case we stopped it while loading.
+				_screens[i].SetActive(true);
 
-				for (int i = 0; i < DisplaysAmount; i++)
-					if (i == screenNum || screenNum >= DisplaysAmount)
-					{
-						//{Debug.Log("___ i: "+i+", displayId: "+displayId+", DisplaysAmount: "+DisplaysAmount+", (i==displayId||displayId>=DisplaysAmount): "+(i==displayId||displayId>=DisplaysAmount)+", (i==displayId): "+(i==displayId)+", (displayId>=DisplaysAmount): "+(displayId>=DisplaysAmount));
-						Debug.Log("--Playing \"" + mediaFile.name + "\" on screen " + i + ". (displayId: " + screenNum +
-								  "), DisplaysAmount: " + DisplaysAmount);
-						_screens[i].SetActive(true);
-						if (IsScreenPlayingById(i)) StopMovie(i);
-						if (PlayerPrefs.HasKey("DefaultConfiguration-" + i) &&
-							File.Exists(PlayerPrefs.GetString("DefaultConfiguration-" + i)))
-						{
-							_contourEditor.LoadConfiguration(PlayerPrefs.GetString("DefaultConfiguration-" + i), i);
-
-							Debug.Log("DefaultConfiguration-" + i + ": " +
-									  PlayerPrefs.GetString("DefaultConfiguration-" + i));
-						}
-						else
-						{
-							Debug.Log("No saved configuration found for \"DefaultConfiguration-" + i + "\"");
-
-							if (IsEditing)
-								_contourEditor.Reset(i);
-						}
-
-						if (isVideo)
-						{
-							//movie
-							var player = _screens[i].Player;
-							player.clip = (VideoClip)mediaFile;
-							player.isLooping = true;
-							player.Play();
-							Debug.Log(Settings.videoColor.ContainsKey(mediaFile.name));
-						}
-						else
-						{
-							Debug.Log("Photo");
-							_screens[i].SetTexture(mediaFile as Texture);
-						}
-					}
-
-				if (slide > -1)
+				if (IsScreenPlayingById(i))
+					StopMovie(i);
+				if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
+				    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
 				{
-					yield return new WaitForSeconds(Settings.slideInterval);
-					slide = (slide + 1) % slides.Length;
+					_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), i);
 				}
-			} while (slide > -1 && thisLoop == currentSlideLoop);
+				else
+				{
+					Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
+
+					if (IsEditing)
+						_contourEditor.Reset(i);
+				}
+
+				if (content.IsVideo)
+				{
+					var player = _screens[i].Player;
+					player.url = content.Path;
+					player.isLooping = true;
+					player.Play();
+				}
+				else
+				{
+					var loadImageFromFile = MediaController.LoadImageFromFile(content.Path);
+					_screens[i].Player.Stop();
+					_screens[i].SetTexture(loadImageFromFile);
+				}
+			}
 		}
 
 		public void StopMovie(int screenNum = -1)
