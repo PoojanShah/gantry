@@ -9,7 +9,7 @@ namespace Screens.ContourEditorScreen
 	{
 		[Header("DensityPanel")]
 		[SerializeField] private DensityButton[] _densityButtons;
-		[SerializeField] private GameObject _setDensityPanel;
+		[SerializeField] private GameObject _densityPanel;
 		[Header("Toolbar")] 
 		[SerializeField] private ToolBarLinesBlock[] _toolBar;
 		[SerializeField] private Transform _toolBarTransform;
@@ -23,7 +23,7 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private Button _loadButton;
 
 		private Action _hideLines;
-		
+
 		private void Start()
 		{
 			foreach (var b in _densityButtons)
@@ -32,7 +32,7 @@ namespace Screens.ContourEditorScreen
 				{
 					ContourEditor.instance.SetDensity(b.Density);
 					
-					_setDensityPanel.SetActive(false);
+					_densityPanel.SetActive(false);
 					_toolBarTransform.gameObject.SetActive(true);
 				});
 			}
@@ -64,6 +64,11 @@ namespace Screens.ContourEditorScreen
 			_loadPopUp.gameObject.SetActive(false);
 		}
 
+		public void Show()
+		{
+			_densityPanel.gameObject.SetActive(true);
+		}
+		
 		private void InitToolBarBlock(ToolBarLinesBlock block)
 		{
 			foreach (var line in block.Lines)

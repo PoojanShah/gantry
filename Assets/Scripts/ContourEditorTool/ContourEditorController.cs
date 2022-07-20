@@ -1,4 +1,5 @@
 using System;
+using Screens.ContourEditorScreen;
 using VideoPlaying;
 
 namespace ContourEditorTool
@@ -21,6 +22,7 @@ namespace ContourEditorTool
 			_projection.IsEditing = true;
 			_projection.enabled = true;
 			_projection.GetComponent<Toolbar>().enabled = _projection.GetComponent<InfoDisplay>().enabled = true;
+			_projection.gameObject.GetComponentInChildren<ContourEditorUI>().Show();
 
 			_contourEditor.Init(quitAction);
 			_contourEditor.Reset(); //after toolbar's Awake, so it can select.

@@ -4346,7 +4346,7 @@ MonoBehaviour:
     Button: {fileID: 1322203379359096467}
   - Density: 41
     Button: {fileID: 1709605289974154630}
-  _setDensityPanel: {fileID: 9084273081320671414}
+  _densityPanel: {fileID: 9084273081320671414}
   _toolBar:
   - Name: TEEEEEMP
     BlockNumber: 0
