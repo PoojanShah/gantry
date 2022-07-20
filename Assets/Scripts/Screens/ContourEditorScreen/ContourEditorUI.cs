@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 namespace Screens.ContourEditorScreen
 {
+	enum BlockType : byte
+	{
+		Instrument = 0,
+		Pattern = 1,
+		Functions = 2,
+	}
+	
 	public class ContourEditorUI : MonoBehaviour
 	{
 		[Header("DensityPanel")]
@@ -15,7 +22,7 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private ToolBarLinesBlock[] _toolBar;
 		[SerializeField] private Transform _toolBarTransform;
 		[SerializeField] private TextMeshProUGUI _title;
-		[SerializeField] private int _notInstrumentsBlockId = 2;
+		[SerializeField] private Image _currentInstrument;
 
 		[Header("Save popup")] 
 		[SerializeField] private SavePopUp _savePopUp;
@@ -65,6 +72,11 @@ namespace Screens.ContourEditorScreen
 				}
 			};
 
+			_currentInstrument.sprite = _toolBar[0]
+				.Lines[0]
+				.Instruments[0]
+				.Button.image.sprite;
+			
 			_saveButton.onClick.AddListener(() => 
 				_savePopUp.gameObject.SetActive(true));
 			
@@ -96,14 +108,21 @@ namespace Screens.ContourEditorScreen
 				InitToolButton(button, block, line.LineNumber);
 				
 				button.Button.onClick.AddListener(() => _hideLines.Invoke());
-				
-				if (block == _notInstrumentsBlockId)
+
+				if (block == BlockType.Functions.GetHashCode())
 					continue;
 				
 				button.Button.onClick.AddListener(() =>
 				{
+					if (line.lastButton.Button != null)
+						line.lastButton.Button.image.color = Color.clear;
+					
 					line.lastButton = button;
+					button.Button.image.color = Color.yellow;
 					line.MainButton.image.sprite = button.Button.image.sprite;
+
+					if (block == BlockType.Instrument.GetHashCode())
+						_currentInstrument.sprite = button.Button.image.sprite;
 				});
 			}
 			
@@ -118,7 +137,7 @@ namespace Screens.ContourEditorScreen
 
 				ContourEditor.instance.MouseUp();
 				
-				if (block == _notInstrumentsBlockId)
+				if (block != BlockType.Instrument.GetHashCode())
 					return;
 				if (line.ToolsTransform.gameObject.activeSelf)
 					return;
@@ -129,7 +148,7 @@ namespace Screens.ContourEditorScreen
 			
 			line.ToolsTransform.gameObject.SetActive(false);
 			
-			if (block != _notInstrumentsBlockId)
+			if (block != BlockType.Functions.GetHashCode())
 				line.MainButton.image.sprite = line.Instruments[0].Button.image.sprite;
 		}
 
