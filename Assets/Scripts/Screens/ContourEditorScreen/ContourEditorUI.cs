@@ -125,8 +125,9 @@ namespace Screens.ContourEditorScreen
 		{
 			button.Button.onClick.AddListener(() =>
 			{
-				ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(line, button.ID);
+				Toolbar.clickedThisFrame = true;
 				ContourEditor.instance.MouseUp();
+				ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(line, button.ID);
 			});
 		}
 	}
