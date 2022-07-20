@@ -1,5 +1,6 @@
 using System;
 using ContourEditorTool;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ namespace Screens.ContourEditorScreen
 		[Header("Toolbar")] 
 		[SerializeField] private ToolBarLinesBlock[] _toolBar;
 		[SerializeField] private Transform _toolBarTransform;
+		[SerializeField] private TextMeshProUGUI _title;
 		[SerializeField] private int _notInstrumentsBlockId = 2;
 
 		[Header("Save popup")] 
@@ -21,6 +23,9 @@ namespace Screens.ContourEditorScreen
 		[Header("Load popup")] 
 		[SerializeField] private LoadPopUp _loadPopUp;
 		[SerializeField] private Button _loadButton;
+
+		[Header("Additional buttons")] 
+		[SerializeField] private AdditionalButton[] _additionalButtons;
 
 		private Action _hideLines;
 
@@ -42,6 +47,13 @@ namespace Screens.ContourEditorScreen
 				InitToolBarBlock(block);
 			}
 
+			foreach (var button in _additionalButtons)
+			{
+				button.handler._onPointerEnterAction += () => 
+					SetToolTipByID(button.ID.x, button.ID.y, button.ID.z);
+				button.handler._onPointerExitAction += () =>_title.text = "";
+			}
+			
 			_hideLines += () =>
 			{
 				foreach (var block in _toolBar)
@@ -64,7 +76,7 @@ namespace Screens.ContourEditorScreen
 			_loadPopUp.gameObject.SetActive(false);
 		}
 
-		public void Show()
+		public void ShowDensityPanel()
 		{
 			_densityPanel.gameObject.SetActive(true);
 		}
@@ -126,9 +138,22 @@ namespace Screens.ContourEditorScreen
 			button.Button.onClick.AddListener(() =>
 			{
 				Toolbar.clickedThisFrame = true;
+				
 				ContourEditor.instance.MouseUp();
 				ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(line, button.ID);
 			});
+			
+			var eventHandler = button.Button.gameObject.GetComponent<ButtonEventsHandler>();
+
+			eventHandler._onPointerEnterAction += () => SetToolTipByID(block, line, button.ID);
+			eventHandler._onPointerExitAction += () =>_title.text = "";
+		}
+
+		private void SetToolTipByID(int block, int line, int id)
+		{
+			_title.text = ContourEditor.instance.toolbar.menus[block]
+				.items[line][id]
+				.buttonContent.tooltip;
 		}
 	}
 
@@ -164,5 +189,12 @@ namespace Screens.ContourEditorScreen
 		public int ID;
 		public Button Button;
 		public string ToolTip;
+	}
+
+	[Serializable]
+	public struct AdditionalButton
+	{
+		public Vector3Int ID;
+		public ButtonEventsHandler handler;
 	}
 }
