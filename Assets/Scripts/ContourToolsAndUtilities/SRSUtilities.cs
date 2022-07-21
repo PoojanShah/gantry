@@ -20,53 +20,7 @@ public static class SRSUtilities:System.Object{
 		}
 		f();
 	}
-    private static GUISkin _darkAgesSkin;
-    private static GUISkin darkAgesSkin{
-        get{
-            if(_darkAgesSkin==null)_darkAgesSkin=Resources.Load<GUISkin>("Dark Ages");
-            return _darkAgesSkin;
-        }
-    }
-//	static public IEnumerator CallInSeconds(Action f,float seconds){
-//		Debug.Log("SRSUtilities.CallInSeconds("+f.ToString()+", "+seconds+")");
-//		yield return null;//new WaitForSeconds(seconds);
-//		Debug.Log("SRSUtilities.CallInSeconds(), after yield.");
-////		StartCoroutine(f,seconds);
-//		f();
-//	}
-	public static IEnumerator CallInSeconds(Action f,float seconds=0){
-//		Debug.Log("TestRoutine UNO.");
-		yield return new WaitForSeconds(seconds);
-//		Debug.Log("TestRoutine DOS.");
-		f();
-	}
-    public static void StretchedLabel(Rect r,string text,float stretchBy){
-        StretchedLabel(r,text,GUI.skin.label,stretchBy);
-    }
-    public static float CalcStretchedFontHeight(GUIStyle style,string text,float width,float stretchedBy){
-//        float height=darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width);
-//        return height-(stretchedBy-1)*height;
-        return darkAgesSkin.customStyles[9].CalcHeight(new GUIContent(text),width-(stretchedBy-1)*width);
-    }
-    public static void StretchedLabel(Rect r,string text,GUIStyle style,float stretchBy){
-        Matrix4x4 matrixBackup=GUI.matrix;
-        GUI.matrix*=Matrix4x4.Scale(new Vector3(stretchBy,1,1));
-//        Debug.Log("Alignment: "+style.alignment.ToString());
-        if(style.alignment.ToString().EndsWith("Center")){
-//                    r.width/=stretchBy;
-//            r.width-=r.width-r.width/stretchBy;
-            r.width-=(stretchBy-1)*r.width;
-//            r.x-=(stretchBy*r.width-r.width)*0.5f;
-        }
-        GUI.Label(r,text,style);
-        GUI.matrix=matrixBackup;
-    }
-    public static bool StretchedButtonLabel(Rect r,string text,float stretchBy){
-        return StretchedButtonLabel(r,text,GUI.skin.button,stretchBy);
-    }
-    public static bool CorrectedButtonLabel(Rect r,string text,GUIStyle style){
-        return StretchedButtonLabel(r,text,style,stretchFactor*(1024f/768f)/((float)Screen.width/(float)Screen.height));
-    }
+
     public static bool StretchedButtonLabel(Rect r,string text,GUIStyle style,float stretchBy){
         //        Debug.Log("SRSUtilities.StretchedButtonLabel stretchby: "+stretchBy+"; style's font size: "+style.fontSize);
         bool ergebnis=GUI.Button(r,"",style);
@@ -102,22 +56,8 @@ public static class SRSUtilities:System.Object{
         GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3((float)1.0*Screen.width/Settings.ScreenWidth,(float)1.0*Screen.height/Settings.ScreenHeight,1.0f));
 //		guiMatrixNormalized=true;
     }
-    public static void ApplyToAllMaterials(GameObject o,Action<Material> a){
-        foreach(Renderer r in o.GetComponentsInChildren<Renderer>())foreach(Material m in r.materials)a(m);
-    }
-    public static bool Approximate(Vector3 v1,Vector3 v2,float threshold=0.1f){
-        return Vector3.Distance(v1,v2)<threshold;
-    }
-    public static string Vector3ToString(Vector3 v){
-        return "("+v.x+","+v.y+","+v.z+")";
-    }
-    public static string ToPreciseString(this Vector3 v){
-        return "("+v.x+","+v.y+","+v.z+")";
-    }
-    public static Vector3 Vector3Multiply(Vector3 v1,Vector3 v2){return new Vector3(v1.x*v2.x,v1.y*v2.y,v1.z*v2.z);}
-    public static void DrawPlane(Plane p,Color edgeColor=default(Color),Color normalColor=default(Color),float time=30,float scale=1){
-           DrawPlane(p.normal*p.distance,p.normal,edgeColor,normalColor,time,scale);
-    }
+    
+    
     public static void DrawPlane(Vector3 position,Vector3 normal,Color edgeColor=default(Color),Color normalColor=default(Color),float time=30,float scale=1){
       //      Debug.Log("Default color:"+default(Color));
         edgeColor=edgeColor==default(Color)?Color.green:edgeColor;

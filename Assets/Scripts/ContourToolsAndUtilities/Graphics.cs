@@ -80,11 +80,7 @@ public static class Graphics{
 		}
 	}
 	private static Texture2D _schwarz1x1,_weiss1x1,_filledEllipse;
-    static public bool OutlinedButton(Rect r,string t,int strength,GUIStyle buttonStyle,GUIStyle labelStyle,Color outlineFarbe=default(Color)){
-        bool ergebnis=GUI.Button(r,"",buttonStyle);
-        OutlinedLabel(r,t,strength,labelStyle,outlineFarbe);
-        return ergebnis;
-    }
+    
     static public bool OutlinedStretchedButton(Rect r,string t,int strength,GUIStyle buttonStyle,GUIStyle labelStyle,float stretchBy=1,Color outlineFarbe=default(Color)){
         bool ergebnis=GUI.Button(r,"",buttonStyle);
         OutlinedStretchedLabel(r,t,strength,labelStyle,stretchBy,outlineFarbe);
