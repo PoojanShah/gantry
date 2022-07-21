@@ -207,7 +207,7 @@ namespace ContourEditorTool
 					{
 						Debug.Log("Lasso mode's OnDrag; moving: " + Blackout.moving + ", lassoObj: " +
 						          (blackouts[Blackout.moving].lassoObject != null));
-						if (blackouts[Blackout.moving].lassoObject != null) Blackout.MoveSelectedBy(Mouse.delta, false);
+						if (blackouts[Blackout.moving].lassoObject != null) Blackout.MoveSelectedBy(MouseHelper.delta, false);
 						else blackouts[Blackout.moving].screenPosition = p.FlipY() + Blackout.moveOffset;
 					}
 					else if (Blackout.shape == Shape.lasso) MoveLastLassoPoint(p);
@@ -319,7 +319,7 @@ namespace ContourEditorTool
 					{
 						Debug.Log("Lasso mode's OnDrag; moving: " + Blackout.moving + ", lassoObj: " +
 						          (blackouts[Blackout.moving].lassoObject != null));
-						if (blackouts[Blackout.moving].lassoObject != null) Blackout.MoveSelectedBy(Mouse.delta, false);
+						if (blackouts[Blackout.moving].lassoObject != null) Blackout.MoveSelectedBy(MouseHelper.delta, false);
 						else blackouts[Blackout.moving].screenPosition = p.FlipY() + Blackout.moveOffset;
 					}
 					else if (Blackout.shape == Shape.lasso) MoveLastLassoPoint(p);
