@@ -1,5 +1,4 @@
-﻿//2015-02-12
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,44 +7,29 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Linq;
-public static class SRSUtilities:System.Object{
-    static private float stretchFactor=0.875f;
-//	public static float ScreenWidth=1024,ScreenHeight=768;
-	public static float ScreenW=1280,ScreenH=1024;
-	static public IEnumerator CallInFrames(Action f,int frames){
-		Debug.Log("SRSUtilities.CallInFrames("+f.ToString()+", "+frames+")");
-		for(int i=0;i<=frames;i++){
-//			Debug.Log("Calling an action in "+(frames-i)+" frames.");
-			yield return null;
-		}
-		f();
-	}
-
-    public static bool StretchedButtonLabel(Rect r,string text,GUIStyle style,float stretchBy){
-        //        Debug.Log("SRSUtilities.StretchedButtonLabel stretchby: "+stretchBy+"; style's font size: "+style.fontSize);
-        bool ergebnis=GUI.Button(r,"",style);
-        Matrix4x4 matrixBackup=GUI.matrix;
-        Texture2D normal=style.normal.background,hover=style.hover.background,active=style.active.background;
-        TextAnchor alignment=style.alignment;
-        style.alignment=TextAnchor.MiddleCenter;
-        style.normal.background=style.hover.background=style.active.background=null;
-        GUI.matrix*=Matrix4x4.Scale(new Vector3(stretchBy,1,1));
+public static class SRSUtilities:System.Object
+{
+    public static bool StretchedButtonLabel(Rect r, string text, GUIStyle style, float stretchBy)
+    {
+        bool ergebnis = GUI.Button(r, "", style);
+        Matrix4x4 matrixBackup = GUI.matrix;
+        Texture2D normal = style.normal.background, hover = style.hover.background, active = style.active.background;
+        TextAnchor alignment = style.alignment;
+        style.alignment = TextAnchor.MiddleCenter;
+        style.normal.background = style.hover.background = style.active.background = null;
+        GUI.matrix *= Matrix4x4.Scale(new Vector3(stretchBy, 1, 1));
         //        GUI.Label(new Rect(r.x+r.width*0.5f,r.y+r.height*0.5f,r.width,r.height),text,darkAgesSkin.customStyles[8]);
         //        GUI.Label(r,text,darkAgesSkin.customStyles[8]);
         //        GUI.Label(new Rect(r.x/stretchBy,r.y,r.width/stretchBy,r.height),text,darkAgesSkin.customStyles[8]);
-        GUI.Label(new Rect(r.x/stretchBy,r.y,r.width/stretchBy,r.height),text,style);
-        GUI.matrix=matrixBackup;
-        style.normal.background=normal;
-        style.hover.background=hover;
-        style.active.background=active;
-        style.alignment=alignment;
+        GUI.Label(new Rect(r.x / stretchBy, r.y, r.width / stretchBy, r.height), text, style);
+        GUI.matrix = matrixBackup;
+        style.normal.background = normal;
+        style.hover.background = hover;
+        style.active.background = active;
+        style.alignment = alignment;
         return ergebnis;
     }
-    public static string Stringify<TKey,TValue>(this Dictionary<TKey,TValue> d,string delimiter=","){
-        string str="{";
-        foreach(KeyValuePair<TKey,TValue> kvp in d)str+=kvp.Key+":"+kvp.Value+delimiter;
-        return str.Substring(0,str.Length-1)+"}";
-    }
+    
     public static void ApplyRecursively(this Transform trans,Action<Transform> a,bool includeSelf=true){
 //        Debug.Log(trans.name+".ApplyRecursively("+a+"), children: "+trans.childCount);
         if(includeSelf)a(trans);
@@ -56,41 +40,7 @@ public static class SRSUtilities:System.Object{
         GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3((float)1.0*Screen.width/Settings.ScreenWidth,(float)1.0*Screen.height/Settings.ScreenHeight,1.0f));
 //		guiMatrixNormalized=true;
     }
-    
-    
-    public static void DrawPlane(Vector3 position,Vector3 normal,Color edgeColor=default(Color),Color normalColor=default(Color),float time=30,float scale=1){
-      //      Debug.Log("Default color:"+default(Color));
-        edgeColor=edgeColor==default(Color)?Color.green:edgeColor;
-        normalColor=normalColor==default(Color)?Color.red:normalColor;
-        Vector3 v3=Vector3.Cross(normal,normal.normalized==Vector3.forward?Vector3.up:Vector3.forward).normalized*normal.magnitude*scale;
-        Vector3 corner0=position+v3;
-        Vector3 corner2=position-v3;
-        var q=Quaternion.AngleAxis(90,normal);
-        v3=q*v3;
-        Vector3 corner1=position+v3;
-        Vector3 corner3=position-v3;
-        Debug.DrawLine(corner0,corner2,edgeColor,time);
-        Debug.DrawLine(corner1,corner3,edgeColor,time);
-        Debug.DrawLine(corner0,corner1,edgeColor,time);
-        Debug.DrawLine(corner1,corner2,edgeColor,time);
-        Debug.DrawLine(corner2,corner3,edgeColor,time);
-        Debug.DrawLine(corner3,corner0,edgeColor,time);
-        Debug.DrawRay(position,normal,normalColor,time);
-    }
-    public static void Draw3DCrosshair(Vector3 p,float size=1,Color color=default(Color),float duration=0){
-        if(color==default(Color))color=Color.red;
-        for(int i=0;i<3;i++)for(int s=-1;s<=1;s+=2){
-          Vector3 v=Vector3.zero;
-          v[i]=size*s;
-          Debug.DrawLine(p,p+v,color,duration);
-        }
-    }
-    public static void UniformMenu(Rect r,KeyValuePair<string,Action>[] entries,GUIStyle style=null,float margin=8){
-        for(int i=0;i<entries.Length;i++)if(entries[i].Key!=""){
-          if(GUI.Button(r,entries[i].Key,style??GUI.skin.button))entries[i].Value();
-          r.y+=r.height+margin;
-        }
-    }
+
 	public static void AddUnique<T>(this List<T> list,T newValue){//TODO: Find out how to generalize to List<T>.
 		if(!list.Contains(newValue))list.Add(newValue);
 	}
@@ -136,24 +86,14 @@ public static class SRSUtilities:System.Object{
 		return vec;
 	}
 	public static bool EllipseContains(this Rect r,Vector2 p){
-//		float major=Mathf.Max(r.width,r.height),minor=Mathf.Min(r.width,r.height);
-//		float distance=Vector2.Distance(r.center,p);
 		Vector2 pRelative=new Vector2(p.x-r.center.x,p.y-r.center.y),radii=new Vector2(r.width*0.5f,r.height*0.5f);
-//		return distance<major&&Mathf.Abs(p[-r.center.y)<major*minor/major;
-//		return distance<minor||(distance<major&&Mathf.Abs(p[-r.center.y)<major*minor/major;
 		return (pRelative.x*pRelative.x)/(radii.x*radii.x)+(pRelative.y*pRelative.y)/(radii.y*radii.y)<=1;
 	}
 	public static Rect RectAround(Vector2 v1,Vector2 v2){
 		return new Rect(v1.x,v1.y,v2.x-v1.x,v2.y-v1.y);
 	}
 	
-	public static int[] Adjacents(int v,int rows,int cols=-1){
-		if(cols==-1)cols=rows;
-		List<int> adj=new List<int>();
-		int k;
-		for(int x=-1;x<=1;x++)for(int y=-cols;y<=cols;y+=cols)if((k=v+x+y)!=v&&(y!=0||k/cols==v/cols)&&k>-1&&k<cols*rows)adj.Add(v+x+y);
-		return adj.ToArray();
-	}
+	
 	public static void RemoveSet(this List<int> l,int[] set){
 		foreach(int i in set)l.Remove(i);
 	}
@@ -161,40 +101,13 @@ public static class SRSUtilities:System.Object{
 		return from+(to-from)*lerp;
 	}
 	public static Vector2 adjustedMousePosition{
-//		get{return new Vector2(Input.mousePosition.x*Settings.ScreenWidth/Screen.width,Input.mousePosition.y*Settings.ScreenHeight/Screen.height);}
-//		get{return Input.mousePosition;}
-		//get{return GUI.matrix==Matrix4x4.identity?(Vector2)Input.mousePosition:new Vector2(Input.mousePosition.x*Settings.ScreenWidth/Screen.width,Input.mousePosition.y*Settings.ScreenHeight/Screen.height);}
 		get{return (Vector2)Input.mousePosition;}
 	}
 	public static Vector2 adjustedFlipped{
         get{return adjustedMousePosition.FlipY();}
-        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenHeight)-adjustedMousePosition.y);}
-        //get{return new Vector2(adjustedMousePosition.x,(GUI.matrix==Matrix4x4.identity?Screen.height:SRSUtilities.ScreenHeight)-adjustedMousePosition.y);}
+ 
+    }
 
-    }
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action){
-        //source.ThrowIfNull("source");
-        //action.ThrowIfNull("action");
-        foreach(T element in source)action(element);
-    }
-    //public static void Apply<T>(this IEnumerable<T> source, Action<T> action){
-    //    //source.ThrowIfNull("source");
-    //    //action.ThrowIfNull("action");
-
-    //    foreach(T element in source)action(element);
-    //}
-    public static void AddElement<T>(ref T[] source,T element){
-        List<T> list=new List<T>();
-        foreach(T e in source)list.Add(e);
-        list.Add(element);
-        source=list.ToArray();
-    }
-    public static void RemoveElement<T>(ref T[] source,T element){
-        List<T> list=new List<T>();
-        foreach(T e in source)list.Add(e);
-        list.Remove(element);
-        source=list.ToArray();
-    }
     public static Vector3 Midpoint(Vector3[] vects){
         Vector3 min=vects[0],max=vects[0];
         for(int v=1;v<vects.Length;v++){
@@ -203,17 +116,7 @@ public static class SRSUtilities:System.Object{
         }
         return Vector3.Lerp(min,max,0.5f);
     }
-#if UNITY_EDITOR
-    public static string slashChar = "\\";
-    //public static string slashChar="/";
-#elif UNITY_STANDALONE_LINUX
-    public static string slashChar="/";
-#else
-    public static string slashChar="\\";
-#endif
-    //public static int IndexOfFirstMatch(this IEnumerable<T> list,Func<T,bool> tester){
-    //    return list.Select((value,i)=>new{value,i=i+1}).Where(pair=>tester(pair.value)).Select(pair=>pair.i).FirstOrDefault()-1;
-    //}
+
     public static bool TCPMessage(string message,string ip,int port){//Sends a string to the IP and port.
         Debug.Log("SRSUtilities.TCPMessage(\""+message+"\",\""+ip+"\","+port+")");//Sends a string to the IP and port.
         Socket soc;
@@ -242,14 +145,7 @@ public static class SRSUtilities:System.Object{
         for(int i=0;i<list.Length;i++)if(tester(list[i]))return i;
         return -1;
     }
-    public static int IndexOfKey(this OrderedDictionary dic,object key){
-        int i=-1;
-        foreach(object k in dic.Keys){
-            i++;
-            if(k.Equals(key))return i;
-        }
-        return -1;
-    }
+   
     public static object KeyOfIndex(this OrderedDictionary od,int i,bool wrap=false){
         if(wrap)i=(i%od.Count+od.Count)%od.Count;
         return i>od.Count-1||i<0?null:od.Cast<DictionaryEntry>().ElementAt(i).Key;
@@ -258,8 +154,7 @@ public static class SRSUtilities:System.Object{
         if(incremental){
             while(r.xMin<zu.xMin)r.x+=r.width;
             while(r.xMax>zu.xMax)r.x-=r.width;
-            //while(r.bottom<zu.bottom)r.y+=r.height;
-            //while(r.top>zu.top)r.y-=r.height;
+            
             while(r.yMax>zu.yMax){
                 r.y-=r.height;
                 Debug.Log("+Neue Höhe: "+r.y+", bottom: "+r.yMax+", zu.y: "+zu.y+", zu.bottom: "+zu.yMax);
@@ -313,23 +208,12 @@ public static class SRSUtilities:System.Object{
                 if(betaNumerator<0||betaNumerator>betaDenominator)doIntersect=false;
             }else if(betaNumerator>0||betaNumerator<betaDenominator)doIntersect=false;
         }
-        //Debug.Log("SRSUtilities.Intersect("+a1+","+a2+","+b1+","+b2+") alphaNumerator: "+alphaNumerator+", alphaDenominator: "+alphaDenominator+", betaNumerator: "+betaNumerator+", betaDenominator: "+betaDenominator+", doIntersect: "+doIntersect);
         return doIntersect;
     }
     public static string CapFirsts(string input){
         return Regex.Replace(input,@"(^\w|\s\w)",c=>c.Value.ToUpper());
     }
-    public static Rect BoundingRect(Vector3[] v){
-        if(v==null||v.Length<1)return new Rect(0,0,0,0);
-        Rect r=new Rect(0,0,0,0);
-        r.position=Camera.main.WorldToScreenPoint(v[0]);
-        for(int i=0;i<v.Length;i++){
-            r.min=Vector2.Min(r.min,Camera.main.WorldToScreenPoint(v[i]));
-            r.max=Vector2.Max(r.max,Camera.main.WorldToScreenPoint(v[i]));
-            //Debug.LogWarning("V["+i+"]: "+v[i]);
-        }
-        return r;
-    }
+    
     public static bool PointInTriangle(Vector2 p,Vector2 p0,Vector2 p1,Vector2 p2){
         float s=p0.y*p2.x-p0.x*p2.y+(p2.y-p0.y)*p.x+(p0.x-p2.x)*p.y;
         float t=p0.x*p1.y-p0.y*p1.x+(p0.y-p1.y)*p.x+(p1.x-p0.x)*p.y;
