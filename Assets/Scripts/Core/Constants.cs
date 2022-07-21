@@ -11,7 +11,10 @@ namespace Core
 			ExtensionMeta = ".meta",
 			GantryExtension = ".gantry",
 			GantrySearchPattern = "*.gantry",
-			AllFilesPattern = "*.*";
+			AllFilesPattern = "*.*",
+			SquareBracerOpen = "[",
+			SquareBracerClose = "]",
+			Coma = ",";
 
 		public const string DefaultConfigHash = "DefaultConfiguration";
 		public const float ScrollbarDefaultValue = 1.0f;

@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Linq;
+using Core;
 public static class SRSUtilities:System.Object
 {
     public static bool StretchedButtonLabel(Rect r, string text, GUIStyle style, float stretchBy)
