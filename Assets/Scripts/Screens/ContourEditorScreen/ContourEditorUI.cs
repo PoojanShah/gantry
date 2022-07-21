@@ -114,11 +114,7 @@ namespace Screens.ContourEditorScreen
 				
 				button.Button.onClick.AddListener(() =>
 				{
-					if (line.lastButton.Button != null)
-						line.lastButton.Button.image.color = Color.clear;
-					
 					line.lastButton = button;
-					button.Button.image.color = Color.yellow;
 					line.MainButton.image.sprite = button.Button.image.sprite;
 
 					if (block == BlockType.Instrument.GetHashCode())

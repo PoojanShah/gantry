@@ -2174,6 +2174,10 @@ namespace ContourEditorTool
 		
 		public static void SaveConfiguration(string fileName)
 		{
+			#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+				return;
+			#endif
+			
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
