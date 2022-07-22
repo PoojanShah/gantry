@@ -8,8 +8,7 @@ namespace Screens.ContourEditorScreen
 	public class SavePopUp : MonoBehaviour
 	{
 		[SerializeField] private TMP_InputField _inputField;
-		[SerializeField] private Button _saveButton;
-		[SerializeField] private Button _cancelButton;
+		[SerializeField] private Button _saveButton, _cancelButton;
 
 		public void Start()
 		{

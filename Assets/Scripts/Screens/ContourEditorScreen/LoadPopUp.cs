@@ -11,9 +11,8 @@ namespace Screens.ContourEditorScreen
 {
 	public class LoadPopUp : MonoBehaviour
 	{
-		[SerializeField] private Button _buttonPrefab;
+		[SerializeField] private Button _buttonPrefab, _cancelButton;
 		[SerializeField] private Transform _buttonsHolder;
-		[SerializeField] private Button _cancelButton;
 
 		private string[] _files;
 		private List<Button> _buttons;

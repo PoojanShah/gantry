@@ -1472,7 +1472,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.85
+  m_fontSize: 21.05
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4924,157 +4924,99 @@ MonoBehaviour:
     Button: {fileID: 1709605289974154630}
   _densityPanel: {fileID: 9084273081320671414}
   _toolBar:
-  - Name: Instruments
-    BlockNumber: 0
-    Lines:
-    - LineNumber: 0
-      MainButton: {fileID: 7341411479984304917}
-      Instruments:
-      - ID: 0
-        Button: {fileID: 5769560223644284336}
-        ToolTip: 
-      - ID: 1
-        Button: {fileID: 8230803336781917917}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 1558523287503753796}
-        ToolTip: 
-      ToolsTransform: {fileID: 5794252974398406344}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
-    - LineNumber: 1
-      MainButton: {fileID: 2335847694540508893}
-      Instruments:
-      - ID: 0
-        Button: {fileID: 7701900267189917014}
-        ToolTip: 
-      - ID: 1
-        Button: {fileID: 2381629165963231558}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 954410396057633438}
-        ToolTip: 
-      ToolsTransform: {fileID: 4853093385608782992}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
-    - LineNumber: 2
-      MainButton: {fileID: 6080800203579209563}
-      Instruments:
-      - ID: 0
-        Button: {fileID: 7264045075353825658}
-        ToolTip: 
-      - ID: 1
-        Button: {fileID: 5524523312584741758}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 7247635318093354808}
-        ToolTip: 
-      ToolsTransform: {fileID: 7969658136073795571}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
-    - LineNumber: 3
-      MainButton: {fileID: 4911584075014356135}
-      Instruments:
-      - ID: 0
-        Button: {fileID: 2432483438766552166}
-        ToolTip: 
-      - ID: 1
-        Button: {fileID: 5665106989780672209}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 6691708056686004251}
-        ToolTip: 
-      ToolsTransform: {fileID: 3885689300675894712}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
   - Name: Patterns
     BlockNumber: 1
     Lines:
-    - LineNumber: 0
-      MainButton: {fileID: 6835335178698570577}
-      Instruments:
-      - ID: 0
-        Button: {fileID: 1935919493459166953}
-        ToolTip: 
-      - ID: 1
-        Button: {fileID: 673562517807537818}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 3367071835368888656}
-        ToolTip: 
-      - ID: 3
-        Button: {fileID: 7364770405781367115}
-        ToolTip: 
-      - ID: 4
-        Button: {fileID: 1249072566365865616}
-        ToolTip: 
-      ToolsTransform: {fileID: 8841388894338876115}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
+    - _lineNumber: 0
+      _mainButton: {fileID: 6835335178698570577}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 1935919493459166953}
+      - _id: 1
+        _button: {fileID: 673562517807537818}
+      - _id: 2
+        _button: {fileID: 3367071835368888656}
+      - _id: 3
+        _button: {fileID: 7364770405781367115}
+      - _id: 4
+        _button: {fileID: 1249072566365865616}
+      _toolsTransform: {fileID: 8841388894338876115}
+  - Name: Instruments
+    BlockNumber: 0
+    Lines:
+    - _lineNumber: 0
+      _mainButton: {fileID: 7341411479984304917}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 5769560223644284336}
+      - _id: 1
+        _button: {fileID: 8230803336781917917}
+      - _id: 2
+        _button: {fileID: 1558523287503753796}
+      _toolsTransform: {fileID: 5794252974398406344}
+    - _lineNumber: 1
+      _mainButton: {fileID: 2335847694540508893}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 7701900267189917014}
+      - _id: 1
+        _button: {fileID: 2381629165963231558}
+      - _id: 2
+        _button: {fileID: 954410396057633438}
+      _toolsTransform: {fileID: 4853093385608782992}
+    - _lineNumber: 2
+      _mainButton: {fileID: 6080800203579209563}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 7264045075353825658}
+      - _id: 1
+        _button: {fileID: 5524523312584741758}
+      - _id: 2
+        _button: {fileID: 7247635318093354808}
+      _toolsTransform: {fileID: 7969658136073795571}
+    - _lineNumber: 3
+      _mainButton: {fileID: 4911584075014356135}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 2432483438766552166}
+      - _id: 1
+        _button: {fileID: 5665106989780672209}
+      - _id: 2
+        _button: {fileID: 6691708056686004251}
+      _toolsTransform: {fileID: 3885689300675894712}
   - Name: Edit
     BlockNumber: 2
     Lines:
-    - LineNumber: 0
-      MainButton: {fileID: 7714267702552948468}
-      Instruments:
-      - ID: 3
-        Button: {fileID: 3725230139410040882}
-        ToolTip: 
-      - ID: 4
-        Button: {fileID: 1847262172500190870}
-        ToolTip: 
-      ToolsTransform: {fileID: 2220770987892943915}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
-    - LineNumber: 1
-      MainButton: {fileID: 4714053745768480781}
-      Instruments:
-      - ID: 1
-        Button: {fileID: 3617063892633864691}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 6402103177797392591}
-        ToolTip: 
-      - ID: 3
-        Button: {fileID: 6744003533745100956}
-        ToolTip: 
-      ToolsTransform: {fileID: 1826241099988129983}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
-    - LineNumber: 2
-      MainButton: {fileID: 1612689736226762384}
-      Instruments:
-      - ID: 1
-        Button: {fileID: 448576004896260325}
-        ToolTip: 
-      - ID: 2
-        Button: {fileID: 7618730215757724518}
-        ToolTip: 
-      - ID: 3
-        Button: {fileID: 4248018545481043885}
-        ToolTip: 
-      - ID: 4
-        Button: {fileID: 106712401778034352}
-        ToolTip: 
-      ToolsTransform: {fileID: 6624411422592773104}
-      lastButton:
-        ID: 0
-        Button: {fileID: 0}
-        ToolTip: 
+    - _lineNumber: 0
+      _mainButton: {fileID: 7714267702552948468}
+      _instruments:
+      - _id: 3
+        _button: {fileID: 3725230139410040882}
+      - _id: 4
+        _button: {fileID: 1847262172500190870}
+      _toolsTransform: {fileID: 2220770987892943915}
+    - _lineNumber: 1
+      _mainButton: {fileID: 4714053745768480781}
+      _instruments:
+      - _id: 1
+        _button: {fileID: 3617063892633864691}
+      - _id: 2
+        _button: {fileID: 6402103177797392591}
+      - _id: 3
+        _button: {fileID: 6744003533745100956}
+      _toolsTransform: {fileID: 1826241099988129983}
+    - _lineNumber: 2
+      _mainButton: {fileID: 1612689736226762384}
+      _instruments:
+      - _id: 1
+        _button: {fileID: 448576004896260325}
+      - _id: 2
+        _button: {fileID: 7618730215757724518}
+      - _id: 3
+        _button: {fileID: 4248018545481043885}
+      - _id: 4
+        _button: {fileID: 106712401778034352}
+      _toolsTransform: {fileID: 6624411422592773104}
   _toolBarTransform: {fileID: 2866573975199365564}
   _title: {fileID: 3658576188456996670}
   _currentInstrument: {fileID: 8966823002575242959}
@@ -10051,7 +9993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10162,8 +10104,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _buttonPrefab: {fileID: 4846369876588397573, guid: ef581a37c27494587a1f8793a0c0ff3b,
     type: 3}
-  _buttonsHolder: {fileID: 7666114597948490724}
   _cancelButton: {fileID: 251312335096121230}
+  _buttonsHolder: {fileID: 7666114597948490724}
 --- !u!1 &5317791356755461851
 GameObject:
   m_ObjectHideFlags: 0
@@ -12578,7 +12520,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.2
+  m_fontSize: 17
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -16040,7 +15982,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.05
+  m_fontSize: 22.45
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
