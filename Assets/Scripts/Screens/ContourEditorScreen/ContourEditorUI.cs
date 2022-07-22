@@ -2,6 +2,7 @@ using System;
 using ContourEditorTool;
 using Core;
 using Screens.ContourEditorScreen.PopUps;
+using Screens.ContourEditorScreen.PopUps.DensityPanel;
 using Screens.ContourEditorScreen.Toolbar;
 using TMPro;
 using UnityEngine;
@@ -13,8 +14,7 @@ namespace Screens.ContourEditorScreen
 	{
 		[SerializeField] private Transform _canvas;
 		[Header("DensityPanel")]
-		[SerializeField] private DensityButton[] _densityButtons;
-		[SerializeField] private GameObject _densityPanel;
+		[SerializeField] private DensityPanel _densityPanel;
 		[Header("Toolbar")] 
 		[SerializeField] private ToolBarLinesBlock[] _toolBar;
 		[SerializeField] private Transform _toolBarTransform;
@@ -37,23 +37,7 @@ namespace Screens.ContourEditorScreen
 
 		private void Init()
 		{
-			foreach (var b in _densityButtons)
-			{
-				b.Button.onClick.AddListener(() =>
-				{
-					ContourEditor.instance.SetDensity(b.Density);
-					
-					_densityPanel.SetActive(false);
-					_toolBarTransform.gameObject.SetActive(true);
-				});
-			}
-			
-			_hideLines += () =>
-			{
-				foreach (var block in _toolBar)
-					foreach (var line in block.Lines)
-						line.HideLine();
-			};
+			_hideLines += HideLinesAction;
 			
 			foreach (var block in _toolBar)
 			{
@@ -93,7 +77,8 @@ namespace Screens.ContourEditorScreen
 			if (!_isInited)
 				Init();
 			
-			_densityPanel.gameObject.SetActive(true);
+			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas).Init(()=>
+				_toolBarTransform.gameObject.SetActive(true));
 		}
 
 		private void SetToolTipByID(int block, int line, int id)
@@ -112,6 +97,13 @@ namespace Screens.ContourEditorScreen
 		{
 			_commonFactory.InstantiateObject<LoadPopUp>(_loadPopUp.gameObject, _canvas)
 				.Init(_commonFactory);
+		}
+
+		private void HideLinesAction()
+		{
+			foreach (var block in _toolBar)
+			foreach (var line in block.Lines)
+				line.HideLine();
 		}
 		
 		private void OnPointerExit() =>

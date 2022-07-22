@@ -19,7 +19,7 @@ namespace Screens.ContourEditorScreen.PopUps
 		private void SaveButtonAction()
 		{
 			ContourEditor.SaveConfiguration(_inputField.text);
-			gameObject.SetActive(false);
+			Destroy(gameObject);
 		}
 	}
 }
