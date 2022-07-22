@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Screens.ContourEditorScreen
+namespace Screens.ContourEditorScreen.PopUps
 {
 	public class SavePopUp : MonoBehaviour
 	{

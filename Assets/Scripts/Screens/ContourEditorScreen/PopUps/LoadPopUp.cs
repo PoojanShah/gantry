@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using ContourEditorTool;
@@ -7,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Screens.ContourEditorScreen
+namespace Screens.ContourEditorScreen.PopUps
 {
 	public class LoadPopUp : MonoBehaviour
 	{

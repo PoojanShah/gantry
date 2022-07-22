@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Screens.ContourEditorScreen
+namespace Screens.ContourEditorScreen.Toolbar
 {
 	public class ButtonEventsHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
