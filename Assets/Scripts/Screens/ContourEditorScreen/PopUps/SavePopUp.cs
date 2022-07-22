@@ -10,15 +10,16 @@ namespace Screens.ContourEditorScreen.PopUps
 		[SerializeField] private TMP_InputField _inputField;
 		[SerializeField] private Button _saveButton, _cancelButton;
 
-		public void Start()
+		public void Init()
 		{
-			_saveButton.onClick.AddListener(() =>
-			{
-				ContourEditor.SaveConfiguration(_inputField.text);
-				gameObject.SetActive(false);
-			});
-			
-			_cancelButton.onClick.AddListener(() => gameObject.SetActive(false));
+			_saveButton.onClick.AddListener(SaveButtonAction);
+			_cancelButton.onClick.AddListener(() => Destroy(gameObject));
+		}
+
+		private void SaveButtonAction()
+		{
+			ContourEditor.SaveConfiguration(_inputField.text);
+			gameObject.SetActive(false);
 		}
 	}
 }

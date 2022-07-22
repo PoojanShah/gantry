@@ -1,5 +1,6 @@
 using System;
 using ContourEditorTool;
+using Core;
 using Screens.ContourEditorScreen.PopUps;
 using Screens.ContourEditorScreen.Toolbar;
 using TMPro;
@@ -10,6 +11,7 @@ namespace Screens.ContourEditorScreen
 {
 	public class ContourEditorUI : MonoBehaviour
 	{
+		[SerializeField] private Transform _canvas;
 		[Header("DensityPanel")]
 		[SerializeField] private DensityButton[] _densityButtons;
 		[SerializeField] private GameObject _densityPanel;
@@ -30,8 +32,10 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private AdditionalButton[] _additionalButtons;
 
 		private Action _hideLines;
+		private bool _isInited= false;
+		private ICommonFactory _commonFactory;
 
-		private void Start()
+		private void Init()
 		{
 			foreach (var b in _densityButtons)
 			{
@@ -73,20 +77,22 @@ namespace Screens.ContourEditorScreen
 				.Button
 				.image
 				.sprite;
-			
-			_saveButton.onClick.AddListener(() => 
-				_savePopUp.gameObject.SetActive(true));
-			
-			_loadButton.onClick.AddListener(() =>
-				_loadPopUp.gameObject.SetActive(true));
+
+			_commonFactory = new CommonFactory();
+
+			_saveButton.onClick.AddListener(ShowSavePopUp);
+			_loadButton.onClick.AddListener(ShowLoadPopUp);
 			
 			_toolBarTransform.gameObject.SetActive(false);
-			_savePopUp.gameObject.SetActive(false);
-			_loadPopUp.gameObject.SetActive(false);
+
+			_isInited = true;
 		}
 
-		public void ShowDensityPanel()
+		public void Show()
 		{
+			if (!_isInited)
+				Init();
+			
 			_densityPanel.gameObject.SetActive(true);
 		}
 
@@ -95,6 +101,17 @@ namespace Screens.ContourEditorScreen
 			_title.text = ContourEditor.instance.toolbar.menus[block]
 				.items[line][id]
 				.buttonContent.tooltip;
+		}
+
+		private void ShowSavePopUp()
+		{
+			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init();
+		}
+
+		private void ShowLoadPopUp()
+		{
+			_commonFactory.InstantiateObject<LoadPopUp>(_loadPopUp.gameObject, _canvas)
+				.Init(_commonFactory);
 		}
 		
 		private void OnPointerExit() =>
