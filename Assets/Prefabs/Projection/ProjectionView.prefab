@@ -4924,23 +4924,6 @@ MonoBehaviour:
     Button: {fileID: 1709605289974154630}
   _densityPanel: {fileID: 9084273081320671414}
   _toolBar:
-  - Name: Patterns
-    BlockNumber: 1
-    Lines:
-    - _lineNumber: 0
-      _mainButton: {fileID: 6835335178698570577}
-      _instruments:
-      - _id: 0
-        _button: {fileID: 1935919493459166953}
-      - _id: 1
-        _button: {fileID: 673562517807537818}
-      - _id: 2
-        _button: {fileID: 3367071835368888656}
-      - _id: 3
-        _button: {fileID: 7364770405781367115}
-      - _id: 4
-        _button: {fileID: 1249072566365865616}
-      _toolsTransform: {fileID: 8841388894338876115}
   - Name: Instruments
     BlockNumber: 0
     Lines:
@@ -4984,6 +4967,23 @@ MonoBehaviour:
       - _id: 2
         _button: {fileID: 6691708056686004251}
       _toolsTransform: {fileID: 3885689300675894712}
+  - Name: Patterns
+    BlockNumber: 1
+    Lines:
+    - _lineNumber: 0
+      _mainButton: {fileID: 6835335178698570577}
+      _instruments:
+      - _id: 0
+        _button: {fileID: 1935919493459166953}
+      - _id: 1
+        _button: {fileID: 673562517807537818}
+      - _id: 2
+        _button: {fileID: 3367071835368888656}
+      - _id: 3
+        _button: {fileID: 7364770405781367115}
+      - _id: 4
+        _button: {fileID: 1249072566365865616}
+      _toolsTransform: {fileID: 8841388894338876115}
   - Name: Edit
     BlockNumber: 2
     Lines:
