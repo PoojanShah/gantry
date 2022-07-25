@@ -15,12 +15,14 @@ namespace Screens.ContourEditorScreen.PopUps.DensityPanel
 				b.Button.onClick.AddListener(() =>
 				{
 					ContourEditor.instance.SetDensity(b.Density);
-					
+
 					onClose?.Invoke();
-					
+
 					Destroy(gameObject);
 				});
 			}
 		}
+
+		
 	}
 }

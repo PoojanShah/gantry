@@ -23,7 +23,7 @@ namespace Screens.ContourEditorScreen.PopUps
 			
 			_cancelButton.onClick.AddListener(() => Destroy(gameObject));
 
-			_files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantryExtension);
+			_files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
 			
 			_buttons = new List<Button>();
 
@@ -34,9 +34,8 @@ namespace Screens.ContourEditorScreen.PopUps
 
 				var button = _commonFactory.InstantiateObject<Button>(_buttonPrefab.gameObject, _buttonsHolder);
 
-				var currentID = i;
 				button.onClick.AddListener(() => 
-					ChooseFileButtonAction(currentID));
+					ChooseFileButtonAction(i));
 
 				var text = button.GetComponentInChildren<TextMeshProUGUI>();
 				text.text = file;
@@ -48,6 +47,9 @@ namespace Screens.ContourEditorScreen.PopUps
 		private void ChooseFileButtonAction(int i)
 		{
 			ContourEditor.LoadConfigurationByName(_files[i]);
+			
+			_cancelButton.onClick.RemoveAllListeners();
+
 			Destroy(gameObject);
 		}
 	}

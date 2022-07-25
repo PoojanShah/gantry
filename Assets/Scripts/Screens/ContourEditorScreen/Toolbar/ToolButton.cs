@@ -35,7 +35,7 @@ namespace Screens.ContourEditorScreen.Toolbar
 
 		private void SetButtonAction(int block, ToolBarLine line, Action hideLines, Image currentInstrument)
 		{
-			global::Toolbar.clickedThisFrame = true;
+			ContourToolsAndUtilities.Toolbar.clickedThisFrame = true;
 
 			ContourEditor.instance.MouseUp();
 			ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(line.LineNumber, _id);
