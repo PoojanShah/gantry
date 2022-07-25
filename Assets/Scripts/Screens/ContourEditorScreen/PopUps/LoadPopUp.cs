@@ -34,8 +34,9 @@ namespace Screens.ContourEditorScreen.PopUps
 
 				var button = _commonFactory.InstantiateObject<Button>(_buttonPrefab.gameObject, _buttonsHolder);
 
+				var id = i;
 				button.onClick.AddListener(() => 
-					ChooseFileButtonAction(i));
+					ChooseFileButtonAction(id));
 
 				var text = button.GetComponentInChildren<TextMeshProUGUI>();
 				text.text = file;

@@ -19,6 +19,9 @@ namespace Screens.ContourEditorScreen.PopUps
 		private void SaveButtonAction()
 		{
 			ContourEditor.SaveConfiguration(_inputField.text);
+
+			_cancelButton.onClick.RemoveAllListeners();
+
 			Destroy(gameObject);
 		}
 	}
