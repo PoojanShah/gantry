@@ -7,6 +7,7 @@ namespace Configs
 	{
 		public GameObject ProjectionSetup;
 		public GameObject MediaItemPrefab;
+		public GameObject ContourEditorUiPrefab;
 		public ScreensConfig ScreensConfig;
 	}
 }

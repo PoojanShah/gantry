@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Common;
 using Configs;
+using ContourEditorTool;
 using Core;
 using Library;
 using Media;
@@ -13,8 +14,8 @@ namespace Screens
 	public class ScreensManager
 	{
 		private const byte QTS_POPUP_ID = 2;
-		private readonly Action<Action> _openEditorAction;
 		private readonly Action<MediaContent> _playAction;
+		private readonly ContourEditorController _contourEditorController;
 		private readonly Transform _canvasTransform;
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
@@ -23,13 +24,13 @@ namespace Screens
 		private GameObject _currentScreen;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
-			Action<MediaContent> playAction, Action<Action> openEditorAction, MediaController mediaController)
+			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
 			_canvasTransform = canvasTransform;
 			_playAction = playAction;
-			_openEditorAction = openEditorAction;
+			_contourEditorController = contourEditorController;
 			_mediaController = mediaController;
 
 			OpenWindow(ScreenType.MainMenu);
@@ -156,12 +157,14 @@ namespace Screens
 		{
 			Object.Destroy(_currentScreen);
 
+			_contourEditorController.ShowTools(false);
+
 			_playAction?.Invoke(content);
 		}
 
 		private void OpenPatternsEditor()
 		{
-			_openEditorAction?.Invoke(() => OpenWindow(ScreenType.AdminMenu));
+			_contourEditorController?.Show(() => OpenWindow(ScreenType.AdminMenu));
 
 			Object.Destroy(_currentScreen);
 		}

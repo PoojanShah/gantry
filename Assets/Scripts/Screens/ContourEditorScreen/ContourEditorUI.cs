@@ -72,7 +72,7 @@ namespace Screens.ContourEditorScreen
 			_isInited = true;
 		}
 
-		public void Show()
+		public void ShowDensityPanel()
 		{
 			if (!_isInited)
 				Init();
