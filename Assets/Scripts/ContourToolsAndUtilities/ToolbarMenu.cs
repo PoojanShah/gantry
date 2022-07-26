@@ -49,9 +49,6 @@ namespace ContourToolsAndUtilities
 		{
 			Debug.Log("Toolar.Menu.Menu([" + items.Length + " items], " + style + "," + buttonSize + "," + buttonMargin + ")");
 			this.items = items;
-			//this.buttonSize=buttonSize>0?buttonSize:Toolbar.defaultButtonSize;
-			this.buttonSize = buttonSize != default(Vector2) ? buttonSize : Toolbar.defaultButtonSize;
-			this.buttonMargin = buttonMargin > 0 ? buttonMargin : Toolbar.defaultButtonMargin;
 			this.sticky = sticky;
 			selectedCategory = sticky ? 0 : -1;
 			selectedSubitems = new int[items.Length];
@@ -90,7 +87,6 @@ namespace ContourToolsAndUtilities
 					if (GUI.Button(new Rect(p.x + (vertical ? buttonSize.x * j * (direction ? 1 : -1) + anfang : 0),
 						    p.y + (!vertical ? buttonSize.y * j * (direction ? 1 : -1) + anfang : 0), buttonSize.x, buttonSize.y), items[i][j].buttonContent) && !unfurling)
 					{
-						Toolbar.clickedThisFrame = true;
 						if (unfurledMenu != i) unfurledMenu = i;
 						else SelectItem(i, j/*,true*/);
 						Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
@@ -101,13 +97,15 @@ namespace ContourToolsAndUtilities
 			}
 
 			p[vertical ? 1 : 0] -= buttonSize[vertical ? 1 : 0];
-			if (GUI.tooltip != "") Toolbar.DrawTooltip(GUI.tooltip);
+			if (GUI.tooltip != "")
+			{
+			}
+
 			return p;
 		}
 
 		public void SelectItemFromUI(int i, int j)
 		{
-			Toolbar.clickedThisFrame = true;
 			SelectItem(i, j);
 			Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
 		}
@@ -127,7 +125,9 @@ namespace ContourToolsAndUtilities
 				for (int k = 0; k < items[i].Length; k++) items[i][k].selected = k == j;
 				selectedSubitems[i] = j;
 			}
-			if (items[i][j].info != null) Toolbar.toolMessage = items[i][j].info;
+			if (items[i][j].info != null)
+			{
+			}
 		}
 	}
 }
