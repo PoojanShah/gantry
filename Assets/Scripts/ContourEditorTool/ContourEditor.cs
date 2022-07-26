@@ -18,7 +18,6 @@ namespace ContourEditorTool
 			deselectBlackoutKey = KeyCode.LeftShift,
 			buildLassoKey = KeyCode.M,
 			centeredSelectionKey = KeyCode.LeftControl,
-			//lassoSelectKey=KeyCode.LeftShift,
 			addSelectKey = KeyCode.LeftShift,
 			coarseInchKey = KeyCode.LeftShift,
 			createLassoBlackoutKey = KeyCode.Return;
@@ -32,7 +31,6 @@ namespace ContourEditorTool
 		private static Texture2D[] icons;
 		private static int background;
 		private static int saveAsDefault = -1;
-		private ContourEditor editor;
 		private static List<Vector3> lassoPoints = new List<Vector3>();
 		private static List<LineRenderer> lines = new List<LineRenderer>();
 		private static List<Blackout> blackouts = new List<Blackout>();
@@ -483,13 +481,9 @@ namespace ContourEditorTool
 		{
 			Debug.Log("SET DENSITY OPTION TO: " + densityOption);
 
-			SetToolbarAvailable(true);
-
 			originalColumns = columns = densityOption;
 
 			Reset(-1, true, true);
-
-			Toolbar.clickedThisFrame = true;
 		}
 		
 		private static void DrawEllipseAround(Vector2 a, Vector2 b)
@@ -765,11 +759,6 @@ namespace ContourEditorTool
 					{
 						buttonContent = new GUIContent(icons.ByName("Circle Mode"), "Edit in a Circle"),
 						OnSelect = () => circle = !circle, shortcut = new KeyCode[] { KeyCode.C }
-					},
-					new ToolbarMenu.Item()
-					{
-						buttonContent = new GUIContent(icons.ByName("Information"), "Show/Hide Information"),
-						OnSelect = () => instance.toolbar.ToggleInfo(), shortcut = new KeyCode[] { KeyCode.I }
 					}
 				}
 			};
@@ -1605,7 +1594,6 @@ namespace ContourEditorTool
 						instance.backgrounds[background = (background + 1) % instance.backgrounds.Length];
 				}
 			},
-			{ KeyCode.T, () => { instance.toolbar.enabled = !instance.toolbar.enabled; } },
 		};
 
 		public static void SelectAll()
@@ -1736,8 +1724,7 @@ namespace ContourEditorTool
 
 		private void Update()
 		{
-			if (mode != Mode.normal || toolbar.Contains(SRSUtilities.adjustedFlipped) ||
-			    Toolbar.clickedThisFrame) return;
+			if (mode != Mode.normal) return;
 
 			if (Input.GetKeyDown(KeyCode.Keypad7)) Debug.Log("KeyPad7.");
 			inch = Input.GetKey(coarseInchKey) ? 0.1f : 0.005f; //Fine movement of vertex positions
@@ -1871,7 +1858,7 @@ namespace ContourEditorTool
 		{
 			originalColumns = columns = verts;
 			Reset(-1, true, true);
-			Toolbar.clickedThisFrame = true;
+			
 		}
 
 		public static bool HideOldUI = false;
@@ -1881,113 +1868,28 @@ namespace ContourEditorTool
 
 			if (originalColumns < minDensity)
 			{
-				int[] densityOptions = { 2, 11, 21, 41 };
-
 				SRSUtilities.NormalizeGUIMatrix();
 
 				return;
 			}
 
-			switch (mode)
-			{
-				case Mode.save:
-					GUI.Window(0, UIHelper.WindowPosition, (id) =>
-					{
-						//						saveName=GUI.TextField(new Rect(8,8,Screen.width*0.5f-16,32),saveName);
-						saveName = GUI.TextField(
-							new Rect(8, UIHelper.saveWindowSize.y * 0.5f - 16, UIHelper.saveWindowSize.x - 16, 32), saveName);
-						//for(int i=0;i<DisplaysAmount;i++)if(GUI.Toggle(new Rect(16,UIHelper.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
-						saveAsDefault = GUI.Toggle(new Rect(16, UIHelper.saveWindowSize.y * 0.5f + 32, 16, 16),
-							saveAsDefault == (int)Settings.monitorMode,
-							"Set as Default " + (new string[] { "Gantry", "Wall" }[(int)Settings.monitorMode]) +
-							" Configuration")
-							? (int)Settings.monitorMode
-							: -1;
-						//						saveName=GUI.TextField(new Rect(16+8+8,UIHelper.saveWindowSize.y*0.5f+32,UIHelper.saveWindowSize.x-16,32),saveName);
-						if (GUI.Button(
-							    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-							    "Cancel"))
-						{
-							mode = Mode.normal;
-							Toolbar.clickedThisFrame = true;
-						}
+			Draw();
+		}
 
-						if (GUI.Button(
-							    new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
-								    UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Save") /*&&!Menu.DraggingWindow*/)
-						{
-							SaveConfiguration(saveName);
-							Toolbar.clickedThisFrame = true;
-						}
-					}, "Choose Save Name");
-					break;
-				case Mode.load:
-					if (!string.IsNullOrEmpty(fileToDelete))
-						GUI.Window(0, UIHelper.WindowPosition, (id) =>
-						{
-							GUI.Label(
-								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
-								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
-								"\" configuration?");
-							if (GUI.Button(
-								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-								    "No")) fileToDelete = "";
-							else if (GUI.Button(
-								         new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
-									         UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Yes"))
-							{
-								Debug.Log("Moving \"" + fileToDelete + "\" to \"" + backupDir + "/" +
-								          Path.GetFileName(fileToDelete) + "\".");
-								File.Move(fileToDelete, backupDir + "/" + Path.GetFileName(fileToDelete));
-								fileToDelete = "";
-							}
-						}, "Load a Configuration");
-					else
-						GUI.Window(0, UIHelper.WindowPosition, (id) =>
-						{
-							var files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
-
-							scrollPosition = GUI.BeginScrollView(
-								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
-								scrollPosition, new Rect(0, 0, UIHelper.saveWindowSize.x - 32, files.Length * 40));
-							for (int i = 0; i < files.Length; i++)
-								if (GUI.Button(new Rect(8, i * 40, UIHelper.saveWindowSize.x - 64 - 8, 32), files[i]))
-								{
-									LoadConfiguration(files[i]);
-									Toolbar.clickedThisFrame = true;
-									SaveDefaultConfiguration(files[i]);
-								}
-								else if (GUI.Button(new Rect(8 + UIHelper.saveWindowSize.x - 64 - 8, i * 40, 32, 32), "X"))
-									fileToDelete = files[i];
-
-							GUI.EndScrollView();
-							if (GUI.Button(
-								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-								    "Cancel"))
-							{
-								mode = Mode.normal;
-								Toolbar.clickedThisFrame = true;
-							}
-						}, "Load a Configuration");
-					break;
-				case Mode.normal:
-					GUI.color = Color.red;
-
-					GUI.color = Color.green;
-					for (int i = 0; i < mirror.Length; i++)
-						if (mirror[i])
-							GUI.DrawTexture(
-								new Rect(
-									(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
-										Mathf.Sign(CameraHelper.Camera.transform.position.x)) - 1),
-									i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
-									i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
-					GUI.color = Color.white;
-					if (toolBehaviour[(int)toolMode].Draw != null)
-						toolBehaviour[(int)toolMode].Draw(SRSUtilities.adjustedFlipped);
-
-					break;
-			}
+		private static void Draw()
+		{
+			GUI.color = Color.green;
+			for (int i = 0; i < mirror.Length; i++)
+				if (mirror[i])
+					GUI.DrawTexture(
+						new Rect(
+							(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
+								Mathf.Sign(CameraHelper.Camera.transform.position.x)) - 1),
+							i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
+							i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
+			GUI.color = Color.white;
+			if (toolBehaviour[(int)toolMode].Draw != null)
+				toolBehaviour[(int)toolMode].Draw(SRSUtilities.adjustedFlipped);
 		}
 
 		private void SaveAndQuitToMenu()
@@ -1998,21 +1900,15 @@ namespace ContourEditorTool
 			WipeBlackouts();
 			_projection.IsEditing = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
-			SetToolbarAvailable(false);
-
+			
 			_quitButtonAction?.Invoke();
 		}
 
-		private void SetToolbarAvailable(bool isAvailable)
-		{
-			toolbar.isNeedToShow = isAvailable;
-			toolbar.info.isNeedToShow = isAvailable;
-		}
-
+		
 		public static void LoadConfigurationByName(string name)
 		{
 			instance.LoadConfiguration(name);
-			Toolbar.clickedThisFrame = true;
+			
 			SaveDefaultConfiguration(name);
 		}
 		
