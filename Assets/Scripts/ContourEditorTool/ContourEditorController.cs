@@ -4,6 +4,7 @@ using Core;
 using Screens.ContourEditorScreen;
 using UnityEngine;
 using VideoPlaying;
+using Object = UnityEngine.Object;
 
 namespace ContourEditorTool
 {
@@ -27,8 +28,10 @@ namespace ContourEditorTool
 
 		public void ShowTools(bool isShow)
 		{
-			if(_editorUi != null)
-				_editorUi.gameObject.SetActive(isShow);
+			if (isShow)
+				_editorUi = _factory.InstantiateObject<ContourEditorUI>(_editorUiPrefab, _projection.transform);
+			else
+				Object.Destroy(_editorUi.gameObject);
 		}
 
 		public void Show(Action quitAction)
@@ -58,10 +61,7 @@ namespace ContourEditorTool
 
 			InitProjection();
 
-			if (_editorUi == null)
-				_editorUi = _factory.InstantiateObject<ContourEditorUI>(_editorUiPrefab, _projection.transform);
-			else
-				ShowTools(true);
+			ShowTools(true);
 
 			_editorUi.ShowDensityPanel();
 

@@ -157,8 +157,6 @@ namespace Screens
 		{
 			Object.Destroy(_currentScreen);
 
-			_contourEditorController.ShowTools(false);
-
 			_playAction?.Invoke(content);
 		}
 
