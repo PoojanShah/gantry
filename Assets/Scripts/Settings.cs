@@ -7,16 +7,12 @@ using Core;
 
 public static class Settings
 {
-	public const int ScreenWidth = 1024, ScreenHeight = 768, slideInterval = 15;
+	public const int ScreenWidth = 1920, ScreenHeight = 1080;
 
 	public static int InitialScreenWidth;
-
 	public static string[] MediaLibrary;
-
 	public static Dictionary<string, string> VideoColors = new();
-
 	public static bool IsRotation = true;
-	
 	public static string BuildPath = Directory.GetParent(Application.dataPath).ToString();
 	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 
@@ -104,5 +100,4 @@ public static class Settings
 
 		return movieColors;
 	}
-
 }
