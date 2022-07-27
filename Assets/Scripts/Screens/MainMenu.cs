@@ -64,7 +64,7 @@ namespace Screens
 
 			var title = PlayerPrefs.GetString(defaultConfigKey);
 
-			_currentPatternTitle.text = QTS_PATTERN_TITLE + title;
+			_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
 		}
 
 		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
