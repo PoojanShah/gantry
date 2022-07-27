@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using ContourToolsAndUtilities;
 using VideoPlaying;
 using Core;
 
 namespace ContourEditorTool
 {
-	public class ContourEditor : MonoBehaviour
+	public partial class ContourEditor : MonoBehaviour
 	{
 		public static KeyCode
 			deleteBlackoutKey = KeyCode.LeftAlt,
@@ -18,7 +18,6 @@ namespace ContourEditorTool
 			deselectBlackoutKey = KeyCode.LeftShift,
 			buildLassoKey = KeyCode.M,
 			centeredSelectionKey = KeyCode.LeftControl,
-			//lassoSelectKey=KeyCode.LeftShift,
 			addSelectKey = KeyCode.LeftShift,
 			coarseInchKey = KeyCode.LeftShift,
 			createLassoBlackoutKey = KeyCode.Return;
@@ -32,7 +31,6 @@ namespace ContourEditorTool
 		private static Texture2D[] icons;
 		private static int background;
 		private static int saveAsDefault = -1;
-		private ContourEditor editor;
 		private static List<Vector3> lassoPoints = new List<Vector3>();
 		private static List<LineRenderer> lines = new List<LineRenderer>();
 		private static List<Blackout> blackouts = new List<Blackout>();
@@ -469,7 +467,6 @@ namespace ContourEditorTool
 		public GameObject vertexDotPrefab, lassoBlackoutPrefab;
 		public Texture2D ellipse, activeVertex, inactiveVertex;
 		public Texture2D[] backgrounds;
-		public GUISkin gantrySkin;
 
 		public enum ToolMode
 		{
@@ -480,22 +477,15 @@ namespace ContourEditorTool
 
 		public Toolbar toolbar;
 
-		public struct UndoStep
+		public void SetDensity(int densityOption)
 		{
-			public Vector3[] meshSnapshot;
-			public int[] selectedVerts, deletedVerts, triangleSnapshot, blackoutLassoIndices;
-			public Blackout[] blackouts;
-			public Vector3[][] blackoutLassoMeshes;
-			public int[][] blackoutTriangleSnapshots;
+			Debug.Log("SET DENSITY OPTION TO: " + densityOption);
 
-			public string Stringify()
-			{
-				return "meshSnapshot: " + meshSnapshot.Length + "\ntriangleSnapshot: " + triangleSnapshot.Length +
-				       "\nselectedVerts: " + selectedVerts.Length + "\nblackouts: " + blackouts.Length +
-				       "\n\nFirst 3 verts: " + meshSnapshot[0] + "," + meshSnapshot[1] + "," + meshSnapshot[2];
-			}
+			originalColumns = columns = densityOption;
+
+			Reset(-1, true, true);
 		}
-
+		
 		private static void DrawEllipseAround(Vector2 a, Vector2 b)
 		{
 			GUI.DrawTexture(new Rect(a.x, a.y, b.x - a.x, b.y - a.y), instance.ellipse);
@@ -574,124 +564,6 @@ namespace ContourEditorTool
 			WipeLasso();
 		}
 
-
-
-		public class Blackout
-		{
-			public static Vector2 moveOffset;
-			public static int moving = -1, selected = -1;
-			public bool elliptical /*,deleted*/;
-			public Rect rect;
-			public GameObject lassoObject = null;
-			public Color farbe = Color.black;
-
-			public static Shape shape = Shape.rect;
-
-			//public static Color farbe=Color.black;
-			public static void Select(int b)
-			{
-				Debug.Log("Hit a " + (blackouts[b].lassoObject == null ? "non-" : "") + "lasso blackout: ");
-				if (selected > -1) DeSelect();
-				selected = (Input.GetKey(deselectBlackoutKey) && Blackout.selected == b) ? -1 : b;
-				if (selected > -1 && blackouts[selected].lassoObject != null)
-					blackouts[selected].lassoObject.GetComponent<MeshRenderer>().material.color = selectedBlackoutColor;
-				//}else Debug.Log("Selected a non-lasso blackout.");
-			}
-
-			public bool Contains(Vector2 p)
-			{
-				if (lassoObject != null)
-				{
-					//lassoed Blackout
-					//Debug.Log("Single-clicked in blackout mode. hit3D: "+hit3D+", hit.collider: "+hit.collider);
-					Vector3[] verts = lassoObject.GetComponent<MeshFilter>().mesh.vertices;
-					int[] triangles = lassoObject.GetComponent<MeshFilter>().mesh.triangles;
-					if (verts.Length < 3) return false;
-					for (int t = 0; t < triangles.Length - 3; t++)
-						if (SRSUtilities.PointInTriangle(p.FlipY(),
-							    lassoObject.transform.InverseTransformPoint(
-								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t]])),
-							    lassoObject.transform.InverseTransformPoint(
-								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t + 1]])),
-							    lassoObject.transform.InverseTransformPoint(
-								    CameraHelper.Camera.WorldToScreenPoint(verts[triangles[t + 2]]))))
-							return true;
-					return false;
-				}
-				else return rect.Contains(p, true);
-			}
-
-			public void SetOffsetFrom(Vector2 p)
-			{
-				moveOffset = screenPosition - p;
-			}
-
-			public Vector2 screenPosition
-			{
-				get
-				{
-					return lassoObject != null
-						? CameraHelper.Camera.WorldToScreenPoint(lassoObject.transform.position).ToVector2XZ()
-						: rect.position;
-				}
-				set
-				{
-					Debug.Log("set screen position - was: " + rect.position + ", now: " + value);
-					if (lassoObject != null)
-					{
-						Vector3 p3d =
-							lassoObject.transform.InverseTransformPoint(CameraHelper.Camera.ScreenToWorldPoint(value));
-						lassoObject.transform.position = new Vector3(p3d.x, 0, p3d.z);
-					}
-					else rect.position = value;
-				}
-			}
-
-			public static void MoveSelectedBy(Vector2 by, bool addUndo = true)
-			{
-				Debug.Log("MoveSelectedBy(" + by + "," + addUndo + ")");
-				if (selected < 0) return;
-				if (blackouts[selected].lassoObject != null)
-				{
-					Vector3[] verts = blackouts[selected].lassoObject.GetComponent<MeshFilter>().mesh.vertices;
-					for (int i = 0; i < verts.Length; i++)
-						verts[i] += CameraHelper.Camera.ScreenToWorldPoint(by) - CameraHelper.Camera.ScreenToWorldPoint(Vector2.zero);
-					blackouts[selected].lassoObject.GetComponent<MeshFilter>().mesh.vertices = verts;
-				}
-				else blackouts[selected].screenPosition += by;
-
-				if (addUndo)
-					AddUndoStep(
- /*new UndoStep{moveBlackout=true,blackout=blackouts[selected],blackoutInd=selected,delta=blackouts[selected].screenPosition,
-												              meshSnapshot=blackouts[selected].lassoObject!=null?blackouts[selected].lassoObject.GetComponent<MeshFilter>().mesh.vertices:null}*/); //moved a blackout
-			}
-
-			public static void DeSelect()
-			{
-				if (selected > -1 && blackouts.Count > selected && blackouts[selected].lassoObject != null)
-					blackouts[selected].lassoObject.GetComponent<MeshRenderer>().material.color =
-						blackouts[selected].farbe.WithAlpha(1);
-				selected = -1;
-			}
-
-			public static void Delete(int b, bool addUndo = true)
-			{
-				Debug.Log("ContourEditor.Blackout.Delete(" + b + "," + addUndo + ") lassoObject not null: " +
-				          (blackouts[b].lassoObject != null));
-				if (selected == b) DeSelect();
-				else if (selected >= b) selected--;
-				if (blackouts[b].lassoObject != null) UnityEngine.Object.Destroy(blackouts[b].lassoObject);
-				blackouts.RemoveAt(b);
-				//		Blackout[] boa=blackouts.ToArray();
-				//		boa[b].deleted=true;
-				//		blackouts=boa.ToList<Blackout>();
-				if (addUndo)
-				{
-					//if(undos.Last().moveBlackout&&undos.Last().blackoutInd==b) undos.Remove(undos.Last());//Remove undo step added when we started moving it from the beginning of the single click.
-					AddUndoStep( /*new UndoStep{deleteBlackout=true,blackout=blackouts[b],blackoutInd=b }*/);
-				}
-			}
-		}
 
 		private Action _quitButtonAction;
 
@@ -887,11 +759,6 @@ namespace ContourEditorTool
 					{
 						buttonContent = new GUIContent(icons.ByName("Circle Mode"), "Edit in a Circle"),
 						OnSelect = () => circle = !circle, shortcut = new KeyCode[] { KeyCode.C }
-					},
-					new ToolbarMenu.Item()
-					{
-						buttonContent = new GUIContent(icons.ByName("Information"), "Show/Hide Information"),
-						OnSelect = () => instance.toolbar.ToggleInfo(), shortcut = new KeyCode[] { KeyCode.I }
 					}
 				}
 			};
@@ -1597,7 +1464,7 @@ namespace ContourEditorTool
 			get { return toolBehaviour[(int)toolMode]; }
 		}
 
-		private void MouseUp()
+		public void MouseUp()
 		{
 			Debug.Log("Projection.MouseUp(); downPoint: " + downPoint + ",beyond threshold: " +
 			          (Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) > groupSelectThreshold) +
@@ -1727,7 +1594,6 @@ namespace ContourEditorTool
 						instance.backgrounds[background = (background + 1) % instance.backgrounds.Length];
 				}
 			},
-			{ KeyCode.T, () => { instance.toolbar.enabled = !instance.toolbar.enabled; } },
 		};
 
 		public static void SelectAll()
@@ -1858,8 +1724,7 @@ namespace ContourEditorTool
 
 		private void Update()
 		{
-			if (mode != Mode.normal || toolbar.Contains(SRSUtilities.adjustedFlipped) ||
-			    Toolbar.clickedThisFrame) return;
+			if (mode != Mode.normal) return;
 
 			if (Input.GetKeyDown(KeyCode.Keypad7)) Debug.Log("KeyPad7.");
 			inch = Input.GetKey(coarseInchKey) ? 0.1f : 0.005f; //Fine movement of vertex positions
@@ -1993,148 +1858,38 @@ namespace ContourEditorTool
 		{
 			originalColumns = columns = verts;
 			Reset(-1, true, true);
-			Toolbar.clickedThisFrame = true;
+			
 		}
 
-		//used for testing
 		public static bool HideOldUI = false;
-
 		private void OnGUI()
 		{
 			DrawBlackouts();
-			//if (HideOldUI) return;
-			GUI.skin = gantrySkin;
-
 
 			if (originalColumns < minDensity)
 			{
-				int[] densityOptions = { 2, 11, 21, 41 };
-
 				SRSUtilities.NormalizeGUIMatrix();
-				if (!HideOldUI)
-				{
-					GUI.Window(0, new Rect(UIHelper.WindowPosition.position + Vector2.up * 256, UIHelper.WindowPosition.size),
-						(id) =>
-						{
-							float breite = 32 + 32 / Mathf.Max(Projection.DisplaysAmount, 1);
-							for (int i = 0; i < densityOptions.Length; i++)
-							{
-								if (GUI.Button(new Rect(breite / 8 + (breite + breite / 8) * i, 20, breite, 64),
-									    densityOptions[i].ToString(), gantrySkin.customStyles[5]))
-								{
-									Debug.Log("SET DENSITY OPTION TO: " + densityOptions[i]);
-									SetToolbarAvailable(true);
-									originalColumns = columns = densityOptions[i];
-									Reset(-1, true, true);
-									Toolbar.clickedThisFrame = true;
-								}
-							}
-						}, "Choose Screen Density");
-				}
 
 				return;
 			}
 
-			switch (mode)
-			{
-				case Mode.save:
-					GUI.Window(0, UIHelper.WindowPosition, (id) =>
-					{
-						//						saveName=GUI.TextField(new Rect(8,8,Screen.width*0.5f-16,32),saveName);
-						saveName = GUI.TextField(
-							new Rect(8, UIHelper.saveWindowSize.y * 0.5f - 16, UIHelper.saveWindowSize.x - 16, 32), saveName);
-						//for(int i=0;i<DisplaysAmount;i++)if(GUI.Toggle(new Rect(16,UIHelper.saveWindowSize.y*0.5f+32+i*24,16,16),saveAsDefault==i,"Set as Default "+(new string[]{"Gantry","Wall"}[i])+" Configuration"))saveAsDefault=i;
-						saveAsDefault = GUI.Toggle(new Rect(16, UIHelper.saveWindowSize.y * 0.5f + 32, 16, 16),
-							saveAsDefault == (int)Settings.monitorMode,
-							"Set as Default " + (new string[] { "Gantry", "Wall" }[(int)Settings.monitorMode]) +
-							" Configuration")
-							? (int)Settings.monitorMode
-							: -1;
-						//						saveName=GUI.TextField(new Rect(16+8+8,UIHelper.saveWindowSize.y*0.5f+32,UIHelper.saveWindowSize.x-16,32),saveName);
-						if (GUI.Button(
-							    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-							    "Cancel"))
-						{
-							mode = Mode.normal;
-							Toolbar.clickedThisFrame = true;
-						}
+			Draw();
+		}
 
-						if (GUI.Button(
-							    new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
-								    UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Save") /*&&!Menu.DraggingWindow*/)
-						{
-							SaveConfiguration(saveName);
-							Toolbar.clickedThisFrame = true;
-						}
-					}, "Choose Save Name");
-					break;
-				case Mode.load:
-					if (!string.IsNullOrEmpty(fileToDelete))
-						GUI.Window(0, UIHelper.WindowPosition, (id) =>
-						{
-							GUI.Label(
-								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
-								"Really delete the \"" + Path.GetFileNameWithoutExtension(fileToDelete) +
-								"\" configuration?", gantrySkin.customStyles[2]);
-							if (GUI.Button(
-								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-								    "No")) fileToDelete = "";
-							else if (GUI.Button(
-								         new Rect(UIHelper.saveWindowSize.x * 0.5f + 8, UIHelper.saveWindowSize.y - 8 - 32,
-									         UIHelper.saveWindowSize.x * 0.5f - 16, 32), "Yes"))
-							{
-								Debug.Log("Moving \"" + fileToDelete + "\" to \"" + backupDir + "/" +
-								          Path.GetFileName(fileToDelete) + "\".");
-								File.Move(fileToDelete, backupDir + "/" + Path.GetFileName(fileToDelete));
-								fileToDelete = "";
-							}
-						}, "Load a Configuration");
-					else
-						GUI.Window(0, UIHelper.WindowPosition, (id) =>
-						{
-							var files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
-
-							scrollPosition = GUI.BeginScrollView(
-								new Rect(0, 32, UIHelper.WindowPosition.width - 8, UIHelper.WindowPosition.height - 8 - 64 - 8),
-								scrollPosition, new Rect(0, 0, UIHelper.saveWindowSize.x - 32, files.Length * 40));
-							for (int i = 0; i < files.Length; i++)
-								if (GUI.Button(new Rect(8, i * 40, UIHelper.saveWindowSize.x - 64 - 8, 32), files[i]))
-								{
-									LoadConfiguration(files[i]);
-									Toolbar.clickedThisFrame = true;
-									SaveDefaultConfiguration(files[i]);
-								}
-								else if (GUI.Button(new Rect(8 + UIHelper.saveWindowSize.x - 64 - 8, i * 40, 32, 32), "X"))
-									fileToDelete = files[i];
-
-							GUI.EndScrollView();
-							if (GUI.Button(
-								    new Rect(8, UIHelper.saveWindowSize.y - 8 - 32, UIHelper.saveWindowSize.x * 0.5f - 16, 32),
-								    "Cancel"))
-							{
-								mode = Mode.normal;
-								Toolbar.clickedThisFrame = true;
-							}
-						}, "Load a Configuration");
-					break;
-				case Mode.normal:
-					GUI.color = Color.red;
-
-					GUI.color = Color.green;
-					for (int i = 0; i < mirror.Length; i++)
-						if (mirror[i])
-							GUI.DrawTexture(
-								new Rect(
-									(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
-										Mathf.Sign(CameraHelper.Camera.transform.position.x)) - 1),
-									i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
-									i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
-					GUI.color = Color.white;
-					if (toolBehaviour[(int)toolMode].Draw != null)
-						toolBehaviour[(int)toolMode].Draw(SRSUtilities.adjustedFlipped);
-
-					break;
-			}
+		private static void Draw()
+		{
+			GUI.color = Color.green;
+			for (int i = 0; i < mirror.Length; i++)
+				if (mirror[i])
+					GUI.DrawTexture(
+						new Rect(
+							(1 - i) * (Screen.width * (0.5f - 0.25f * (Projection.DisplaysAmount - 1) *
+								Mathf.Sign(CameraHelper.Camera.transform.position.x)) - 1),
+							i * (Screen.height * 0.5f - 1), (1 - i) * 4 + i * Screen.width,
+							i * 4 + (1 - i) * Screen.height), Graphics.weiss1x1);
+			GUI.color = Color.white;
+			if (toolBehaviour[(int)toolMode].Draw != null)
+				toolBehaviour[(int)toolMode].Draw(SRSUtilities.adjustedFlipped);
 		}
 
 		private void SaveAndQuitToMenu()
@@ -2145,27 +1900,35 @@ namespace ContourEditorTool
 			WipeBlackouts();
 			_projection.IsEditing = false;
 			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
-			SetToolbarAvailable(false);
-
+			
 			_quitButtonAction?.Invoke();
 		}
 
-		private void SetToolbarAvailable(bool isAvailable)
+		
+		public static void LoadConfigurationByName(string name)
 		{
-			toolbar.isNeedToShow = isAvailable;
-			toolbar.info.isNeedToShow = isAvailable;
+			instance.LoadConfiguration(name);
+			
+			SaveDefaultConfiguration(name);
 		}
-
-		private static void SaveConfiguration(string fileName)
+		
+		public static void SaveConfiguration(string fileName)
 		{
+			#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+				return;
+			#endif
+			
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
-			var path = Settings.GantryPatternsPath + fileName;
+			var path = Path.Combine(Settings.GantryPatternsPath, fileName);
 
 			BinaryWriter bw;
 			try
 			{
+				if (!Directory.Exists(Settings.GantryPatternsPath))
+					Directory.CreateDirectory(Settings.GantryPatternsPath);
+
 				bw = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate));
 			}
 			catch (IOException e)

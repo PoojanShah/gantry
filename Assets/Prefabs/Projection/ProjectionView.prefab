@@ -566,7 +566,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &48927143547244672
 Transform:
   m_ObjectHideFlags: 0
@@ -693,7 +693,6 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 854c2de736359ad4dafa0f5eaefd5b84, type: 3}
   - {fileID: 2800000, guid: 060710e81b3715a4982df8508b49f10e, type: 3}
   - {fileID: 2800000, guid: 07dbdb52c79963b45b72e8ada1f0daeb, type: 3}
-  gantrySkin: {fileID: 11400000, guid: da4481917fe03a94899dedc0543e9cc6, type: 2}
   toolbar: {fileID: 0}
   lassoLine: {fileID: 1264669741}
   lassoPoint: {fileID: 639814126}

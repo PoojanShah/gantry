@@ -1,40 +1,14 @@
 using UnityEngine;
-using System;
 using System.IO;
 using System.Collections;
 using System.Linq;
-using Configs;
 using ContourEditorTool;
+using ContourToolsAndUtilities;
 using Core;
 using Media;
-using UnityEngine.Video;
-using Object = UnityEngine.Object;
 
 namespace VideoPlaying
 {
-	[Serializable]
-	public class VideoPlayerScreen
-	{
-		public Transform Transform;
-		public VideoPlayer Player;
-
-		[SerializeField] private GameObject _gameObject;
-		[SerializeField] private Renderer _renderer;
-
-		public GameObject GetObject() => _gameObject;
-		public bool IsActive() => _gameObject.activeSelf;
-		public void SetActive(bool isActive) => _gameObject.SetActive(isActive);
-		public void SetTexture(Texture texture) => _renderer.sharedMaterial.mainTexture = texture;
-
-		public void Stop()
-		{
-			Player.Stop();
-			Player.clip = null;
-
-			_renderer.sharedMaterial.mainTexture = null;
-		}
-	}
-
 	public class Projection : MonoBehaviour
 	{
 		public VideoPlayerScreen[] Screens => _screens;
