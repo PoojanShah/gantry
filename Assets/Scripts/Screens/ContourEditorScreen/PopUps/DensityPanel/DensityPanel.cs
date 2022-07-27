@@ -22,7 +22,5 @@ namespace Screens.ContourEditorScreen.PopUps.DensityPanel
 				});
 			}
 		}
-
-		
 	}
 }

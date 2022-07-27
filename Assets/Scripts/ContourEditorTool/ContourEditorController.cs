@@ -29,7 +29,10 @@ namespace ContourEditorTool
 		public void ShowTools(bool isShow)
 		{
 			if (isShow)
+			{
 				_editorUi = _factory.InstantiateObject<ContourEditorUI>(_editorUiPrefab, _projection.transform);
+				_editorUi.Init(_factory);
+			}
 			else
 				Object.Destroy(_editorUi.gameObject);
 		}

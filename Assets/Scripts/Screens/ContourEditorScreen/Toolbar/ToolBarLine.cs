@@ -12,7 +12,7 @@ namespace Screens.ContourEditorScreen.Toolbar
 		[SerializeField] private Button _mainButton;
 		[SerializeField] private ToolButton[] _instruments;
 		[SerializeField] private Transform _toolsTransform;
-		
+
 		private ToolButton _lastButton;
 
 		public ToolButton LastButton
@@ -22,36 +22,25 @@ namespace Screens.ContourEditorScreen.Toolbar
 		}
 
 		public Button MainButton => _mainButton;
-
 		public int LineNumber => _lineNumber;
-
 		public ToolButton[] Instruments => _instruments;
 
-		public void Init(int block,
-			Action hideLines,
-			Action<int, int, int> onPointerEnter,
-			Action onPointerExit,
+		public void Init(int block, Action hideLines, Action<int, int, int> onPointerEnter, Action onPointerExit,
 			Image currentInstrument)
 		{
 			foreach (var button in _instruments)
-			{
-				button.Init(block,
-					this,
-					hideLines,
-					onPointerEnter,
-					onPointerExit,
-					currentInstrument);
-			}
-			
+				button.Init(block, this, hideLines, onPointerEnter, onPointerExit, currentInstrument);
+
 			_mainButton.onClick.AddListener(() => MainButtonAction(block, hideLines, currentInstrument));
-			
+
 			_toolsTransform.gameObject.SetActive(false);
 
-			if (block != BlockType.Functions.GetHashCode())
-			{
-				MainButton.image.sprite = _instruments[0].Button.image.sprite;
-				_lastButton = _instruments[0];
-			}
+			if (block == BlockType.Functions.GetHashCode())
+				return;
+
+			MainButton.image.sprite = _instruments[0].Button.image.sprite;
+
+			_lastButton = _instruments[0];
 		}
 
 		private void MainButtonAction(int block, Action hideLines, Image currentInstrument)
@@ -76,7 +65,6 @@ namespace Screens.ContourEditorScreen.Toolbar
 			currentInstrument.sprite = _lastButton.Button.image.sprite;
 		}
 
-		public void HideLine() =>
-			_toolsTransform.gameObject.SetActive(false);
+		public void HideLine() => _toolsTransform.gameObject.SetActive(false);
 	}
 }

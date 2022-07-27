@@ -32,51 +32,33 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private AdditionalButton[] _additionalButtons;
 
 		private Action _hideLines;
-		private bool _isInited= false;
 		private ICommonFactory _commonFactory;
 
-		private void Init()
+		public void Init(ICommonFactory commonFactory)
 		{
+			_commonFactory = commonFactory;
+
 			_hideLines += HideLinesAction;
 			
 			foreach (var block in _toolBar)
-			{
-				block.Init(_hideLines,
-					SetToolTipByID,
-					OnPointerExit,
-					_currentInstrument
-				);
-			}
+				block.Init(_hideLines, SetToolTipByID, OnPointerExit, _currentInstrument);
 
 			foreach (var button in _additionalButtons)
 			{
-				button.handler.OnPointerEnterAction += () => 
-					SetToolTipByID(button.ID.x, button.ID.y, button.ID.z);
-				button.handler.OnPointerExitAction += () =>_title.text = "";
+				button.handler.OnPointerEnterAction += () => SetToolTipByID(button.ID.x, button.ID.y, button.ID.z);
+				button.handler.OnPointerExitAction += () =>_title.text = string.Empty;
 			}
 
-			_currentInstrument.sprite = _toolBar[0]
-				.Lines[0]
-				.Instruments[0]
-				.Button
-				.image
-				.sprite;
-
-			_commonFactory = new CommonFactory();
+			_currentInstrument.sprite = _toolBar[0].Lines[0].Instruments[0].Button.image.sprite;
 
 			_saveButton.onClick.AddListener(ShowSavePopUp);
 			_loadButton.onClick.AddListener(ShowLoadPopUp);
 			
 			_toolBarTransform.gameObject.SetActive(false);
-
-			_isInited = true;
 		}
 
 		public void ShowDensityPanel()
 		{
-			if (!_isInited)
-				Init();
-			
 			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas).Init(()=>
 				_toolBarTransform.gameObject.SetActive(true));
 		}
@@ -88,10 +70,7 @@ namespace Screens.ContourEditorScreen
 				.buttonContent.tooltip;
 		}
 
-		private void ShowSavePopUp()
-		{
-			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init();
-		}
+		private void ShowSavePopUp() => _commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init();
 
 		private void ShowLoadPopUp()
 		{
@@ -106,7 +85,12 @@ namespace Screens.ContourEditorScreen
 				line.HideLine();
 		}
 		
-		private void OnPointerExit() =>
-			_title.text = "";
+		private void OnPointerExit() => _title.text = string.Empty;
+
+		private void OnDestroy()
+		{
+			_saveButton.onClick.RemoveAllListeners();
+			_loadButton.onClick.RemoveAllListeners();
+		}
 	}
 }

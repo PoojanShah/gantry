@@ -1921,13 +1921,14 @@ namespace ContourEditorTool
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
-			var path = Settings.GantryPatternsPath + fileName;
+			var path = Path.Combine(Settings.GantryPatternsPath, fileName);
 
 			BinaryWriter bw;
 			try
 			{
-				if (!Directory.Exists(path))
-					Directory.CreateDirectory(path);
+				if (!Directory.Exists(Settings.GantryPatternsPath))
+					Directory.CreateDirectory(Settings.GantryPatternsPath);
+
 				bw = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate));
 			}
 			catch (IOException e)

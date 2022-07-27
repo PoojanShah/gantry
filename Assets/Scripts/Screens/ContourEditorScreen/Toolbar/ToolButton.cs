@@ -12,19 +12,13 @@ namespace Screens.ContourEditorScreen.Toolbar
 		[SerializeField] private Button _button;
 
 		public int Id => _id;
-
 		public Button Button => _button;
 
-		public void Init(int block,
-			ToolBarLine line,
-			Action hideLines,
-			Action<int, int, int> onPointerEnter,
-			Action onPointerExit,
-			Image currentInstrument)
+		public void Init(int block, ToolBarLine line, Action hideLines, Action<int, int, int> onPointerEnter,
+			Action onPointerExit, Image currentInstrument)
 		{
-			_button.onClick.AddListener(() => 
-				SetButtonAction(block, line, hideLines, currentInstrument));
-			
+			_button.onClick.AddListener(() => SetButtonAction(block, line, hideLines, currentInstrument));
+
 			var eventHandler = _button.gameObject.GetComponent<ButtonEventsHandler>();
 
 			eventHandler.OnPointerEnterAction += () =>

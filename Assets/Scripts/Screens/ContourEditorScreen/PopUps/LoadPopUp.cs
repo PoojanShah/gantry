@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using ContourEditorTool;
 using Core;
@@ -14,7 +13,6 @@ namespace Screens.ContourEditorScreen.PopUps
 		[SerializeField] private Transform _buttonsHolder;
 
 		private string[] _files;
-		private List<Button> _buttons;
 		private ICommonFactory _commonFactory;
 
 		public void Init(ICommonFactory commonFactory)
@@ -25,8 +23,6 @@ namespace Screens.ContourEditorScreen.PopUps
 
 			_files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
 			
-			_buttons = new List<Button>();
-
 			for (var i = 0; i < _files.Length; i++)
 			{
 				var f = _files[i];
@@ -40,8 +36,6 @@ namespace Screens.ContourEditorScreen.PopUps
 
 				var text = button.GetComponentInChildren<TextMeshProUGUI>();
 				text.text = file;
-				
-				_buttons.Add(button);
 			}
 		}
 

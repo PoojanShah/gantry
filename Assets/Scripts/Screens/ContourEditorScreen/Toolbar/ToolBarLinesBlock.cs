@@ -10,19 +10,11 @@ namespace Screens.ContourEditorScreen.Toolbar
 		public int BlockNumber;
 		public ToolBarLine[] Lines;
 
-		public void Init(Action hideLines,
-			Action<int, int, int> onPointerEnter,
-			Action onPointerExit,
+		public void Init(Action hideLines, Action<int, int, int> onPointerEnter, Action onPointerExit,
 			Image currentInstrument)
 		{
 			foreach (var line in Lines)
-			{
-				line.Init(BlockNumber,
-					hideLines,
-					onPointerEnter,
-					onPointerExit,
-					currentInstrument);
-			}
+				line.Init(BlockNumber, hideLines, onPointerEnter, onPointerExit, currentInstrument);
 		}
 	}
 }
