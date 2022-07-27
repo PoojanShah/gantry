@@ -27,9 +27,9 @@ namespace Common
 			_mediaController = new MediaController();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu));
-			_contourEditorController = new ContourEditorController(_projectionController.GetProjection());
+			_contourEditorController = new ContourEditorController(_projectionController.GetProjection(), _factory, _mainConfig.ContourEditorUiPrefab);
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController.Show, _mediaController);
+				_contourEditorController, _mediaController);
 
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
 			_mediaController.OnDownloadCompleted += ActivateLoadingItems;

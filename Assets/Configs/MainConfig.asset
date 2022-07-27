@@ -16,4 +16,6 @@ MonoBehaviour:
     type: 3}
   MediaItemPrefab: {fileID: 5424808283469494678, guid: 55045e1832698a540987ae5ddbdb845b,
     type: 3}
+  ContourEditorUiPrefab: {fileID: 3412390503116282432, guid: c40d4b21011224047b9c76dfbf032e24,
+    type: 3}
   ScreensConfig: {fileID: 11400000, guid: daca770208d7c1e42aee90c0d6ed1728, type: 2}

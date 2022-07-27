@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Linq;
 using Core;
+
 public static class SRSUtilities:System.Object
 {
     public static bool StretchedButtonLabel(Rect r, string text, GUIStyle style, float stretchBy)
@@ -19,6 +20,7 @@ public static class SRSUtilities:System.Object
         style.alignment = TextAnchor.MiddleCenter;
         style.normal.background = style.hover.background = style.active.background = null;
         GUI.matrix *= Matrix4x4.Scale(new Vector3(stretchBy, 1, 1));
+
         //        GUI.Label(new Rect(r.x+r.width*0.5f,r.y+r.height*0.5f,r.width,r.height),text,darkAgesSkin.customStyles[8]);
         //        GUI.Label(r,text,darkAgesSkin.customStyles[8]);
         //        GUI.Label(new Rect(r.x/stretchBy,r.y,r.width/stretchBy,r.height),text,darkAgesSkin.customStyles[8]);
