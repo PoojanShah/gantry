@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ namespace Library
 	{
 		[SerializeField] private Transform _transform;
 		[SerializeField] private Image _thumbnailImage;
-		[SerializeField] private Text _fileNameText, _colorText;
+		[SerializeField] private TMP_Text _fileNameText, _colorText;
 		[SerializeField] private Button _nextColorButton, _previousColorButton;
 
 		public void Init(Action<GameObject, bool> onColorButtonPressed)
