@@ -1399,20 +1399,29 @@ namespace ContourEditorTool
 
 		private static GameObject CreateLassoObject(Color c = default(Color))
 		{
-			GameObject lassoObject = new GameObject("Lasso Object", typeof(MeshFilter), typeof(MeshRenderer),
+			const string lassoGameObjectName = "Lasso Object";
+			const string lassoObjectTag = "Blackout";
+			const string guiTextShader = "GUI/Text Shader";
+
+			var lassoObject = new GameObject(lassoGameObjectName, typeof(MeshFilter), typeof(MeshRenderer),
 				typeof(MeshCollider));
-			//blackout.lassoObject=GameObject.Instantiate(instance.lassoBlackoutPrefab,Vector3.zero,Quaternion.identity) as GameObject;
-			lassoObject.GetComponent<MeshRenderer>().material =
-				instance.lassoPoint.GetComponent<MeshRenderer>().material;
+
+			lassoObject.GetComponent<MeshRenderer>().material = instance.lassoPoint.GetComponent<MeshRenderer>().material;
 			lassoObject.GetComponent<MeshCollider>().convex = true;
-			lassoObject.layer = LayerMask.NameToLayer("Blackout");
-			lassoObject.tag = "Blackout";
-			//Graphics.SetAlpha(blackout.lassoObject.GetComponent<MeshRenderer>().material,Input.GetKey(lassoKey)?editingLassoAlpha:1);
-			lassoObject.GetComponent<MeshRenderer>().material.shader = Shader.Find("GUI/Text Shader");
-			lassoObject.GetComponent<MeshRenderer>().material.color = c == default(Color) ? Color.black : c;
-			//lassoObject.GetComponent<MeshRenderer>().material.color=(c==default(Color)?Color.black:c).WithAlpha(editingLassoAlpha);
-			//Graphics.SetAlpha(lassoObject.GetComponent<MeshRenderer>().material,editingLassoAlpha);
+			lassoObject.layer = LayerMask.NameToLayer(lassoObjectTag);
+			lassoObject.tag = lassoObjectTag;
+			lassoObject.GetComponent<MeshRenderer>().material.shader = Shader.Find(guiTextShader);
+			lassoObject.GetComponent<MeshRenderer>().material.color = c == default ? Color.black : c;
+
+			_lassoObjects.Add(lassoObject);
+
 			return lassoObject;
+		}
+
+		public static void ShowLassoObjects(bool isShow)
+		{
+			foreach (var lassoObject in _lassoObjects)
+				lassoObject.SetActive(isShow);
 		}
 
 		private static void BuildLassoMesh(Blackout blackout, Vector3[] lassoPoints)
@@ -1924,6 +1933,8 @@ namespace ContourEditorTool
 		}
 
 		public static bool HideOldUI = false;
+		private static List<GameObject> _lassoObjects = new List<GameObject>();
+
 		private void OnGUI()
 		{
 			DrawBlackouts();
@@ -1956,17 +1967,21 @@ namespace ContourEditorTool
 
 		private void SaveAndQuitToMenu()
 		{
+			_lassoObjects.Clear();
+
 			DeSelect();
+
 			WipeLasso();
+
 			instance.gameObject.SetActive(false);
+
 			WipeBlackouts();
+
 			_projection.IsEditing = false;
-			Resources.FindObjectsOfTypeAll<Canvas>()[0].gameObject.SetActive(true);
 			
 			_quitButtonAction?.Invoke();
 		}
 
-		
 		public static void LoadConfigurationByName(string name)
 		{
 			instance.LoadConfiguration(name);

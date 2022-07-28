@@ -62,17 +62,14 @@ namespace Screens.ContourEditorScreen
 			_toolBarTransform.gameObject.SetActive(isShow);
 
 			ContourEditor.IsToolsBlocked = !isShow;
+
+			ContourEditor.ShowLassoObjects(isShow);
 		}
 
 		public void ShowDensityPanel()
 		{
-			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas).Init(
-				() =>
-				{
-					ShowToolbar(true);
-
-					ContourEditor.IsToolsBlocked = false;
-				});
+			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas)
+				.Init(() => ShowToolbar(true));
 		}
 
 		private void SetToolTipByID(int block, int line, int id)
@@ -86,7 +83,8 @@ namespace Screens.ContourEditorScreen
 		{
 			ShowToolbar(false);
 
-			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init(() => ShowToolbar(true));
+			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas)
+				.Init(() => ShowToolbar(true));
 		}
 
 		private void ShowLoadPopUp()
