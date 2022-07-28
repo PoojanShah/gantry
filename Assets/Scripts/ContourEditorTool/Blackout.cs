@@ -78,6 +78,9 @@ namespace ContourEditorTool
 
 			public static void MoveSelectedBy(Vector2 by, bool addUndo = true)
 			{
+				if (IsToolsBlocked)
+					return;
+
 				Debug.Log("MoveSelectedBy(" + by + "," + addUndo + ")");
 				if (selected < 0) return;
 				if (blackouts[selected].lassoObject != null)
@@ -97,6 +100,9 @@ namespace ContourEditorTool
 
 			public static void DeSelect()
 			{
+				if (IsToolsBlocked)
+					return;
+
 				if (selected > -1 && blackouts.Count > selected && blackouts[selected].lassoObject != null)
 					blackouts[selected].lassoObject.GetComponent<MeshRenderer>().material.color =
 						blackouts[selected].farbe.WithAlpha(1);
@@ -105,6 +111,9 @@ namespace ContourEditorTool
 
 			public static void Delete(int b, bool addUndo = true)
 			{
+				if (IsToolsBlocked)
+					return;
+
 				Debug.Log("ContourEditor.Blackout.Delete(" + b + "," + addUndo + ") lassoObject not null: " +
 				          (blackouts[b].lassoObject != null));
 				if (selected == b) DeSelect();

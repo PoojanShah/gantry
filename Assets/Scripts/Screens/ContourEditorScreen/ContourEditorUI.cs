@@ -54,13 +54,25 @@ namespace Screens.ContourEditorScreen
 			_saveButton.onClick.AddListener(ShowSavePopUp);
 			_loadButton.onClick.AddListener(ShowLoadPopUp);
 			
-			_toolBarTransform.gameObject.SetActive(false);
+			ShowToolbar(false);
+		}
+
+		private void ShowToolbar(bool isShow)
+		{
+			_toolBarTransform.gameObject.SetActive(isShow);
+
+			ContourEditor.IsToolsBlocked = !isShow;
 		}
 
 		public void ShowDensityPanel()
 		{
-			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas).Init(()=>
-				_toolBarTransform.gameObject.SetActive(true));
+			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas).Init(
+				() =>
+				{
+					ShowToolbar(true);
+
+					ContourEditor.IsToolsBlocked = false;
+				});
 		}
 
 		private void SetToolTipByID(int block, int line, int id)
@@ -70,12 +82,19 @@ namespace Screens.ContourEditorScreen
 				.buttonContent.tooltip;
 		}
 
-		private void ShowSavePopUp() => _commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init();
+		private void ShowSavePopUp()
+		{
+			ShowToolbar(false);
+
+			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas).Init(() => ShowToolbar(true));
+		}
 
 		private void ShowLoadPopUp()
 		{
+			ShowToolbar(false);
+
 			_commonFactory.InstantiateObject<LoadPopUp>(_loadPopUp.gameObject, _canvas)
-				.Init(_commonFactory);
+				.Init(_commonFactory, () => ShowToolbar(true));
 		}
 
 		private void HideLinesAction()

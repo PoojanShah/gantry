@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using ContourEditorTool;
 using Core;
@@ -14,12 +15,14 @@ namespace Screens.ContourEditorScreen.PopUps
 
 		private string[] _files;
 		private ICommonFactory _commonFactory;
+		private Action _onCloseAction;
 
-		public void Init(ICommonFactory commonFactory)
+		public void Init(ICommonFactory commonFactory, Action onCloseAction)
 		{
+			_onCloseAction = onCloseAction;
 			_commonFactory = commonFactory;
 			
-			_cancelButton.onClick.AddListener(() => Destroy(gameObject));
+			_cancelButton.onClick.AddListener(Clear);
 
 			_files = Directory.GetFiles(Settings.GantryPatternsPath, Constants.GantrySearchPattern);
 			
@@ -41,8 +44,15 @@ namespace Screens.ContourEditorScreen.PopUps
 		private void ChooseFileButtonAction(int i)
 		{
 			ContourEditor.LoadConfigurationByName(_files[i]);
-			
+
+			Clear();
+		}
+
+		private void Clear()
+		{
 			_cancelButton.onClick.RemoveAllListeners();
+
+			_onCloseAction?.Invoke();
 
 			Destroy(gameObject);
 		}

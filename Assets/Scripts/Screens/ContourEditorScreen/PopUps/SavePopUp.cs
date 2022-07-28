@@ -1,3 +1,4 @@
+using System;
 using ContourEditorTool;
 using TMPro;
 using UnityEngine;
@@ -10,8 +11,12 @@ namespace Screens.ContourEditorScreen.PopUps
 		[SerializeField] private TMP_InputField _inputField;
 		[SerializeField] private Button _saveButton, _cancelButton;
 
-		public void Init()
+		private Action _onClose;
+
+		public void Init(Action onClose)
 		{
+			_onClose = onClose;
+
 			_saveButton.onClick.AddListener(SaveButtonAction);
 			_cancelButton.onClick.AddListener(Clear);
 		}
@@ -26,6 +31,8 @@ namespace Screens.ContourEditorScreen.PopUps
 		private void Clear()
 		{
 			_cancelButton.onClick.RemoveAllListeners();
+
+			_onClose?.Invoke();
 
 			Destroy(gameObject);
 		}

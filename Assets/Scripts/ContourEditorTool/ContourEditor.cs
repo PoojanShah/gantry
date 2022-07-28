@@ -12,6 +12,8 @@ namespace ContourEditorTool
 {
 	public partial class ContourEditor : MonoBehaviour
 	{
+		public static bool IsToolsBlocked = true;
+
 		public static KeyCode
 			deleteBlackoutKey = KeyCode.LeftAlt,
 			moveBlackoutKey = KeyCode.LeftShift,
@@ -47,14 +49,23 @@ namespace ContourEditorTool
 				//Vertex
 				OnMouseDown = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					if (selectionShape == Shape.lasso) AddSelectionLassoPunkt(p);
 				},
 				OnDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					if (selectionShape == Shape.lasso) UpdateSelectionLasso(p);
 				},
 				OnFinishDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					Debug.Log("Vertex mode's OnFinishDrag(" + p + ") selectionShape: " + selectionShape +
 					          ",downPoint: " + downPoint + ",downPoint.FlipY(): " + downPoint.FlipY());
 					if (selectionShape == Shape.lasso)
@@ -73,6 +84,9 @@ namespace ContourEditorTool
 				},
 				Draw = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					Vector2 startPoint = Input.GetKey(centeredSelectionKey)
 						? p + (downPoint.FlipY() - p) * 2
 						: downPoint.FlipY();
@@ -86,6 +100,9 @@ namespace ContourEditorTool
 				},
 				OnSingleClick = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					Debug.Log("Tool.OnSingleClick(" + p + ") (Vertex mode)");
 					RaycastHit hit;
 					if (!Physics.Raycast(CameraHelper.Camera.ScreenPointToRay(SRSUtilities.adjustedMousePosition), out hit,
@@ -135,6 +152,10 @@ namespace ContourEditorTool
 					{
 						KeyCode.Delete, () =>
 						{
+
+							if (IsToolsBlocked)
+								return;
+
 							Delete(ApplicableVertices());
 							Debug.Log("Deleted triangles containing vertices " + ApplicableVertices().Stringify() +
 							          ".");
@@ -152,6 +173,9 @@ namespace ContourEditorTool
 				//Blackout
 				OnMouseDown = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Down
 					Debug.Log("Blackout.selected: " + Blackout.selected + ", count: " + blackouts.Count);
 					if (Blackout.selected > -1 && blackouts[Blackout.selected].Contains(p.FlipY()))
@@ -166,6 +190,9 @@ namespace ContourEditorTool
 				},
 				Draw = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Draw
 					if (Blackout.moving < 0)
 						switch (Blackout.shape)
@@ -201,6 +228,9 @@ namespace ContourEditorTool
 				},
 				OnDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					if (Blackout.moving > -1)
 					{
 						Debug.Log("Lasso mode's OnDrag; moving: " + Blackout.moving + ", lassoObj: " +
@@ -212,6 +242,9 @@ namespace ContourEditorTool
 				},
 				OnFinishDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Up
 					if (Blackout.moving > -1) Blackout.moving = -1;
 					else if (Blackout.shape != Shape.lasso)
@@ -237,7 +270,9 @@ namespace ContourEditorTool
 				},
 				OnSingleClick = (p) =>
 				{
-					//RaycastHit hit;
+					if (IsToolsBlocked)
+						return;
+
 					int b;
 					for (b = blackouts.Count - 1; b > -1; b--)
 						if (blackouts[b].Contains(SRSUtilities.adjustedFlipped))
@@ -266,6 +301,9 @@ namespace ContourEditorTool
 				//Whiteout
 				OnMouseDown = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Down
 					Debug.Log("Blackout.selected: " + Blackout.selected + ", count: " + blackouts.Count);
 					if (Blackout.selected > -1 && blackouts[Blackout.selected].Contains(p.FlipY()))
@@ -280,6 +318,9 @@ namespace ContourEditorTool
 				},
 				Draw = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Draw
 					if (Blackout.moving < 0)
 						switch (Blackout.shape)
@@ -313,6 +354,9 @@ namespace ContourEditorTool
 				},
 				OnDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					if (Blackout.moving > -1)
 					{
 						Debug.Log("Lasso mode's OnDrag; moving: " + Blackout.moving + ", lassoObj: " +
@@ -324,6 +368,9 @@ namespace ContourEditorTool
 				},
 				OnFinishDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Up
 					if (Blackout.moving > -1) Blackout.moving = -1;
 					else if (Blackout.shape != Shape.lasso)
@@ -345,6 +392,9 @@ namespace ContourEditorTool
 				},
 				OnSingleClick = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					int b;
 					for (b = blackouts.Count - 1; b > -1; b--)
 						if ( /*!blackouts[i].deleted&&*/blackouts[b].Contains(SRSUtilities.adjustedFlipped))
@@ -374,10 +424,16 @@ namespace ContourEditorTool
 				//Scale
 				OnMouseDown = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					if (ScaleZones().Any((r) => r.Contains(p, true))) BeginScale(p, scaleMode);
 				},
 				OnDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Update
 					Vector3[] verts = instance.GetComponent<MeshFilter>().mesh.vertices;
 					Vector2 clampMin =
@@ -438,12 +494,18 @@ namespace ContourEditorTool
 				},
 				OnFinishDrag = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					scaling = false;
 					movingScaleZones = new int[2] { -1, -1 };
 					AddUndoStep( /*new UndoStep{meshSnapshot=verts}*/);
 				},
 				Draw = (p) =>
 				{
+					if (IsToolsBlocked)
+						return;
+
 					//Debug.Log("Scale mode Draw().");
 					if (scaleMode == ScaleMode.normal)
 					{
@@ -802,9 +864,7 @@ namespace ContourEditorTool
 		public static void AddUndoStep(bool resetCurrentStep = true)
 		{
 			Debug.Log("Projection.AddUndoStep(" + resetCurrentStep + ") ANFANG, undo: " + undo + "/" + undos.Count);
-			//if(!IsEditing)return;//Likely From configuration-loading operations in play mode.
 			while (undo > -1 && undo < undos.Count - 1) undos.RemoveAt(undos.Count - 1);
-			//Mesh mesh;
 			UndoStep us = new UndoStep();
 			us.meshSnapshot = instance.GetComponent<MeshFilter>().mesh.vertices;
 			us.selectedVerts = selectedVertices.ToArray();
@@ -935,7 +995,6 @@ namespace ContourEditorTool
 			columns = originalColumns;
 			deleted.Clear();
 			ReconstructScreen(0, false);
-			//ReconstructScreen(0,Projection.IsEditing,screenNum>-1 ? instance.projection.screens[screenNum] : instance.gameObject);
 			if (wipeBlackouts) WipeBlackouts();
 			WipeIntermittents();
 			transform.position = Vector3.zero;
@@ -994,8 +1053,6 @@ namespace ContourEditorTool
 
 					if (_projection.IsEditing)
 					{
-						//Debug.Log("IsEditing true for: " + (z * columns + x));
-
 						var vertex = Instantiate(instance.vertexDotPrefab,
 								instance.transform.TransformPoint(vertices[x + z * columns]),
 								Quaternion.Euler(90, 0, 0))
@@ -1083,6 +1140,9 @@ namespace ContourEditorTool
 
 		public void MoveSelectedVerticesBy(Vector3 differential, bool flipY = false)
 		{
+			if (IsToolsBlocked)
+				return;
+
 			if (selectedVertices.Count < 1)
 			{
 				Debug.LogError("Projection.MoveSelectedVerticesBy called with no selected vertex.");
@@ -1255,7 +1315,10 @@ namespace ContourEditorTool
 
 		public static void DeSelect(bool undoStep = true)
 		{
-			//if(!IsEditing)return;
+
+			if (IsToolsBlocked)
+				return;
+
 			Debug.Log("ContourEditor.DeSelect(" + undoStep + ")");
 			selectedVertices.ForEach((i) => vertexDots[i].Select(false));
 			Vector3[] verts = instance.GetComponent<MeshFilter>().mesh.vertices;
