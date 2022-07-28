@@ -1924,6 +1924,7 @@ namespace ContourEditorTool
 			var path = Path.Combine(Settings.GantryPatternsPath, fileName);
 
 			BinaryWriter bw;
+
 			try
 			{
 				if (!Directory.Exists(Settings.GantryPatternsPath))
@@ -1998,7 +1999,7 @@ namespace ContourEditorTool
 			BinaryReader br;
 			try
 			{
-				br = new BinaryReader(new FileStream(fileName, FileMode.Open));
+				br = new BinaryReader(new FileStream(Path.GetFullPath(fileName), FileMode.Open));
 			}
 			catch (IOException e)
 			{

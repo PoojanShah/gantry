@@ -9,8 +9,8 @@ namespace Screens.ContourEditorScreen.PopUps
 {
 	public class LoadPopUp : MonoBehaviour
 	{
-		[SerializeField] private Button _buttonPrefab, _cancelButton;
-		[SerializeField] private Transform _buttonsHolder;
+		[SerializeField] private Button _patternToLoadPrefab, _cancelButton;
+		[SerializeField] private Transform _patternsToLoadParent;
 
 		private string[] _files;
 		private ICommonFactory _commonFactory;
@@ -27,10 +27,9 @@ namespace Screens.ContourEditorScreen.PopUps
 			{
 				var f = _files[i];
 				var file = Path.GetFileName(f);
-
-				var button = _commonFactory.InstantiateObject<Button>(_buttonPrefab.gameObject, _buttonsHolder);
-
+				var button = _commonFactory.InstantiateObject<Button>(_patternToLoadPrefab.gameObject, _patternsToLoadParent);
 				var id = i;
+
 				button.onClick.AddListener(() => 
 					ChooseFileButtonAction(id));
 
