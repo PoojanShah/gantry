@@ -559,7 +559,6 @@ GameObject:
   - component: {fileID: 48927143547244676}
   - component: {fileID: 48927143547244675}
   - component: {fileID: 48927143547244684}
-  - component: {fileID: 48927143547244685}
   m_Layer: 9
   m_Name: Projection
   m_TagString: Untagged
@@ -693,7 +692,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 854c2de736359ad4dafa0f5eaefd5b84, type: 3}
   - {fileID: 2800000, guid: 060710e81b3715a4982df8508b49f10e, type: 3}
   - {fileID: 2800000, guid: 07dbdb52c79963b45b72e8ada1f0daeb, type: 3}
-  toolbar: {fileID: 0}
+  toolbar: {fileID: 48927143547244684}
   lassoLine: {fileID: 1264669741}
   lassoPoint: {fileID: 639814126}
 --- !u!114 &48927143547244684
@@ -716,28 +715,5 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
-  menuMargin: 8
   isNeedToShow: 0
   info: {fileID: 0}
---- !u!114 &48927143547244685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 48927143547244699}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d04ac98bf41d49642b6e4026379c03dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  titleBarHeight: 216
-  constrainToScreen: 1
-  rect:
-    serializedVersion: 2
-    x: 500
-    y: 0
-    width: 160
-    height: 216
-  message: 
-  isNeedToShow: 0

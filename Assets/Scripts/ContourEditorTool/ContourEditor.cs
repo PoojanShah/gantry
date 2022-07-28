@@ -574,7 +574,6 @@ namespace ContourEditorTool
 			instance = this;
 
 			GetComponent<MeshFilter>().mesh.Clear();
-			GetComponent<InfoDisplay>().rect.x = Screen.width - GetComponent<InfoDisplay>().rect.width;
 			scaling = false;
 			icons = Resources.LoadAll<Texture2D>("UI Icons");
 			Reset();

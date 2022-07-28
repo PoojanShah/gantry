@@ -5,15 +5,11 @@ namespace ContourToolsAndUtilities
 	public class Toolbar : Draggable2D
 	{
 		public bool isNeedToShow;
-		public InfoDisplay info;
 		public ToolbarMenu[] menus;
 
 		private void Awake()
 		{
-			info = GetComponent<InfoDisplay>();
-
 			isNeedToShow = false;
-			info.isNeedToShow = false;
 		}
 
 		private void Start()

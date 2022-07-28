@@ -106,7 +106,7 @@ namespace VideoPlaying
 
 			StopCoroutine("LoadAndPlayExternalResource");
 			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, screenNum));
-			GetComponent<Toolbar>().enabled = GetComponent<InfoDisplay>().enabled = false;
+			GetComponent<Toolbar>().enabled = false;
 			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
 		}
 

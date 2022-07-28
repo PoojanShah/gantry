@@ -59,7 +59,7 @@ namespace ContourEditorTool
 				_projection.gameObject.SetActive(true);
 				_projection.IsEditing = true;
 				_projection.enabled = true;
-				_projection.GetComponent<Toolbar>().enabled = _projection.GetComponent<InfoDisplay>().enabled = true;
+				_projection.GetComponent<Toolbar>().enabled = true;
 			}
 
 			InitProjection();
