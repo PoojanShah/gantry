@@ -1,5 +1,6 @@
 using System;
 using Core;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ namespace Screens
 		private const string SUPER_ADMIN_PASSWORD_TEXT = "Please enter the super administrator password:";
 
 		[SerializeField] private Button _okButton, _cancelButton;
-		[SerializeField] private InputField _inputField;
+		[SerializeField] private TMP_InputField _inputField;
 		[SerializeField] private Text _descriptionText;
 		
 		public void Init(Action<string> onOkButtonClick, PasswordType type)
