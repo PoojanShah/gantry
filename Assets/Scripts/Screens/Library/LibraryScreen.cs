@@ -9,7 +9,7 @@ namespace Library
 {
 	public class LibraryScreen : MonoBehaviour
 	{
-		[SerializeField] private Button _saveButton, _exitButton;
+		[SerializeField] private Button _exitButton;
 		[SerializeField] private Toggle _extensionToggle;
 		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
@@ -23,8 +23,7 @@ namespace Library
 			_quitButtonAction = quitButtonAction;
 
 			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
-
-			InitButtons();
+			_exitButton.onClick.AddListener(SaveAndExit);
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
 
@@ -53,9 +52,8 @@ namespace Library
 		}
 
 
-		private void ExitButtonClicked()
+		private void Clear()
 		{
-			_saveButton.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
 			_extensionToggle.onValueChanged.RemoveAllListeners();
 
@@ -72,13 +70,7 @@ namespace Library
 			_quitButtonAction?.Invoke();
 		}
 
-		private void InitButtons()
-		{
-			_saveButton.onClick.AddListener(SaveButtonClicked);
-			_exitButton.onClick.AddListener(ExitButtonClicked);
-		}
-
-		public void ShowFileExtensions(bool isShown)
+		private void ShowFileExtensions(bool isShown)
 		{
 			var libraryLength = Settings.MediaLibrary.Length;
 
@@ -93,7 +85,7 @@ namespace Library
 			}
 		}
 
-		private void OnColorClicked(GameObject clickedObject, bool isNextColor)
+		private static void OnColorClicked(GameObject clickedObject, bool isNextColor)
 		{
 			if (isNextColor)
 				NextColorClicked(clickedObject);
@@ -101,7 +93,7 @@ namespace Library
 				PreviousColorClicked(clickedObject);
 		}
 
-		public void NextColorClicked(GameObject callingObj)
+		private static void NextColorClicked(GameObject callingObj)
 		{
 			var index = int.Parse(callingObj.name);
 			var libFile = callingObj.GetComponent<LibraryFile>();
@@ -109,7 +101,7 @@ namespace Library
 			ChangeColor(index, libFile, true);
 		}
 
-		public void PreviousColorClicked(GameObject callingObj)
+		private static void PreviousColorClicked(GameObject callingObj)
 		{
 			var index = int.Parse(callingObj.name);
 			var libFile = callingObj.GetComponent<LibraryFile>();
@@ -117,7 +109,7 @@ namespace Library
 			ChangeColor(index, libFile, false);
 		}
 
-		public void SaveButtonClicked()
+		private void SaveAndExit()
 		{
 			try
 			{
@@ -133,9 +125,7 @@ namespace Library
 				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
 			}
 
-			_quitButtonAction?.Invoke();
-
-			gameObject.SetActive(false);
+			Clear();
 		}
 
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
