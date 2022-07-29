@@ -47,6 +47,7 @@ namespace VideoPlaying
 			ContourEditor.WipeBlackouts();
 
 			_projection.IsPlayMode = false;
+			_projection.Clear();
 
 			foreach (var videoPlayer in _players)
 			{

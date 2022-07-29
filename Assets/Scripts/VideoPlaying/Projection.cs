@@ -77,12 +77,6 @@ namespace VideoPlaying
 			return new Vector3(originalExtents.x * transform.localScale.x * (-1 * ((float)(DisplaysAmount - 1)) + screenNum * 2), 0, 0);
 		}
 
-		public void StopAllScreens()
-		{
-			foreach (var screen in Screens)
-				screen.Player.Stop();
-		}
-
 		public bool IsScreenPlayingById(int screenNum)
 		{
 			return screenNum < 0 || screenNum > _screens.Length - 1
@@ -100,7 +94,10 @@ namespace VideoPlaying
 				.Value);
 
 			IsEditing = false;
-			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
+
+			if (IsScreenPlayingById(screenNum)) 
+				StopMovie(screenNum);
+
 			const int cameraHeight = 10;
 			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * cameraHeight);
 			gameObject.SetActive(true);
@@ -188,6 +185,8 @@ namespace VideoPlaying
 			var screen = _screens[screenNum];
 			screen.Stop();
 		}
+
+		public void Clear() => Destroy(_renderer.sharedMaterial.mainTexture);
 
 		public void Rotate(int displayId = 0)
 		{
