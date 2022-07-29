@@ -2,6 +2,7 @@ using Configs;
 using ContourEditorTool;
 using Core;
 using Media;
+using Network;
 using Screens;
 using UnityEngine;
 using VideoPlaying;
@@ -18,7 +19,8 @@ namespace Common
 		private ProjectionController _projectionController;
 		private ContourEditorController _contourEditorController;
 		private MediaController _mediaController;
-		
+		private ServerController _serverController;
+
 		private void Awake()
 		{
 			CameraHelper.Init();
@@ -37,6 +39,13 @@ namespace Common
 			_mediaController.LoadMediaFromServer();
 
 			InitSettings();
+
+			InitNetwork();
+		}
+
+		private void InitNetwork()
+		{
+			_serverController = new ServerController();
 		}
 
 		private void OnDestroy()
