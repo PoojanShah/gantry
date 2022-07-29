@@ -1464,7 +1464,7 @@ namespace ContourEditorTool
 			mesh.triangles = triangles;
 			mesh.RecalculateBounds();
 			mesh.RecalculateNormals();
-			;
+			
 			blackout.lassoObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 			blackout.lassoObject.GetComponent<MeshRenderer>().material.color = blackout.farbe;
 			//blackout.lassoObject.GetComponent<MeshRenderer>().material.color=Color.white;
