@@ -101,7 +101,8 @@ namespace VideoPlaying
 
 			IsEditing = false;
 			if (IsScreenPlayingById(screenNum)) StopMovie(screenNum);
-			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * 5);
+			const int cameraHeight = 10;
+			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * cameraHeight);
 			gameObject.SetActive(true);
 
 			StopCoroutine("LoadAndPlayExternalResource");
