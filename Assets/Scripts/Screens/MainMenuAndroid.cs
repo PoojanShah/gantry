@@ -1,36 +1,27 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Core;
 using Media;
-using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
 
 namespace Screens
 {
-	public class MainMenu : MonoBehaviour
+	public class MainMenuAndroid : MonoBehaviour
 	{
-		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
-
-		[SerializeField] private Button _settingButton, _exitButton;
+		[SerializeField] private Button _exitButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle;
 
 		private List<MediaItem> _mediaItems;
 		private MediaController _mediaController;
 
-		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
+		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_mediaController = mediaController;
-			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			if(_mediaController != null)
-				InitMediaItems(_mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
-
-			InitCurrentConfigTitle();
+			InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 		}
 
 		public void SetMediaInteractable()
@@ -44,7 +35,6 @@ namespace Screens
 
 		private void OnDestroy()
 		{
-			_settingButton?.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
 		}
 
@@ -54,19 +44,6 @@ namespace Screens
 				Destroy(mediaItem.gameObject);
 
 			_mediaItems.Clear();
-		}
-
-		private void InitCurrentConfigTitle()
-		{
-			const string defaultConfigKey = Constants.DefaultConfigHash;
-
-			if (!PlayerPrefs.HasKey(defaultConfigKey) || !File.Exists(PlayerPrefs.GetString(defaultConfigKey)))
-				return;
-
-			var title = PlayerPrefs.GetString(defaultConfigKey);
-
-			if(_currentPatternTitle)
-				_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
 		}
 
 		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
