@@ -38,12 +38,12 @@ namespace Screens
 
 		public GameObject ShowScreen(ScreenType type)
 		{
-			var screen = _mainConfig.ScreensConfig.Screens.FirstOrDefault(s => s.Type == type);
+			var screenPrefab = _mainConfig.ScreensConfig.GetScreenPrefab(type);
 
-			if (screen == null)
+			if (screenPrefab == null)
 				return null;
 
-			var instance = _factory.InstantiateObject<Transform>(screen.Prefab, _canvasTransform).gameObject;
+			var instance = _factory.InstantiateObject<Transform>(screenPrefab, _canvasTransform).gameObject;
 
 			if (!IsPopup(type))
 			{
