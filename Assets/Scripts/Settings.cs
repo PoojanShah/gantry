@@ -22,6 +22,9 @@ public static class Settings
 #elif UNITY_STANDALONE_WIN
 	public static readonly string MediaPath = BuildPath + "/DownloadedGantryMedia/";
 	public static string GantryPatternsPath = BuildPath + "/meshes/";
+#elif UNITY_ANDROID
+	public static readonly string MediaPath = string.Empty;
+	public static string GantryPatternsPath = string.Empty;
 #endif
 
 	public enum MonitorMode

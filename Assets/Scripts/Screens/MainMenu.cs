@@ -24,7 +24,7 @@ namespace Screens
 		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_mediaController = mediaController;
-			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
+			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
 			if(_mediaController != null)
@@ -44,7 +44,7 @@ namespace Screens
 
 		private void OnDestroy()
 		{
-			_settingButton.onClick.RemoveAllListeners();
+			_settingButton?.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
 		}
 
@@ -65,7 +65,8 @@ namespace Screens
 
 			var title = PlayerPrefs.GetString(defaultConfigKey);
 
-			_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
+			if(_currentPatternTitle)
+				_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
 		}
 
 		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
