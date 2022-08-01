@@ -46,12 +46,13 @@ public class CustomNetworkServer : MonoBehaviour {
     {
         Debug.Log("Setting up server...");
         IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+        Debug.Log("free IP is " + ipHostInfo.AddressList[1].FindNextFree());
         IPAddress ipAddress = ipHostInfo.AddressList[1];
-        serverSocket.Bind(new IPEndPoint(IPAddress.Parse(NetworkController.IP), NetworkController.PORT));
+        var endPoint = new IPEndPoint(IPAddress.Parse(NetworkController.IP), NetworkController.PORT);
+        serverSocket.Bind(endPoint);
         serverSocket.Listen(0);
         serverSocket.BeginAccept(AcceptCallback, null);
-        Debug.Log("Server setup complete");
-        Debug.Log(serverSocket.LocalEndPoint.ToString());
+        Debug.Log("Server setup complete on address: " + serverSocket.LocalEndPoint);
     }
 
     private static void CloseAllSockets()
