@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Network;
 using UnityEngine;
 
 public class CustomNetworkServer : MonoBehaviour {
@@ -44,7 +45,9 @@ public class CustomNetworkServer : MonoBehaviour {
     private static void SetupServer()
     {
         Debug.Log("Setting up server...");
-        serverSocket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), PORT));
+        IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+        IPAddress ipAddress = ipHostInfo.AddressList[1];
+        serverSocket.Bind(new IPEndPoint(IPAddress.Parse(NetworkController.IP), NetworkController.PORT));
         serverSocket.Listen(0);
         serverSocket.BeginAccept(AcceptCallback, null);
         Debug.Log("Server setup complete");

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Network;
 using UnityEngine;
 
 public class CustomNetworkClient : MonoBehaviour
@@ -31,23 +32,18 @@ public class CustomNetworkClient : MonoBehaviour
         try {
             // Establish the remote endpoint for the socket.  
             // This example uses port 11000 on the local computer.  
-            IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-            Debug.Log(ipHostInfo);
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = IPAddress.Parse(NetworkController.IP);
             Debug.Log(ipAddress);
-            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888);
-            Debug.Log(remoteEP.ToString());
-            Debug.Log("init remote EP");
+            IPEndPoint remoteEP = new IPEndPoint(ipAddress, NetworkController.PORT);
+            Debug.Log(remoteEP);
             // Create a TCP/IP  socket.  
             Socket sender = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
 
             // Connect the socket to the remote endpoint. Catch any errors.  
             try {
-	            Debug.Log(" sender.Connect()");
                 sender.Connect(remoteEP);
-
-                Debug.Log(sender.RemoteEndPoint.ToString());
 
                 // Encode the data string into a byte array.  
                 byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
@@ -61,8 +57,8 @@ public class CustomNetworkClient : MonoBehaviour
                 //Debug.Log(Encoding.ASCII.GetString(bytes, 0, bytesRec));
 
                 // Release the socket.  
-                //sender.Shutdown(SocketShutdown.Send);
-                //sender.Close();
+                sender.Shutdown(SocketShutdown.Both);
+                sender.Close();
 
             }
             catch (ArgumentNullException ane) {

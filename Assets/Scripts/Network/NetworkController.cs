@@ -4,6 +4,9 @@ namespace Network
 {
 	public class NetworkController
 	{
+		public const string IP = "192.168.1.114";
+		public const int PORT = 8888;
+
 		private TCPTestClient _client;
 		private TCPTestServer _server;
 
