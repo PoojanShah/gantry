@@ -9,6 +9,7 @@ namespace Network
 
 		public NetworkController()
 		{
+			return;
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
 			_server = new TCPTestServer();
 #elif UNITY_ANDROID && !UNITY_EDITOR
@@ -19,6 +20,7 @@ namespace Network
 
 		public void SendMessage()
 		{
+			return;
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
 			_server.SendMessage();
 #elif UNITY_ANDROID && !UNITY_EDITOR
