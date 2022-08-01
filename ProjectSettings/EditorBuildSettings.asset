@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Gantry.unity
     guid: fa8bea2b3f85a7749907ef312b17c9f8
+  - enabled: 0
+    path: Assets/Scenes/GantryAndroid.unity
+    guid: 66c96ba5a687daf4c96bbd91332cc3d4
   m_configObjects: {}

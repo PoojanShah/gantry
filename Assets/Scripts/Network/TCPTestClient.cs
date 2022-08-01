@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Network;
 using UnityEngine;
 
 public class TCPTestClient
@@ -41,7 +43,9 @@ public class TCPTestClient
 	{
 		try
 		{
-			socketConnection = new TcpClient("localhost", 8052);
+			socketConnection = new TcpClient("192.168.1.1", 8052);
+
+			Debug.Log("Client is listening");
 			Byte[] bytes = new Byte[1024];
 			while (true)
 			{
@@ -57,6 +61,7 @@ public class TCPTestClient
 						// Convert byte array to string message. 						
 						string serverMessage = Encoding.ASCII.GetString(incommingData);
 						Debug.Log("server message received as: " + serverMessage);
+						NetworkDebugger.SetMessage(serverMessage);
 					}
 				}
 			}

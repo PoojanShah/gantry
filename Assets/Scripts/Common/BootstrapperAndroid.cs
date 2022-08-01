@@ -13,7 +13,7 @@ namespace Common
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
-		private ServerController _serverController;
+		private NetworkController _networkController;
 
 		private void Awake()
 		{
@@ -29,7 +29,17 @@ namespace Common
 
 		private void InitNetwork()
 		{
-			_serverController = new ServerController();
+			_networkController = new NetworkController();
+		}
+
+		private void Update()
+		{
+			if (Input.touchCount == 2)
+			{
+				_networkController.SendMessage();
+
+				NetworkDebugger.SetMessage("sent");
+			}
 		}
 	}
 }
