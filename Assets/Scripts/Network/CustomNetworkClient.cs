@@ -56,7 +56,7 @@ public class CustomNetworkClient : MonoBehaviour
                 int bytesSent = sender.Send(msg);
 
                 // Receive the response from the remote device.  
-                int bytesRec = sender.Receive(bytes);
+                //int bytesRec = sender.Receive(bytes);
 
                 //Debug.Log(Encoding.ASCII.GetString(bytes, 0, bytesRec));
 
