@@ -13,9 +13,7 @@ using UnityEngine;
 
 public class CustomNetworkClient : MonoBehaviour
 {
-	[SerializeField] private TMP_InputField _ipLastNumber;
-
-	public static void StartClient()
+	public static void StartClient(int ipLastNumber)
     {
         Debug.Log("start client");
         // Data buffer for incoming data.  
@@ -26,7 +24,7 @@ public class CustomNetworkClient : MonoBehaviour
         {
 	        // Establish the remote endpoint for the socket.  
 
-	        var ipAddress = NetworkHelper.GetMyIp();
+	        var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + ipLastNumber);
 	        var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
 	        Debug.Log("Connecting to + " + remoteEP);
 	        // Create a TCP/IP  socket.  

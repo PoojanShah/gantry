@@ -10,9 +10,21 @@ namespace Network
 		{
 			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
 
-//#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
 			return ipHostInfo.AddressList[1];
-//#endif
+#elif UNITY_ANDROID
+			return ipHostInfo.AddressList[0];
+#endif
+		}
+
+		public static string GetMyIpWithoutLastNumberString()
+		{
+			const char separator = '.';
+			var ip = GetMyIp().ToString().Split(separator);
+
+			var result = ip[0] + separator + ip[1] + separator + ip[2] + separator;
+
+			return result;
 		}
 	}
 }

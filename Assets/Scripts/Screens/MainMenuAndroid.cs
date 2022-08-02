@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Core;
 using Media;
+using Network;
 using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
@@ -13,7 +14,7 @@ namespace Screens
 	{
 		private readonly Vector2Int _ipValueRange = new(2, 255);
 
-		[SerializeField] private Button _exitButton;
+		[SerializeField] private Button _exitButton, _connect;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_InputField _ipEnd;
 		[SerializeField] private TMP_Text _ipStart;
@@ -24,14 +25,30 @@ namespace Screens
 		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_mediaController = mediaController;
+
+			_connect.onClick.AddListener(TryConnect);
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			_ipEnd.onValueChanged.AddListener(OnIpInputChanged);
+			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
-			InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
+			InitIpLabel();
+
+			//InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 		}
 
-		private void OnIpInputChanged(string currentValue)
+		private void TryConnect()
+		{
+			if (!int.TryParse(_ipEnd.text, out var number)) 
+				return;
+
+			Debug.Log("start client");
+
+			CustomNetworkClient.StartClient(number);
+		}
+
+		private void InitIpLabel() => _ipStart.text = NetworkHelper.GetMyIpWithoutLastNumberString();
+
+		private void VerifyIpNumber(string currentValue)
 		{
 			if (int.TryParse(currentValue, out var number))
 			{
@@ -58,7 +75,8 @@ namespace Screens
 		private void OnDestroy()
 		{
 			_exitButton.onClick.RemoveAllListeners();
-			_ipEnd.onValueChanged.RemoveAllListeners();
+			_connect.onClick.RemoveAllListeners();
+			_ipEnd.onEndEdit.RemoveAllListeners();
 		}
 
 		public void ClearMediaItems()

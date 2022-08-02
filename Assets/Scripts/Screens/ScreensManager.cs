@@ -86,9 +86,13 @@ namespace Screens
 
 		private void InitMainMenu(GameObject screen)
 		{
+#if UNITY_STANDALONE_WIN
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(_mediaController, PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaItemPrefab, _factory);
+#elif UNITY_ANDROID
+			var mainMenu = screen.GetComponent<MainMenuAndroid>();
+#endif
+			mainMenu.Init(_mediaController, null, Application.Quit,
+				_mainConfig.MediaItemPrefab, _factory);
 		}
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
