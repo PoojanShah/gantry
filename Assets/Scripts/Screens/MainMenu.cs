@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Core;
 using Media;
+using Network;
 using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
@@ -13,10 +14,11 @@ namespace Screens
 	public class MainMenu : MonoBehaviour
 	{
 		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
+		private const string QTS_IP_TITLE = "Server IP: ";
 
 		[SerializeField] private Button _settingButton, _exitButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle;
+		[SerializeField] private TMP_Text _currentPatternTitle, _serverIpTitle;
 
 		private List<MediaItem> _mediaItems;
 		private MediaController _mediaController;
@@ -31,6 +33,8 @@ namespace Screens
 				InitMediaItems(_mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
+
+			_serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();
 		}
 
 		public void SetMediaInteractable()
