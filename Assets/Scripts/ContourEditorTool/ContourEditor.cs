@@ -1933,10 +1933,13 @@ namespace ContourEditorTool
 		}
 
 		public static bool HideOldUI = false;
+		public static bool HideGUI = false;
 		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
 		private void OnGUI()
 		{
+			if (HideGUI)
+				return;
 			DrawBlackouts();
 
 			if (originalColumns < minDensity)
@@ -1991,9 +1994,9 @@ namespace ContourEditorTool
 		
 		public static void SaveConfiguration(string fileName)
 		{
-			#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+			/*#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
 				return;
-			#endif
+			#endif*/
 			
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
