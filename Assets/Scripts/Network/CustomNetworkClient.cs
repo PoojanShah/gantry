@@ -33,11 +33,9 @@ public class CustomNetworkClient : MonoBehaviour
             // Establish the remote endpoint for the socket.  
             // This example uses port 11000 on the local computer.  
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            Debug.Log("free IP is " + ipHostInfo.AddressList[0].FindNextFree());
             IPAddress ipAddress = IPAddress.Parse(NetworkController.IP);
-            Debug.Log(ipAddress);
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, NetworkController.PORT);
-            Debug.Log(remoteEP);
+            Debug.Log("Connecting to + " + remoteEP);
             // Create a TCP/IP  socket.  
             Socket sender = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);

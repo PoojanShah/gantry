@@ -19,7 +19,6 @@ namespace Common
 		private ProjectionController _projectionController;
 		private ContourEditorController _contourEditorController;
 		private MediaController _mediaController;
-		private NetworkController _networkController;
 
 		private void Awake()
 		{
@@ -43,19 +42,8 @@ namespace Common
 			InitNetwork();
 		}
 
-		private void Update()
-		{
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				_networkController.SendMessage();
-
-				NetworkDebugger.SetMessage("sent");
-			}
-		}
-
 		private void InitNetwork()
 		{
-			_networkController = new NetworkController();
 		}
 
 		private void OnDestroy()

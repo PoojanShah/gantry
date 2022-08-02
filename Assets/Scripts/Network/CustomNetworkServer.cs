@@ -46,7 +46,6 @@ public class CustomNetworkServer : MonoBehaviour {
     {
         Debug.Log("Setting up server...");
         IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-        Debug.Log("free IP is " + ipHostInfo.AddressList[1].FindNextFree());
         IPAddress ipAddress = ipHostInfo.AddressList[1];
         var endPoint = new IPEndPoint(IPAddress.Parse(NetworkController.IP), NetworkController.PORT);
         serverSocket.Bind(endPoint);
