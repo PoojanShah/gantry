@@ -2,25 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Network;
+using TMPro;
 using UnityEngine;
 
 public class CustomNetworkClient : MonoBehaviour
 {
-	// Use this for initialization
-    private void Start()
-    {
-	    StartClient();
-    }
-
-    void Update()
-    {
-	    if (Input.GetKeyDown(KeyCode.A))
-		    StartClient();
-    }
+	[SerializeField] private TMP_InputField _ipLastNumber;
 
 	public static void StartClient()
     {
@@ -29,50 +22,53 @@ public class CustomNetworkClient : MonoBehaviour
         byte[] bytes = new byte[1024];
 
         // Connect to a remote device.  
-        try {
-            // Establish the remote endpoint for the socket.  
-            // This example uses port 11000 on the local computer.  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = IPAddress.Parse(NetworkController.IP);
-            IPEndPoint remoteEP = new IPEndPoint(ipAddress, NetworkController.PORT);
-            Debug.Log("Connecting to + " + remoteEP);
-            // Create a TCP/IP  socket.  
-            Socket sender = new Socket(AddressFamily.InterNetwork,
-                SocketType.Stream, ProtocolType.Tcp);
+        try
+        {
+	        // Establish the remote endpoint for the socket.  
 
-            // Connect the socket to the remote endpoint. Catch any errors.  
-            try {
-                sender.Connect(remoteEP);
+	        var ipAddress = NetworkHelper.GetMyIp();
+	        var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
+	        Debug.Log("Connecting to + " + remoteEP);
+	        // Create a TCP/IP  socket.  
+	        var sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                // Encode the data string into a byte array.  
-                byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
-                
-                // Send the data through the socket.  
-                int bytesSent = sender.Send(msg);
+	        // Connect the socket to the remote endpoint. Catch any errors.  
+	        try
+	        {
+		        sender.Connect(remoteEP);
 
-                // Receive the response from the remote device.  
-                //int bytesRec = sender.Receive(bytes);
+		        // Encode the data string into a byte array.  
+		        byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
 
-                //Debug.Log(Encoding.ASCII.GetString(bytes, 0, bytesRec));
+		        // Send the data through the socket.  
+		        int bytesSent = sender.Send(msg);
 
-                // Release the socket.  
-                sender.Shutdown(SocketShutdown.Both);
-                sender.Close();
+		        // Receive the response from the remote device.  
+		        //int bytesRec = sender.Receive(bytes);
 
-            }
-            catch (ArgumentNullException ane) {
-                Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-            }
-            catch (SocketException se) {
-                Console.WriteLine("SocketException : {0}", se.ToString());
-            }
-            catch (Exception e) {
-                Console.WriteLine("Unexpected exception : {0}", e.ToString());
-            }
+		        //Debug.Log(Encoding.ASCII.GetString(bytes, 0, bytesRec));
+
+		        // Release the socket.  
+		        sender.Shutdown(SocketShutdown.Both);
+		        sender.Close();
+	        }
+	        catch (ArgumentNullException ane)
+	        {
+		        Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+	        }
+	        catch (SocketException se)
+	        {
+		        Console.WriteLine("SocketException : {0}", se.ToString());
+	        }
+	        catch (Exception e)
+	        {
+		        Console.WriteLine("Unexpected exception : {0}", e.ToString());
+	        }
 
         }
-        catch (Exception e) {
-            Console.WriteLine(e.ToString());
+        catch (Exception e)
+        {
+	        Console.WriteLine(e.ToString());
         }
     }
 }

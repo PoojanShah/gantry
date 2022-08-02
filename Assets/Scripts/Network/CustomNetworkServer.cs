@@ -23,40 +23,36 @@ public class CustomNetworkServer : MonoBehaviour {
         public Socket socket;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         CloseAllSockets();
     }
 
     // Use this for initialization
-    void Start ()
+    private void Start ()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         SetupServer();
 #endif
     }
 
-    // Update is called once per frame
-    void Update () {
-		if(Input.GetKeyDown(KeyCode.Space))
-            SendCommandToID(0);
-	}
-
     private static void SetupServer()
     {
         Debug.Log("Setting up server...");
-        IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-        IPAddress ipAddress = ipHostInfo.AddressList[1];
-        var endPoint = new IPEndPoint(IPAddress.Parse(NetworkController.IP), NetworkController.PORT);
+
+        var myIpAddress = NetworkHelper.GetMyIp();
+        var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
+
         serverSocket.Bind(endPoint);
         serverSocket.Listen(0);
         serverSocket.BeginAccept(AcceptCallback, null);
+
         Debug.Log("Server setup complete on address: " + serverSocket.LocalEndPoint);
     }
 
     private static void CloseAllSockets()
     {
-        foreach (Socket socket in clientSockets)
+        foreach (var socket in clientSockets)
         {
             socket.Shutdown(SocketShutdown.Both);
             socket.Close();
