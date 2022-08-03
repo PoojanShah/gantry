@@ -2,6 +2,7 @@ using System;
 using Configs;
 using Core;
 using Media;
+using Network;
 using UnityEngine;
 
 namespace VideoPlaying
@@ -33,7 +34,7 @@ namespace VideoPlaying
 		{
 			if (_projectionView != null)
 			{
-				//_projectionView.SetActive(true);
+				_projectionView.SetActive(true);
 				_projectionView.Init(StopAndHidePlayer);
 				_projectionView.Play(content);
 

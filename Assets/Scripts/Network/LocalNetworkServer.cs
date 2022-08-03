@@ -28,6 +28,8 @@ namespace Network
 		private static ProjectionController _projectionController;
 		private static MediaController _mediaController;
 
+		public static int ReceivedId = -1;
+
 		public LocalNetworkServer(ProjectionController projectionController, MediaController mediaController)
 		{
 			_projectionController = projectionController;
@@ -113,13 +115,12 @@ namespace Network
 			Debug.Log("Server Received Text: " + text);
 
 			SetRegister(current, text);
+
 			current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
 			var mediaId = int.Parse(text.Split('_')[1]);
 
-			_projectionController.Play(_mediaController.MediaFiles[mediaId]);
-
-			Debug.Log("finished");
+			ReceivedId = mediaId;
 		}
 
 		private static void SetRegister(Socket socket, string text)
@@ -157,6 +158,5 @@ namespace Network
 			Debug.Log("Command sent to Client");
 			SetUnRegister(cl.socket);
 		}
-
 	}
 }

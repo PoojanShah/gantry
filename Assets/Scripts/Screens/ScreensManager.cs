@@ -170,10 +170,12 @@ namespace Screens
 
 		private void PlayVideo(MediaContent content)
 		{
-			Object.Destroy(_currentScreen);
+			DestroyCurrentScreen();
 
 			_playAction?.Invoke(content);
 		}
+
+		public void DestroyCurrentScreen() => Object.Destroy(_currentScreen);
 
 		private void OpenPatternsEditor()
 		{

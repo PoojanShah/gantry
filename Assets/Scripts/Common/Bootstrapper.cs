@@ -43,6 +43,23 @@ namespace Common
 			InitNetwork();
 		}
 
+		private void Update()
+		{
+			HandleRemoteMessages();
+		}
+
+		private void HandleRemoteMessages()
+		{
+			if (LocalNetworkServer.ReceivedId < 0)
+				return;
+
+			_screensManager.DestroyCurrentScreen();
+
+			_projectionController.Play(_mediaController.MediaFiles[LocalNetworkServer.ReceivedId]);
+
+			LocalNetworkServer.ReceivedId = -1;
+		}
+
 		private void InitNetwork()
 		{
 #if UNITY_STANDALONE_WIN
