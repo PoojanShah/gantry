@@ -1,4 +1,5 @@
 using System;
+using Screens;
 
 namespace Network
 {
@@ -8,9 +9,9 @@ namespace Network
 		private LocalNetworkClient _client;
 
 #if UNITY_STANDALONE_WIN
-		public NetworkController(Action<int> playById)
+		public NetworkController(ScreensManager screensManager)
 		{
-			_server = new LocalNetworkServer(playById);
+			_server = new LocalNetworkServer(screensManager);
 		}
 #elif UNITY_ANDROID
 		public NetworkController()

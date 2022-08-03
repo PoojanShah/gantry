@@ -21,6 +21,7 @@ namespace Screens
 		private readonly MediaController _mediaController;
 
 		private GameObject _currentScreen;
+		private MainMenu _menu;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
@@ -90,6 +91,8 @@ namespace Screens
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+
+			_menu = mainMenu;
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
 			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
@@ -99,12 +102,7 @@ namespace Screens
 #if UNITY_STANDALONE_WIN
 		public void PlayVideoById(int id)
 		{
-			var menu = _currentScreen.GetComponent<MainMenu>();
-
-			if(menu == null)
-				return;
-
-			menu.PlayById(id);
+			_menu.PlayById(id);
 		}
 #endif
 

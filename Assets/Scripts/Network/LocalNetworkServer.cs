@@ -23,11 +23,11 @@ namespace Network
 		private const int BUFFER_SIZE = 2048;
 
 		private static readonly byte[] buffer = new byte[BUFFER_SIZE];
-		private static Action<int> _playByIdAction;
+		private static ScreensManager _screensManager;
 
-		public LocalNetworkServer(Action<int> playByIdAction)
+		public LocalNetworkServer(ScreensManager screensManager)
 		{
-			_playByIdAction = playByIdAction;
+			_screensManager = screensManager;
 
 			SetupServer();
 		}
@@ -108,12 +108,14 @@ namespace Network
 			string text = Encoding.ASCII.GetString(recBuf);
 			Debug.Log("Server Received Text: " + text);
 
-			var videoId = int.Parse(text.Split('_')[1]);
-
-			_playByIdAction?.Invoke(videoId);
-
 			SetRegister(current, text);
 			current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+
+			var videoId = int.Parse(text.Split('_')[1]);
+
+			_screensManager.PlayVideoById(videoId);
+
+			Debug.Log("finished");
 		}
 
 		private static void SetRegister(Socket socket, string text)

@@ -51,6 +51,8 @@ namespace Screens
 		{
 			_settingButton?.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
+
+			ClearMediaItems();
 		}
 
 		public void ClearMediaItems()
@@ -97,7 +99,7 @@ namespace Screens
 
 		public void PlayById(int id)
 		{
-			var media = _mediaItems.Find(m => m.Id == id);
+			var media = _mediaItems[id];
 
 			if(media == null)
 				return;
