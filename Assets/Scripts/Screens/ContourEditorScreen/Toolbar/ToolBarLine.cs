@@ -59,7 +59,7 @@ namespace Screens.ContourEditorScreen.Toolbar
 			if (_toolsTransform.gameObject.activeSelf)
 				return;
 
-			ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(_lineNumber, _lastButton.Id);
+			ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(block,_lineNumber, _lastButton.Id);
 			ContourEditor.instance.MouseUp();
 
 			currentInstrument.sprite = _lastButton.Button.image.sprite;

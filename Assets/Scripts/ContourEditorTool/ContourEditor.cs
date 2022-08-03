@@ -15,8 +15,6 @@ namespace ContourEditorTool
 		public static bool IsToolsBlocked = true;
 
 		public static KeyCode
-			deleteBlackoutKey = KeyCode.LeftAlt,
-			moveBlackoutKey = KeyCode.LeftShift,
 			deselectBlackoutKey = KeyCode.LeftShift,
 			buildLassoKey = KeyCode.M,
 			centeredSelectionKey = KeyCode.LeftControl,
@@ -553,17 +551,6 @@ namespace ContourEditorTool
 			GUI.DrawTexture(new Rect(a.x, a.y, b.x - a.x, b.y - a.y), instance.ellipse);
 		}
 
-		private static void StartSelectionLasso(Vector3 p)
-		{
-			lassoPoints.Clear();
-			instance.lassoLine.positionCount = 2; //instance.lassoLine.SetVertexCount(2);
-			for (int i = 0; i < 2; i++)
-			{
-				lassoPoints.Add(CameraHelper.Camera.ScreenToWorldPoint(p) + CameraHelper.Camera.transform.forward);
-				instance.lassoLine.SetPosition(i, lassoPoints[i]);
-			}
-		}
-
 		private static void AddSelectionLassoPunkt(Vector3 p)
 		{
 			if (lassoPoints.Count < 1)
@@ -649,6 +636,10 @@ namespace ContourEditorTool
 			ToolbarMenu.Item[][] toolMenu = new ToolbarMenu.Item[4][]; //Set Up Toolbar
 			for (int i = 0; i < toolMenu.Length; i++) toolMenu[i] = new ToolbarMenu.Item[3];
 			string[] shapes = Enum.GetNames(typeof(Shape));
+
+			//TODO: delete this region after tests
+			#region Buttons 
+
 			for (int s = 0; s < shapes.Length; s++)
 			{
 				int _s = s; //for closure
@@ -845,11 +836,8 @@ namespace ContourEditorTool
 				new ToolbarMenu(backgroundMenu, true) { selectedCategoryFarbe = Color.white },
 				new ToolbarMenu(actionMenu, false)
 			});
-		}
-
-		public void SetContourBackground(int background)
-		{
-			GetComponent<Renderer>().material.mainTexture = backgrounds[ContourEditor.background = background];
+			
+			#endregion 
 		}
 
 		private static void ResetTools()
@@ -858,6 +846,103 @@ namespace ContourEditorTool
 			WipeIntermittents();
 			Blackout.moving = -1;
 			dragging = false;
+		}
+
+		public void InstrumentAction(int block, int line, int id)
+		{
+			switch (block)
+			{
+				case 0:
+					SelectionBlockAction(line, id);
+					break;
+				case 1:
+					PatternBlockAction(id);
+					break;
+				case 2:
+					OperationsBlockAction(line, id);
+					break;
+			}
+		}
+
+		private void SelectionBlockAction(int line, int id)
+		{
+			switch (line)
+			{
+				case 0:
+					selectionShape = (Shape)id;
+					break;
+				case 1:
+				case 2:
+					Blackout.shape = (Shape)id;
+					break;
+			}
+		}
+
+		private void PatternBlockAction(int id)
+		{
+			GetComponent<Renderer>().material.mainTexture = backgrounds[background = id];
+		}
+
+		private void OperationsBlockAction(int line, int id)
+		{
+			switch (line)
+			{
+				case 0:
+					FileOperation(id);
+					break;
+				case 1:
+					EditOperation(id);
+					break;
+				case 2:
+					ViewOperation(id);
+					break;
+			}
+		}
+
+		private void FileOperation(int id)
+		{
+			switch (id)
+			{
+				case 3:
+					Reset(-1, true, true);
+					Restart();
+					break;
+				case 4:
+					SaveAndQuitToMenu();
+					break;
+			}
+		}
+
+		private void EditOperation(int id)
+		{
+			switch (id)
+			{
+				case 1:
+					Undo(-1);
+					break;
+				case 2:
+					Undo(1);
+					break;
+				case 3:
+					SelectAll();
+					break;
+			}
+		}
+
+		private void ViewOperation(int id)
+		{
+			switch (id)
+			{
+				case 1:
+					ToggleMirror(0);
+					break;
+				case 2:
+					ToggleMirror(1);
+					break;
+				case 3:
+					circle = !circle;
+					break;
+			}
 		}
 
 		//public static void AddUndoStep(UndoStep step=default(UndoStep),bool resetCurrentStep=true){
@@ -947,14 +1032,6 @@ namespace ContourEditorTool
 				}
 		}
 
-		private static void Undelete(int[] restoredTriangles)
-		{
-			Debug.LogWarning("ContourEditor.Undelete(" + restoredTriangles.Length + ")");
-			instance.GetComponent<MeshFilter>().mesh.triangles = restoredTriangles;
-			restoredTriangles.ToList().ForEach((v) => vertexDots[v].gameObject.SetActive(true));
-			deleted.RemoveSet(restoredTriangles);
-		}
-
 		public static void WipeBlackouts()
 		{
 			Debug.Log("ContourEditor.WipeBlackouts(), gesammt: " + blackouts.Count);
@@ -991,7 +1068,7 @@ namespace ContourEditorTool
 			//mesh.RecalculateNormals();
 			//mesh.RecalculateBounds();
 			if (toolbar != null && toolbar.menus != null && toolbar.menus.Length > 0)
-				toolbar.menus[0].SelectItem(0, 0);
+				toolbar.menus[0].SelectItem(0, 0, 0);
 			columns = originalColumns;
 			deleted.Clear();
 			ReconstructScreen(0, false);
@@ -1246,30 +1323,6 @@ namespace ContourEditorTool
 			       i % columns;
 		}
 
-		private static void ApplyToSelected(Action<int> a, List<int> doneVerts = null)
-		{
-			Debug.Log("Projection.ApplyToSelected(" + a + ") selectedVertices: " + selectedVertices.Stringify());
-			if (selectedVertices.Count < 1 || a == null) return;
-			if (doneVerts == null) doneVerts = new List<int>();
-			foreach (int vi in selectedVertices)
-				if (!doneVerts.Contains(vi))
-				{
-					//			Debug.Log("i="+i+",p="+p+",d="+d+",v+i*d*p="+(v+i*d*p)+",verts["+vi+"]: "+instance.GetComponent<MeshFilter>().mesh.vertices[vi]+","+vi+">=0: "+(vi>=0)+",withinBounds("+vi+"): "+WithinBounds(vi)+",p==columns+1: "+(p==columns+1)+",vi/columns==selectedVertex/columns: "+(vi/columns==v/columns)+"("+vi+"/"+columns+": "+(vi/columns)+","+v+"/"+columns+":"+(v/columns)+")");
-					a(vi);
-					doneVerts.Add(vi);
-				} //else Debug.LogWarning("i="+i+",p="+p+",d="+d+",v+i*d*p="+(selectedVertex+i*d*p)+",verts["+vi+"]: "+instance.GetComponent<MeshFilter>().mesh.vertices[vi]+","+vi+">=0: "+(vi>=0)+","+vi+"<"+instance.GetComponent<MeshFilter>().mesh.vertices.Length+": "+(vi<instance.GetComponent<MeshFilter>().mesh.vertices.Length)+",p==columns+1: "+(p==columns+1)+",vi/columns==selectedVertex/columns: "+(vi/columns==selectedVertex/columns)+"("+vi+"/"+columns+": "+(vi/columns)+","+selectedVertex+"/"+columns+":"+(selectedVertex/columns)+")");
-		}
-
-		private static bool EdgeVert(int v)
-		{
-			return v / columns == 0 || v / columns == columns - 1 || v % columns == 0 || v % columns == columns - 1;
-		}
-
-		private static bool CornerVert(int v)
-		{
-			return (v / columns == 0 || v / columns == columns - 1) && (v % columns == 0 || v % columns == columns - 1);
-		}
-
 		private static void Delete(int[] deletees, GameObject screen = null, bool addUndo = true)
 		{
 			Debug.Log("ContourEditor.Delete(" + deletees.Stringify() + "), children: " +
@@ -1473,14 +1526,6 @@ namespace ContourEditorTool
 		private static float groupSelectThreshold = 4;
 		private static List<int> deleted = new List<int>();
 
-		private static void GroupDeSelect(int[] verts)
-		{
-			Debug.Log("Projection.GroupSelect(" + verts.Stringify() + ")");
-			for (int i = 0; i < verts.Length; i++)
-				if (verts[i] > -1)
-					DeselectVertex(verts[i]);
-		}
-
 		private static void GroupSelect(int[] newVerts, bool deSelect = true)
 		{
 			Debug.Log("Projection.GroupSelect(" + newVerts.Stringify() + ")");
@@ -1563,16 +1608,6 @@ namespace ContourEditorTool
 
 		private static int _locus = 0, columns = 21, originalColumns = 21, minDensity = 1, maxDensity = 82; //41
 
-		private static int locus
-		{
-			set
-			{
-				_locus = Mathf.Max(0, Mathf.Min(value, 10));
-				//			if(selectedVertex>-1)instance.SelectVertex(selectedVertex);
-			}
-			get { return _locus; }
-		}
-
 		public static float selectedZMargin = 0.5f;
 		private static bool[] mirror = new bool[] { false, false };
 
@@ -1588,23 +1623,6 @@ namespace ContourEditorTool
 		{
 			if (!Input.GetKey(addSelectKey)) DeSelect();
 			SelectVertex(vertexDots.IndexOf(v));
-		}
-
-		public static void DeselectVertex(int v)
-		{
-			//		Debug.Log("Screen.SelectVertex("+v+"); locus: "+locus/*+",vertexDot: "+vertexDot*/);
-			if (!selectedVertices.Contains(v)) return;
-			if (vertexDots.Count < v + 1)
-			{
-				Debug.LogError("v (" + v + ") out of vertexDot range (" + vertexDots.Count + ")");
-				return;
-			}
-
-			Vector3[] verts = instance.GetComponent<MeshFilter>().mesh.vertices;
-			verts[v][1] = 0;
-			vertexDots[v].Select(false);
-			selectedVertices.Remove(v);
-			instance.GetComponent<MeshFilter>().mesh.vertices = verts;
 		}
 
 		public static void SelectVertex(int v)
@@ -1811,7 +1829,6 @@ namespace ContourEditorTool
 			else if (dragging && currentTool.OnDrag != null) currentTool.OnDrag(SRSUtilities.adjustedMousePosition);
 			if (toolMode == ToolMode.blackout && Input.GetKeyDown(buildLassoKey) && lassoBlackout != null)
 				FinishBuildingLassoBlackout(lassoPoints.Count > 2);
-
 		}
 
 		//    private static Vector2 toolbarPosition=new Vector2(50,50);
@@ -1915,9 +1932,6 @@ namespace ContourEditorTool
 
 		public static Mode mode = Mode.normal;
 		private static string saveName = "";
-
-		Vector2 scrollPosition = Vector2.zero;
-		private static string fileToDelete = string.Empty;
 #if UNITY_EDITOR
 		private static string backupDir = "../bkp";
 #else
@@ -1932,11 +1946,13 @@ namespace ContourEditorTool
 			
 		}
 
-		public static bool HideOldUI = false;
+		public static bool HideGUI = false;
 		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
 		private void OnGUI()
 		{
+			if (HideGUI)
+				return;
 			DrawBlackouts();
 
 			if (originalColumns < minDensity)
@@ -1991,9 +2007,9 @@ namespace ContourEditorTool
 		
 		public static void SaveConfiguration(string fileName)
 		{
-			#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+			/*#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
 				return;
-			#endif
+			#endif*/
 			
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;

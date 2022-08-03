@@ -30,7 +30,7 @@ namespace Screens.ContourEditorScreen.Toolbar
 		private void SetButtonAction(int block, ToolBarLine line, Action hideLines, Image currentInstrument)
 		{
 			ContourEditor.instance.MouseUp();
-			ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(line.LineNumber, _id);
+			ContourEditor.instance.toolbar.menus[block].SelectItemFromUI(block, line.LineNumber, _id);
 
 			hideLines.Invoke();
 

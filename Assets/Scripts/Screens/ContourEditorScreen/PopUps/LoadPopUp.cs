@@ -39,6 +39,8 @@ namespace Screens.ContourEditorScreen.PopUps
 				var text = button.GetComponentInChildren<TextMeshProUGUI>();
 				text.text = file;
 			}
+
+			ContourEditor.HideGUI = true;
 		}
 
 		private void ChooseFileButtonAction(int i)
@@ -54,6 +56,8 @@ namespace Screens.ContourEditorScreen.PopUps
 
 			_onCloseAction?.Invoke();
 
+			ContourEditor.HideGUI = false;
+			
 			Destroy(gameObject);
 		}
 	}
