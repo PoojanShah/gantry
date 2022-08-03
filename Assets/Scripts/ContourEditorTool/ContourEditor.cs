@@ -853,7 +853,7 @@ namespace ContourEditorTool
 			switch (block)
 			{
 				case 0:
-					SelectionBLockAction(line, id);
+					SelectionBlockAction(line, id);
 					break;
 				case 1:
 					PatternBlockAction(id);
@@ -864,7 +864,7 @@ namespace ContourEditorTool
 			}
 		}
 
-		private void SelectionBLockAction(int line, int id)
+		private void SelectionBlockAction(int line, int id)
 		{
 			switch (line)
 			{
@@ -1946,7 +1946,6 @@ namespace ContourEditorTool
 			
 		}
 
-		public static bool HideOldUI = false;
 		public static bool HideGUI = false;
 		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
