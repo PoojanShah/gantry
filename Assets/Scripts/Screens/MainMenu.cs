@@ -76,6 +76,7 @@ namespace Screens
 		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
 			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
+#if UNITY_STANDALONE_WIN
 			if (media == null)
 				return;
 
@@ -89,6 +90,7 @@ namespace Screens
 
 				_mediaItems.Add(mediaItem);
 			}
+#endif
 		}
 	}
 }

@@ -13,7 +13,7 @@ using UnityEngine;
 
 public class CustomNetworkClient : MonoBehaviour
 {
-	public static void StartClient(int ipLastNumber)
+	public static void SendMessagePlay(int ipLastNumber, int videoId)
     {
         Debug.Log("start client");
         // Data buffer for incoming data.  
@@ -36,10 +36,10 @@ public class CustomNetworkClient : MonoBehaviour
 		        sender.Connect(remoteEP);
 
 		        // Encode the data string into a byte array.  
-		        byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
+		        var msg = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PREFIX + videoId);
 
 		        // Send the data through the socket.  
-		        int bytesSent = sender.Send(msg);
+		        var bytesSent = sender.Send(msg);
 
 		        // Receive the response from the remote device.  
 		        //int bytesRec = sender.Receive(bytes);

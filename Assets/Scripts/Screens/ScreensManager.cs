@@ -88,11 +88,12 @@ namespace Screens
 		{
 #if UNITY_STANDALONE_WIN
 			var mainMenu = screen.GetComponent<MainMenu>();
-#elif UNITY_ANDROID
-			var mainMenu = screen.GetComponent<MainMenuAndroid>();
-#endif
 			mainMenu.Init(_mediaController, null, Application.Quit,
 				_mainConfig.MediaItemPrefab, _factory);
+#elif UNITY_ANDROID
+			var mainMenu = screen.GetComponent<MainMenuAndroid>();
+			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+#endif
 		}
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)

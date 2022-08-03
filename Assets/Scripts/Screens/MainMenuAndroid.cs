@@ -14,36 +14,32 @@ namespace Screens
 	{
 		private readonly Vector2Int _ipValueRange = new(2, 255);
 
-		[SerializeField] private Button _exitButton, _connect;
+		[SerializeField] private Button _exitButton;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_InputField _ipEnd;
 		[SerializeField] private TMP_Text _ipStart;
 
 		private List<MediaItem> _mediaItems;
-		private MediaController _mediaController;
 
-		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
+		public void Init(Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
-			_mediaController = mediaController;
-
-			_connect.onClick.AddListener(TryConnect);
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
 			InitIpLabel();
 
-			//InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
+			InitMediaItems(factory, mediaPrefab);
 		}
 
-		private void TryConnect()
+		private void SendPlayVideoCommand(int videoId)
 		{
 			if (!int.TryParse(_ipEnd.text, out var number)) 
 				return;
 
 			Debug.Log("start client");
 
-			CustomNetworkClient.StartClient(number);
+			CustomNetworkClient.SendMessagePlay(number, videoId);
 		}
 
 		private void InitIpLabel() => _ipStart.text = NetworkHelper.GetMyIpWithoutLastNumberString();
@@ -75,8 +71,9 @@ namespace Screens
 		private void OnDestroy()
 		{
 			_exitButton.onClick.RemoveAllListeners();
-			_connect.onClick.RemoveAllListeners();
 			_ipEnd.onEndEdit.RemoveAllListeners();
+
+			ClearMediaItems();
 		}
 
 		public void ClearMediaItems()
@@ -87,22 +84,21 @@ namespace Screens
 			_mediaItems.Clear();
 		}
 
-		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
-			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
+		public void InitMediaItems(ICommonFactory commonFactory, GameObject mediaPrefab)
 		{
-			if (media == null)
-				return;
+			const int mediaAmount = 12;
 
 			_mediaItems = new List<MediaItem>();
 
-			foreach (var mediaFile in media)
+			for (var i = 0; i < mediaAmount; i++)
 			{
 				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
-				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
-				mediaItem.SetInteractable(!_mediaController.IsDownloading);
+				mediaItem.Init(i, SendPlayVideoCommand);
 
 				_mediaItems.Add(mediaItem);
 			}
+
+			SetMediaInteractable();
 		}
 	}
 }

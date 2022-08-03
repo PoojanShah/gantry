@@ -5,6 +5,7 @@ namespace Network
 	public static class NetworkHelper
 	{
 		public const int PORT = 8888;
+		public const string NETWORK_MESSAGE_PREFIX = "Play_";
 
 		public static IPAddress GetMyIp()
 		{
