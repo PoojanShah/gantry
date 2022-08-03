@@ -43,10 +43,7 @@ namespace Common
 			InitNetwork();
 		}
 
-		private void Update()
-		{
-			HandleRemoteMessages();
-		}
+		private void Update() => HandleRemoteMessages();
 
 		private void HandleRemoteMessages()
 		{

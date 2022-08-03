@@ -21,7 +21,6 @@ namespace Screens
 		private readonly MediaController _mediaController;
 
 		private GameObject _currentScreen;
-		private MainMenu _menu;
 
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
@@ -35,6 +34,8 @@ namespace Screens
 
 			OpenWindow(ScreenType.MainMenu);
 		}
+
+		public void DestroyCurrentScreen() => Object.Destroy(_currentScreen);
 
 		public GameObject ShowScreen(ScreenType type)
 		{
@@ -54,9 +55,7 @@ namespace Screens
 
 			return instance;
 		}
-
-		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
-
+		
 		public void OpenWindow(ScreenType type)
 		{
 			var screen = ShowScreen(type);
@@ -84,6 +83,8 @@ namespace Screens
 			}
 		}
 
+		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
+
 		private void InitMainMenu(GameObject screen)
 		{
 #if UNITY_STANDALONE_WIN
@@ -91,20 +92,11 @@ namespace Screens
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
-
-			_menu = mainMenu;
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
 			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
 #endif
 		}
-
-#if UNITY_STANDALONE_WIN
-		public void PlayVideoById(int id)
-		{
-			_menu.PlayById(id);
-		}
-#endif
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
@@ -118,7 +110,7 @@ namespace Screens
 			var mainMenu = _currentScreen.GetComponent<MainMenu>();
 			mainMenu.SetMediaInteractable();
 		}
-		
+
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
@@ -139,13 +131,13 @@ namespace Screens
 			var options = screen.GetComponent<OptionsMenu>();
 			options.Init();
 		}
-		
+
 		private void InitExitPopUp(GameObject screen)
 		{
 			var exitPopUp = screen.GetComponent<ExitPopUp>();
 			exitPopUp.Init(Application.Quit);
 		}
-		
+
 		private void OpenPasswordPopUp(Action onContinue, PasswordType type)
 		{
 			var screen = ShowScreen(ScreenType.PasswordPopup);
@@ -174,8 +166,6 @@ namespace Screens
 
 			_playAction?.Invoke(content);
 		}
-
-		public void DestroyCurrentScreen() => Object.Destroy(_currentScreen);
 
 		private void OpenPatternsEditor()
 		{
