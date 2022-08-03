@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Core;
-using Media;
 using Network;
 using TMPro;
 using UnityEngine.UI;
@@ -39,7 +38,7 @@ namespace Screens
 
 			Debug.Log("start client");
 
-			CustomNetworkClient.SendMessagePlay(number, videoId);
+			LocalNetworkClient.SendPlayMessage(number, videoId);
 		}
 
 		private void InitIpLabel() => _ipStart.text = NetworkHelper.GetMyIpWithoutLastNumberString();
@@ -100,7 +99,6 @@ namespace Screens
 			}
 
 			SetMediaInteractable();
-
 #endif
 		}
 	}

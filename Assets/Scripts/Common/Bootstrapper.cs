@@ -45,7 +45,11 @@ namespace Common
 
 		private void InitNetwork()
 		{
+#if UNITY_STANDALONE_WIN
 			_networkController = new NetworkController(_screensManager.PlayVideoById);
+#elif UNITY_ANDROID
+			_networkController = new NetworkController();
+#endif
 		}
 
 		private void OnDestroy()

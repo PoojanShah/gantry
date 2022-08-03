@@ -96,6 +96,7 @@ namespace Screens
 #endif
 		}
 
+#if UNITY_STANDALONE_WIN
 		public void PlayVideoById(int id)
 		{
 			var menu = _currentScreen.GetComponent<MainMenu>();
@@ -105,6 +106,7 @@ namespace Screens
 
 			menu.PlayById(id);
 		}
+#endif
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
