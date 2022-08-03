@@ -27,9 +27,7 @@ namespace ContourToolsAndUtilities
 		
 		public void CheckShortcuts()
 		{
-			if (SRSUtilities.ComboDown(cycleShortcut)) Cycle(selectedCategory);
-			for (int c = 0; c < items.Length; c++) for (int i = 0; i < items[c].Length; i++) if (!items[c][i].disabled && SRSUtilities.ComboDown(items[c][i].shortcut)) SelectItem(c, i/*,false*/);
-		}
+			if (SRSUtilities.ComboDown(cycleShortcut)) Cycle(selectedCategory);}
 		
 		public class Item
 		{
@@ -61,21 +59,23 @@ namespace ContourToolsAndUtilities
 			selectedSubitems[category] = (selectedSubitems[category] + 1) % items[category].Length;
 		}
 
-		public void SelectItemFromUI(int i, int j)
+		public void SelectItemFromUI(int block, int i, int j)
 		{
-			SelectItem(i, j);
+			SelectItem(block, i, j);
 			Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
 		}
     
 		//Setting contour editor based on toolbar.
-		public void SelectItem(int i, int j/*,bool unfurl=false*/)
+		public void SelectItem(int block, int i, int j/*,bool unfurl=false*/)
 		{
 			if (selectedCategory != i && OnChangeCategory != null) OnChangeCategory(i);
 			Debug.Log("Toolbar.Menu.SelectItem(" + i + "," + j +/*","+unfurl+*/") selectedCategory now: " + selectedCategory + ", unfurled: " + unfurled + ", sticky: " + sticky);
 
 			if (unfurled) unfurledMenu = -1;//Unfurl(i,false);
 			selectedCategory = !sticky && selectedCategory == i ? -1 : i;
-			if (items[i][j].OnSelect != null) items[i][j].OnSelect();
+			
+			ContourEditor.instance.InstrumentAction(block, i, j);
+			/*if (items[i][j].OnSelect != null) items[i][j].OnSelect();
 			if (!sticky) items[i][j].selected = !items[i][j].selected;
 			else if (!items[i][j].selected)
 			{
@@ -84,7 +84,7 @@ namespace ContourToolsAndUtilities
 			}
 			if (items[i][j].info != null)
 			{
-			}
+			}*/
 		}
 	}
 }

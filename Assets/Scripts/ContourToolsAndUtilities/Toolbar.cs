@@ -12,11 +12,6 @@ namespace ContourToolsAndUtilities
 			isNeedToShow = false;
 		}
 
-		private void Start()
-		{
-			menus[0].SelectItem(0, 0);
-		}
-
 		public void SetMenu(ToolbarMenu m)
 		{
 			SetMenu(new ToolbarMenu[] { m });

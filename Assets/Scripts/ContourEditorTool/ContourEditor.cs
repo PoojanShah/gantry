@@ -636,6 +636,10 @@ namespace ContourEditorTool
 			ToolbarMenu.Item[][] toolMenu = new ToolbarMenu.Item[4][]; //Set Up Toolbar
 			for (int i = 0; i < toolMenu.Length; i++) toolMenu[i] = new ToolbarMenu.Item[3];
 			string[] shapes = Enum.GetNames(typeof(Shape));
+
+			//TODO: delete this region after tests
+			#region Buttons 
+
 			for (int s = 0; s < shapes.Length; s++)
 			{
 				int _s = s; //for closure
@@ -832,6 +836,8 @@ namespace ContourEditorTool
 				new ToolbarMenu(backgroundMenu, true) { selectedCategoryFarbe = Color.white },
 				new ToolbarMenu(actionMenu, false)
 			});
+			
+			#endregion 
 		}
 
 		private static void ResetTools()
@@ -840,6 +846,103 @@ namespace ContourEditorTool
 			WipeIntermittents();
 			Blackout.moving = -1;
 			dragging = false;
+		}
+
+		public void InstrumentAction(int block, int line, int id)
+		{
+			switch (block)
+			{
+				case 0:
+					SelectionBLockAction(line, id);
+					break;
+				case 1:
+					PatternBlockAction(id);
+					break;
+				case 2:
+					OperationsBlockAction(line, id);
+					break;
+			}
+		}
+
+		private void SelectionBLockAction(int line, int id)
+		{
+			switch (line)
+			{
+				case 0:
+					selectionShape = (Shape)id;
+					break;
+				case 1:
+				case 2:
+					Blackout.shape = (Shape)id;
+					break;
+			}
+		}
+
+		private void PatternBlockAction(int id)
+		{
+			GetComponent<Renderer>().material.mainTexture = backgrounds[background = id];
+		}
+
+		private void OperationsBlockAction(int line, int id)
+		{
+			switch (line)
+			{
+				case 0:
+					FileOperation(id);
+					break;
+				case 1:
+					EditOperation(id);
+					break;
+				case 2:
+					ViewOperation(id);
+					break;
+			}
+		}
+
+		private void FileOperation(int id)
+		{
+			switch (id)
+			{
+				case 3:
+					Reset(-1, true, true);
+					Restart();
+					break;
+				case 4:
+					SaveAndQuitToMenu();
+					break;
+			}
+		}
+
+		private void EditOperation(int id)
+		{
+			switch (id)
+			{
+				case 1:
+					Undo(-1);
+					break;
+				case 2:
+					Undo(1);
+					break;
+				case 3:
+					SelectAll();
+					break;
+			}
+		}
+
+		private void ViewOperation(int id)
+		{
+			switch (id)
+			{
+				case 1:
+					ToggleMirror(0);
+					break;
+				case 2:
+					ToggleMirror(1);
+					break;
+				case 3:
+					circle = !circle;
+					break;
+			}
 		}
 
 		//public static void AddUndoStep(UndoStep step=default(UndoStep),bool resetCurrentStep=true){
@@ -965,7 +1068,7 @@ namespace ContourEditorTool
 			//mesh.RecalculateNormals();
 			//mesh.RecalculateBounds();
 			if (toolbar != null && toolbar.menus != null && toolbar.menus.Length > 0)
-				toolbar.menus[0].SelectItem(0, 0);
+				toolbar.menus[0].SelectItem(0, 0, 0);
 			columns = originalColumns;
 			deleted.Clear();
 			ReconstructScreen(0, false);
