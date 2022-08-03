@@ -46,7 +46,7 @@ namespace Common
 		private void InitNetwork()
 		{
 #if UNITY_STANDALONE_WIN
-			_networkController = new NetworkController(_screensManager);
+			_networkController = new NetworkController(_projectionController, _mediaController);
 #elif UNITY_ANDROID
 			_networkController = new NetworkController();
 #endif

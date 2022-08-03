@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Media;
 using Screens;
 using UnityEngine;
+using VideoPlaying;
 
 namespace Network
 {
@@ -23,11 +25,13 @@ namespace Network
 		private const int BUFFER_SIZE = 2048;
 
 		private static readonly byte[] buffer = new byte[BUFFER_SIZE];
-		private static ScreensManager _screensManager;
+		private static ProjectionController _projectionController;
+		private static MediaController _mediaController;
 
-		public LocalNetworkServer(ScreensManager screensManager)
+		public LocalNetworkServer(ProjectionController projectionController, MediaController mediaController)
 		{
-			_screensManager = screensManager;
+			_projectionController = projectionController;
+			_mediaController = mediaController;
 
 			SetupServer();
 		}
@@ -111,9 +115,9 @@ namespace Network
 			SetRegister(current, text);
 			current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
-			var videoId = int.Parse(text.Split('_')[1]);
+			var mediaId = int.Parse(text.Split('_')[1]);
 
-			_screensManager.PlayVideoById(videoId);
+			_projectionController.Play(_mediaController.MediaFiles[mediaId]);
 
 			Debug.Log("finished");
 		}
