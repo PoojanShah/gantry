@@ -19,6 +19,7 @@ namespace Common
 		private ProjectionController _projectionController;
 		private ContourEditorController _contourEditorController;
 		private MediaController _mediaController;
+		private NetworkController _networkController;
 
 		private void Awake()
 		{
@@ -44,12 +45,15 @@ namespace Common
 
 		private void InitNetwork()
 		{
+			_networkController = new NetworkController(_screensManager.PlayVideoById);
 		}
 
 		private void OnDestroy()
 		{
 			_mediaController.OnMediaFileDownloaded -= ReloadMediaFile;
 			_mediaController.OnDownloadCompleted -= ActivateLoadingItems;
+
+			_networkController.Clear();
 		}
 
 		private void ActivateLoadingItems() => _screensManager.SetMediaInteractable();

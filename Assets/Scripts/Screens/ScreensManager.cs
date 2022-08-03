@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Common;
 using Configs;
 using ContourEditorTool;
@@ -88,12 +87,23 @@ namespace Screens
 		{
 #if UNITY_STANDALONE_WIN
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(_mediaController, null, Application.Quit,
-				_mainConfig.MediaItemPrefab, _factory);
+			mainMenu.Init(_mediaController, PlayVideo,
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
 			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
 #endif
+		}
+
+		public void PlayVideoById(int id)
+		{
+			var menu = _currentScreen.GetComponent<MainMenu>();
+
+			if(menu == null)
+				return;
+
+			menu.PlayById(id);
 		}
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)

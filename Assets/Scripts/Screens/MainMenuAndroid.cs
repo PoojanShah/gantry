@@ -86,6 +86,7 @@ namespace Screens
 
 		public void InitMediaItems(ICommonFactory commonFactory, GameObject mediaPrefab)
 		{
+#if UNITY_ANDROID
 			const int mediaAmount = 12;
 
 			_mediaItems = new List<MediaItem>();
@@ -99,6 +100,8 @@ namespace Screens
 			}
 
 			SetMediaInteractable();
+
+#endif
 		}
 	}
 }

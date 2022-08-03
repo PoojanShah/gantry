@@ -8,6 +8,8 @@ namespace VideoPlaying
 {
 	public class MediaItem : MonoBehaviour
 	{
+		public int Id { get; private set; }
+
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Button _button;
 
@@ -15,23 +17,22 @@ namespace VideoPlaying
 #if UNITY_STANDALONE_WIN
 		private Action<MediaContent> _onClick;
 #elif UNITY_ANDROID
-		public int Id { get; private set; }
-
 		private Action<int> _onClick;
 #endif
 
 #if UNITY_STANDALONE_WIN
-		public void Init(MediaContent content, Action<MediaContent> onClickAction, string videoTitle)
+		public void Init(MediaContent content, Action<MediaContent> onClickAction, int id)
 		{
+			Id = id;
 			_content = content;
 			_onClick = onClickAction;
 
-			_title.text = videoTitle;
+			_title.text = id.ToString();
 
 			_button.onClick.AddListener(ItemClicked);
 		}
 
-		private void ItemClicked() => _onClick?.Invoke(_content);
+		public void ItemClicked() => _onClick?.Invoke(_content);
 #elif UNITY_ANDROID
 		public void Init(int id, Action<int> onClickAction)
 		{
