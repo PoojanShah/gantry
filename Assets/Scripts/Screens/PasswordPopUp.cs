@@ -19,7 +19,7 @@ namespace Screens
 
 		[SerializeField] private Button _okButton, _cancelButton;
 		[SerializeField] private TMP_InputField _inputField;
-		[SerializeField] private Text _descriptionText;
+		[SerializeField] private TMP_Text _descriptionText;
 		
 		public void Init(Action<string> onOkButtonClick, PasswordType type)
 		{

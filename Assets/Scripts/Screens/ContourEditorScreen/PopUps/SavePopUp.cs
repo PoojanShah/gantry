@@ -19,6 +19,8 @@ namespace Screens.ContourEditorScreen.PopUps
 
 			_saveButton.onClick.AddListener(SaveButtonAction);
 			_cancelButton.onClick.AddListener(Clear);
+
+			ContourEditor.HideGUI = true;
 		}
 
 		private void SaveButtonAction()
@@ -34,6 +36,8 @@ namespace Screens.ContourEditorScreen.PopUps
 
 			_onClose?.Invoke();
 
+			ContourEditor.HideGUI = false;
+			
 			Destroy(gameObject);
 		}
 	}
