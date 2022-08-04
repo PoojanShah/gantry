@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Core;
 using Media;
+using Network;
 using TMPro;
 using UnityEngine.UI;
 using VideoPlaying;
@@ -13,23 +14,28 @@ namespace Screens
 	public class MainMenu : MonoBehaviour
 	{
 		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
+		private const string QTS_IP_TITLE = "Server IP: ";
 
 		[SerializeField] private Button _settingButton, _exitButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle;
+		[SerializeField] private TMP_Text _currentPatternTitle, _serverIpTitle;
 
 		private List<MediaItem> _mediaItems;
 		private MediaController _mediaController;
 
-		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction, Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
+		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction,
+			Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
 			_mediaController = mediaController;
-			_settingButton.onClick.AddListener(() => { onSettingAction?.Invoke(); });
+			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			InitMediaItems(mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
+			if (_mediaController != null)
+				InitMediaItems(_mediaController.MediaFiles, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
+
+			_serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();
 		}
 
 		public void SetMediaInteractable()
@@ -43,8 +49,10 @@ namespace Screens
 
 		private void OnDestroy()
 		{
-			_settingButton.onClick.RemoveAllListeners();
+			_settingButton?.onClick.RemoveAllListeners();
 			_exitButton.onClick.RemoveAllListeners();
+
+			ClearMediaItems();
 		}
 
 		public void ClearMediaItems()
@@ -64,25 +72,40 @@ namespace Screens
 
 			var title = PlayerPrefs.GetString(defaultConfigKey);
 
-			_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
+			if(_currentPatternTitle)
+				_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
 		}
 
-		public void InitMediaItems(IEnumerable<MediaContent> media, ICommonFactory commonFactory,
+		public void InitMediaItems(MediaContent[] media, ICommonFactory commonFactory,
 			GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
+#if UNITY_STANDALONE_WIN
 			if (media == null)
 				return;
 
 			_mediaItems = new List<MediaItem>();
 
-			foreach (var mediaFile in media)
+			for (var i = 0; i < media.Length; i++)
 			{
+				var mediaFile = media[i];
 				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
-				mediaItem.Init(mediaFile, playVideoAction, mediaFile.Name);
+				mediaItem.Init(mediaFile, playVideoAction, i);
 				mediaItem.SetInteractable(!_mediaController.IsDownloading);
 
 				_mediaItems.Add(mediaItem);
 			}
+
+		}
+
+		public void PlayById(int id)
+		{
+			var media = _mediaItems[id];
+
+			if(media == null)
+				return;
+
+			media.ItemClicked();
+#endif
 		}
 	}
 }

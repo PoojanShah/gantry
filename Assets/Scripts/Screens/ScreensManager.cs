@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Common;
 using Configs;
 using ContourEditorTool;
@@ -36,14 +35,16 @@ namespace Screens
 			OpenWindow(ScreenType.MainMenu);
 		}
 
+		public void DestroyCurrentScreen() => Object.Destroy(_currentScreen);
+
 		public GameObject ShowScreen(ScreenType type)
 		{
-			var screen = _mainConfig.ScreensConfig.Screens.FirstOrDefault(s => s.Type == type);
+			var screenPrefab = _mainConfig.ScreensConfig.GetScreenPrefab(type);
 
-			if (screen == null)
+			if (screenPrefab == null)
 				return null;
 
-			var instance = _factory.InstantiateObject<Transform>(screen.Prefab, _canvasTransform).gameObject;
+			var instance = _factory.InstantiateObject<Transform>(screenPrefab, _canvasTransform).gameObject;
 
 			if (!IsPopup(type))
 			{
@@ -54,9 +55,7 @@ namespace Screens
 
 			return instance;
 		}
-
-		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
-
+		
 		public void OpenWindow(ScreenType type)
 		{
 			var screen = ShowScreen(type);
@@ -84,11 +83,19 @@ namespace Screens
 			}
 		}
 
+		private static bool IsPopup(ScreenType type) => (byte)type > QTS_POPUP_ID;
+
 		private void InitMainMenu(GameObject screen)
 		{
+#if UNITY_STANDALONE_WIN
 			var mainMenu = screen.GetComponent<MainMenu>();
-			mainMenu.Init(_mediaController, PlayVideo, () => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				() => OpenWindow(ScreenType.ExitConfirmationPopup), _mainConfig.MediaItemPrefab, _factory);
+			mainMenu.Init(_mediaController, PlayVideo,
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+#elif UNITY_ANDROID
+			var mainMenu = screen.GetComponent<MainMenuAndroid>();
+			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+#endif
 		}
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
@@ -103,7 +110,7 @@ namespace Screens
 			var mainMenu = _currentScreen.GetComponent<MainMenu>();
 			mainMenu.SetMediaInteractable();
 		}
-		
+
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
@@ -124,13 +131,13 @@ namespace Screens
 			var options = screen.GetComponent<OptionsMenu>();
 			options.Init();
 		}
-		
+
 		private void InitExitPopUp(GameObject screen)
 		{
 			var exitPopUp = screen.GetComponent<ExitPopUp>();
 			exitPopUp.Init(Application.Quit);
 		}
-		
+
 		private void OpenPasswordPopUp(Action onContinue, PasswordType type)
 		{
 			var screen = ShowScreen(ScreenType.PasswordPopup);
@@ -155,7 +162,7 @@ namespace Screens
 
 		private void PlayVideo(MediaContent content)
 		{
-			Object.Destroy(_currentScreen);
+			DestroyCurrentScreen();
 
 			_playAction?.Invoke(content);
 		}

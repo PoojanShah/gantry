@@ -1,5 +1,4 @@
 using System;
-using Configs;
 using Core;
 using Media;
 using UnityEngine;

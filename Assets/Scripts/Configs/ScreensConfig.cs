@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Configs
@@ -9,7 +10,8 @@ namespace Configs
 		LibraryMenu,
 		PasswordPopup,
 		ExitConfirmationPopup,
-		OptionsMenu
+		OptionsMenu,
+		MainMenuAndroid
 	}
 
 	[System.Serializable]
@@ -22,6 +24,17 @@ namespace Configs
 	[CreateAssetMenu(fileName = "ScreensAndPopups", menuName = "Configs/Screens config")]
 	public class ScreensConfig : ScriptableObject
 	{
-		public ScreenData[] Screens;
+		[SerializeField] private ScreenData[] Screens;
+
+		public GameObject GetScreenPrefab(ScreenType type)
+		{
+#if UNITY_ANDROID
+			if (type == ScreenType.MainMenu)
+				type = ScreenType.MainMenuAndroid;
+#endif
+			var screen = Screens.FirstOrDefault(s => s.Type == type);
+
+			return screen?.Prefab;
+		}
 	}
 }
