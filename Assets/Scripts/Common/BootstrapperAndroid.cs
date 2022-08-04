@@ -13,21 +13,24 @@ namespace Common
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
+		private NetworkController _networkController;
 
 		private void Awake()
 		{
 			CameraHelper.Init();
 
 			_factory = new CommonFactory();
+#if UNITY_ANDROID
+			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform);
 
-			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, null,
-				null, null);
 
 			InitNetwork();
 		}
 
 		private void InitNetwork()
 		{
+			_networkController = new NetworkController();
+#endif
 		}
 	}
 }

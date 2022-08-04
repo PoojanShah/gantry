@@ -30,8 +30,10 @@ namespace Common
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu));
 			_contourEditorController = new ContourEditorController(_projectionController, _factory, _mainConfig.ContourEditorUiPrefab);
+#if UNITY_STANDALONE || UNITY_EDITOR
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
 				_contourEditorController, _mediaController);
+#endif
 
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
 			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
@@ -61,8 +63,6 @@ namespace Common
 		{
 #if UNITY_STANDALONE_WIN
 			_networkController = new NetworkController(_projectionController, _mediaController);
-#elif UNITY_ANDROID
-			_networkController = new NetworkController();
 #endif
 		}
 

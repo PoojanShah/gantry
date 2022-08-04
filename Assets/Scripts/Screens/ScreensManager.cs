@@ -19,9 +19,9 @@ namespace Screens
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
 		private readonly MediaController _mediaController;
-
 		private GameObject _currentScreen;
 
+#if UNITY_STANDALONE || UNITY_EDITOR
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
 		{
@@ -34,6 +34,16 @@ namespace Screens
 
 			OpenWindow(ScreenType.MainMenu);
 		}
+#elif UNITY_ANDROID
+		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform)
+		{
+			_factory = factory;
+			_mainConfig = mainConfig;
+			_canvasTransform = canvasTransform;
+
+			OpenWindow(ScreenType.MainMenu);
+		}
+#endif
 
 		public void DestroyCurrentScreen() => Object.Destroy(_currentScreen);
 

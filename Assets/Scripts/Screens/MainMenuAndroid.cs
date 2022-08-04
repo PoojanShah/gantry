@@ -13,30 +13,42 @@ namespace Screens
 	{
 		private readonly Vector2Int _ipValueRange = new(2, 255);
 
-		[SerializeField] private Button _exitButton;
+		[SerializeField] private Button _exitButton, _connectButton;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_InputField _ipEnd;
 		[SerializeField] private TMP_Text _ipStart;
 
 		private List<MediaItem> _mediaItems;
+		private ICommonFactory _factory;
+		private GameObject _mediaPrefab;
 
 		public void Init(Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
 		{
+			_factory = factory;
+			_mediaPrefab = mediaPrefab;
+
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
+			_connectButton.onClick.AddListener(ConnectClicked);
 
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
 			InitIpLabel();
 
-			InitMediaItems(factory, mediaPrefab);
+			LocalNetworkClient.OnMediaAmountReceived += InitMediaItems;
+		}
+
+		private void ConnectClicked()
+		{
+			if (!int.TryParse(_ipEnd.text, out var number))
+				return;
+
+			LocalNetworkClient.SendPlayMessage(number, -1);
 		}
 
 		private void SendPlayVideoCommand(int videoId)
 		{
 			if (!int.TryParse(_ipEnd.text, out var number)) 
 				return;
-
-			Debug.Log("start client");
 
 			LocalNetworkClient.SendPlayMessage(number, videoId);
 		}
@@ -70,7 +82,10 @@ namespace Screens
 		private void OnDestroy()
 		{
 			_exitButton.onClick.RemoveAllListeners();
+			_connectButton.onClick.RemoveAllListeners();
 			_ipEnd.onEndEdit.RemoveAllListeners();
+
+			LocalNetworkClient.OnMediaAmountReceived -= InitMediaItems;
 
 			ClearMediaItems();
 		}
@@ -83,16 +98,16 @@ namespace Screens
 			_mediaItems.Clear();
 		}
 
-		public void InitMediaItems(ICommonFactory commonFactory, GameObject mediaPrefab)
+		public void InitMediaItems(int mediaAmount)
 		{
 #if UNITY_ANDROID
-			const int mediaAmount = 12;
+			_connectButton.interactable = false;
 
 			_mediaItems = new List<MediaItem>();
 
 			for (var i = 0; i < mediaAmount; i++)
 			{
-				var mediaItem = commonFactory.InstantiateObject<MediaItem>(mediaPrefab, _parent);
+				var mediaItem = _factory.InstantiateObject<MediaItem>(_mediaPrefab, _parent);
 				mediaItem.Init(i, SendPlayVideoCommand);
 
 				_mediaItems.Add(mediaItem);

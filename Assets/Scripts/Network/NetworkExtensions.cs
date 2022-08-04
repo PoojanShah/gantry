@@ -1,35 +1,29 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace Network
 {
 	public static class NetworkExtensions
 	{
-		public static IPAddress FindNextFree(this IPAddress address)
+		public static byte[] ReceiveAll(this Socket socket)
 		{
-			IPAddress workingAddress = address;
-			Ping pingSender = new Ping();
+			var buffer = new List<byte>();
 
-			while (true)
+			while (socket.Available > 0)
 			{
-				byte[] localBytes = workingAddress.GetAddressBytes();
+				var currByte = new Byte[1];
+				var byteCounter = socket.Receive(currByte, currByte.Length, SocketFlags.None);
 
-				localBytes[3]++;
-				if (localBytes[3] > 254)
-					localBytes[3] = 1;
-
-				workingAddress = new IPAddress(localBytes);
-
-				if (workingAddress.Equals(address))
-					throw new TimeoutException("Could not find free IP address");
-
-				PingReply reply = pingSender.Send(workingAddress, 1000);
-				if (reply.Status != IPStatus.Success)
+				if (byteCounter.Equals(1))
 				{
-					return workingAddress;
+					buffer.Add(currByte[0]);
 				}
 			}
+
+			return buffer.ToArray();
 		}
-	}
+    }
 }

@@ -21,9 +21,8 @@ namespace Network
 		private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		private static readonly List<Socket> clientSockets = new List<Socket>();
 		private static readonly List<SocketStruct> clientSocketStructList = new List<SocketStruct>(); 
-		private const int BUFFER_SIZE = 2048;
 
-		private static readonly byte[] buffer = new byte[BUFFER_SIZE];
+		private static readonly byte[] buffer = new byte[NetworkHelper.BUFFER_SIZE];
 		private static ProjectionController _projectionController;
 		private static MediaController _mediaController;
 
@@ -77,8 +76,12 @@ namespace Network
 			}
 
 			clientSockets.Add(socket);
-			socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
+			socket.BeginReceive(buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
 			Debug.Log("Client connected, waiting for request...");
+
+			var data = Encoding.ASCII.GetBytes(_mediaController.MediaFiles.Length.ToString());
+			socket.Send(data);
+
 			serverSocket.BeginAccept(AcceptCallback, null);
 		}
 
@@ -115,9 +118,12 @@ namespace Network
 
 			SetRegister(current, text);
 
-			current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+			current.BeginReceive(buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
 			var mediaId = int.Parse(text.Split('_')[1]);
+
+			if(mediaId < 0)
+				return;
 
 			ReceivedId = mediaId;
 		}

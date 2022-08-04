@@ -8,42 +8,47 @@ namespace Network
 {
 	public class LocalNetworkClient
 	{
+		public static event Action<int> OnMediaAmountReceived;
+
+		private static bool _isLoaded = false;
+
 		public static void SendPlayMessage(int ipLastNumber, int videoId)
 		{
 			Debug.Log("start client");
-			// Data buffer for incoming data.  
-			var bytes = new byte[1024];
 
-			// Connect to a remote device.  
+			var receivedData = new byte[NetworkHelper.BUFFER_SIZE];
+
 			try
 			{
-				// Establish the remote endpoint for the socket.  
-
 				var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + ipLastNumber);
 				var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
+				
 				Debug.Log("Connecting to + " + remoteEP);
-				// Create a TCP/IP  socket.  
-				var sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				
+				var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-				// Connect the socket to the remote endpoint. Catch any errors.  
 				try
 				{
-					sender.Connect(remoteEP);
+					socket.Connect(remoteEP);
 
-					// Encode the data string into a byte array.  
-					var msg = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PREFIX + videoId);
+					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PREFIX + videoId);
 
-					// Send the data through the socket.  
-					var bytesSent = sender.Send(msg);
+					socket.Send(messageToSend);
 
-					// Receive the response from the remote device.  
-					//int bytesRec = sender.Receive(bytes);
+					var bytesRec = socket.Receive(receivedData);
+					var mediaAmount = int.Parse(Encoding.ASCII.GetString(receivedData, 0, bytesRec));
 
-					//Debug.Log(Encoding.ASCII.GetString(bytes, 0, bytesRec));
+					if (!_isLoaded)
+					{
+						Debug.Log(mediaAmount);
 
-					// Release the socket.  
-					sender.Shutdown(SocketShutdown.Both);
-					sender.Close();
+						OnMediaAmountReceived?.Invoke(mediaAmount);
+
+						_isLoaded = true;
+					}
+
+					socket.Shutdown(SocketShutdown.Both);
+					socket.Close();
 				}
 				catch (ArgumentNullException ane)
 				{

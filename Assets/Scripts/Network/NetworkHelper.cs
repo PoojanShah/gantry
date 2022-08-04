@@ -4,6 +4,7 @@ namespace Network
 {
 	public static class NetworkHelper
 	{
+		public const int BUFFER_SIZE = 512;
 		public const int PORT = 8888;
 		public const string NETWORK_MESSAGE_PREFIX = "Play_";
 
