@@ -875,6 +875,9 @@ namespace ContourEditorTool
 				case 2:
 					Blackout.shape = (Shape)id;
 					break;
+				case 3:
+					scaleMode = (ScaleMode)id;
+					break;
 			}
 		}
 

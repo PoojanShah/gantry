@@ -10,20 +10,20 @@ namespace ContourEditorTool
 {
 	public class ContourEditorController
 	{
-		private readonly Projection _projection;
-		private readonly ContourEditor _contourEditor;
 		private readonly ICommonFactory _factory;
 		private readonly GameObject _editorUiPrefab;
-
+		private readonly ProjectionController _projectionController;
+		
+		private Projection _projection;
+		private ContourEditor _contourEditor;
 		private ContourEditorUI _editorUi;
-
-		public ContourEditorController(Projection projection, ICommonFactory factory,
+		
+		public ContourEditorController(ProjectionController projectionCOntroller, ICommonFactory factory,
 			GameObject editorUiPrefab)
 		{
 			_factory = factory;
 			_editorUiPrefab = editorUiPrefab;
-			_projection = projection;
-			_contourEditor = _projection.GetComponent<ContourEditor>();
+			_projectionController = projectionCOntroller;
 		}
 
 		public void ShowTools(bool isShow)
@@ -39,6 +39,9 @@ namespace ContourEditorTool
 
 		public void Show(Action quitAction)
 		{
+			_projection = _projectionController.GetProjection();
+			_contourEditor = _projection.GetComponent<ContourEditor>();
+			
 			void InitEditor()
 			{
 				void CloseEditor()
