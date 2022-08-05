@@ -7,7 +7,10 @@ namespace Network
 	{
 		public const int PORT = 8888;
 		public const string NETWORK_MESSAGE_PREFIX = "Play_";
-		public const string pingHost = "google.com";
+		public const string PING_HOST = "google.com";
+		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
+		public const int FILE_EXIST_TIMEOUT = 1200;
+		public const int PING_TIMEOUT = 3;
 
 		public static IPAddress GetMyIp()
 		{
@@ -30,12 +33,12 @@ namespace Network
 			return result;
 		}
 		
-		public static bool GetPing()
+		public static bool TestConnection()
 		{
 			try
 			{
-				Ping P = new Ping();
-				PingReply Status = P.Send(pingHost, 3);
+				var P = new Ping();
+				var Status = P.Send(PING_HOST, PING_TIMEOUT);
 				return (Status.Status == IPStatus.Success);
 			}
 			catch 
@@ -45,13 +48,13 @@ namespace Network
 			return false;
 		}
 		
-		public static bool FileExists(string url)
+		public static bool CheckIsFileExist(string url)
 		{
 			bool result = false;
  
 			var request = WebRequest.Create(url);
-			request.Timeout = 1200;
-			request.Method = "HEAD";
+			request.Timeout = FILE_EXIST_TIMEOUT;
+			request.Method = FILE_EXIST_REQUEST_METHOD;
  
 			HttpWebResponse response = null;
  

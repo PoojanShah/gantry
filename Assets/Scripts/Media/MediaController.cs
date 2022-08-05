@@ -61,12 +61,7 @@ namespace Media
 
 		public void LoadMediaFromServer()
 		{
-			//TODO: for test
-			/*var testFileIsNotExist = "https://drive.google.com/file/d/1tEtFTYQH2UaE2Di2elWG2EHwQchFptRD/view?usp=sharing";
-			/*var testFileIsExist = "https://drive.google.com/file/d/1-N_qiHEIPgOxZ6QozgE9Zvs38uh0NqVW/view?usp=sharing";
-			Debug.Log("Connection status: " + NetworkHelper.GetPing());
-			Debug.Log("File exist - " + 
-			          NetworkHelper.FileExists());*/
+			Debug.Log("Connection status: " + NetworkHelper.TestConnection());
 			
 			var request = WebRequest.Create(QTS_URL);
 			try
