@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using System.Text;
 using Media;
 using UnityEngine;
-using VideoPlaying;
 
 namespace Network
 {
@@ -18,19 +17,17 @@ namespace Network
 
 	public class LocalNetworkServer
 	{
-		private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		private static readonly List<Socket> clientSockets = new List<Socket>();
-		private static readonly List<SocketStruct> clientSocketStructList = new List<SocketStruct>(); 
+		private static readonly Socket _serverSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		private static readonly List<Socket> _clientSockets = new();
+		private static readonly List<SocketStruct> _clientSocketStructList = new();
 
-		private static readonly byte[] buffer = new byte[NetworkHelper.BUFFER_SIZE];
-		private static ProjectionController _projectionController;
+		private static readonly byte[] _buffer = new byte[NetworkHelper.BUFFER_SIZE];
 		private static MediaController _mediaController;
 
 		public static int ReceivedId = -1;
 
-		public LocalNetworkServer(ProjectionController projectionController, MediaController mediaController)
+		public LocalNetworkServer(MediaController mediaController)
 		{
-			_projectionController = projectionController;
 			_mediaController = mediaController;
 
 			SetupServer();
@@ -45,22 +42,22 @@ namespace Network
 			var myIpAddress = NetworkHelper.GetMyIp();
 			var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
 
-			serverSocket.Bind(endPoint);
-			serverSocket.Listen(0);
-			serverSocket.BeginAccept(AcceptCallback, null);
+			_serverSocket.Bind(endPoint);
+			_serverSocket.Listen(0);
+			_serverSocket.BeginAccept(AcceptCallback, null);
 
-			Debug.Log("Server setup complete on address: " + serverSocket.LocalEndPoint);
+			Debug.Log("Server setup complete on address: " + _serverSocket.LocalEndPoint);
 		}
 
 		private static void CloseAllSockets()
 		{
-			foreach (var socket in clientSockets)
+			foreach (var socket in _clientSockets)
 			{
 				socket.Shutdown(SocketShutdown.Both);
 				socket.Close();
 			}
 
-			serverSocket.Close();
+			_serverSocket.Close();
 		}
 
 		private static void AcceptCallback(IAsyncResult AR)
@@ -68,21 +65,21 @@ namespace Network
 			Socket socket;
 
 			try {
-				socket = serverSocket.EndAccept(AR);
+				socket = _serverSocket.EndAccept(AR);
 			}
 			catch (ObjectDisposedException)
 			{
 				return;
 			}
 
-			clientSockets.Add(socket);
-			socket.BeginReceive(buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
+			_clientSockets.Add(socket);
+			socket.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
 			Debug.Log("Client connected, waiting for request...");
 
 			var data = Encoding.ASCII.GetBytes(_mediaController.MediaFiles.Length.ToString());
 			socket.Send(data);
 
-			serverSocket.BeginAccept(AcceptCallback, null);
+			_serverSocket.BeginAccept(AcceptCallback, null);
 		}
 
 		private static void ReceiveCallback(IAsyncResult AR)
@@ -98,7 +95,7 @@ namespace Network
 				Debug.Log("Client forcefully disconnected: ");
 				SetUnRegister(current);
 				current.Close();
-				clientSockets.Remove(current);
+				_clientSockets.Remove(current);
 				return;
 			}
 
@@ -107,18 +104,18 @@ namespace Network
 				Debug.Log("Client forcefully disconnected: ");
 				SetUnRegister(current);
 				current.Close();
-				clientSockets.Remove(current);
+				_clientSockets.Remove(current);
 				return;
 			}
 
 			byte[] recBuf = new byte[received];
-			Array.Copy(buffer, recBuf, received);
+			Array.Copy(_buffer, recBuf, received);
 			string text = Encoding.ASCII.GetString(recBuf);
 			Debug.Log("Server Received Text: " + text);
 
 			SetRegister(current, text);
 
-			current.BeginReceive(buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+			current.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
 			var mediaId = int.Parse(text.Split('_')[1]);
 
@@ -136,32 +133,22 @@ namespace Network
 				SocketStruct cs = new SocketStruct();
 				cs.socket = socket;
 				cs.id = subStrings[1];
-				clientSocketStructList.Add(cs);
+				_clientSocketStructList.Add(cs);
 			}
 
 			if (text.Contains("exit"))
 			{
 				socket.Shutdown(SocketShutdown.Both);
 				socket.Close();
-				clientSockets.Remove(socket);
+				_clientSockets.Remove(socket);
 				Debug.Log("Client forcefully disconnected: ");
 			}
 		}
 
 		private static void SetUnRegister(Socket socket)
 		{
-			SocketStruct cl = clientSocketStructList.Find(c => c.socket == socket);
-			clientSocketStructList.Remove(cl);
-		}
-
-		public static void SendCommandToID(int id)
-		{
-			SocketStruct cl = clientSocketStructList.Find(c => Convert.ToInt32(c.id) == id);
-			string command = "OpenVRX";
-			byte[] data = Encoding.ASCII.GetBytes(command);
-			cl.socket.Send(data);
-			Debug.Log("Command sent to Client");
-			SetUnRegister(cl.socket);
+			SocketStruct cl = _clientSocketStructList.Find(c => c.socket == socket);
+			_clientSocketStructList.Remove(cl);
 		}
 	}
 }

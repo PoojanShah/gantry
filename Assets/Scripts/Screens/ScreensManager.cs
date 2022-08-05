@@ -21,7 +21,7 @@ namespace Screens
 		private readonly MediaController _mediaController;
 		private GameObject _currentScreen;
 
-#if UNITY_STANDALONE || UNITY_EDITOR
+#if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
 		{
