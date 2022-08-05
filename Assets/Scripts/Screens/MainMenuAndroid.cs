@@ -64,8 +64,6 @@ namespace Screens
 				else if (number > _ipValueRange.y)
 					number = _ipValueRange.y;
 
-				Debug.Log("update ip");
-
 				_ipEnd.text = number.ToString();
 			}
 		}
