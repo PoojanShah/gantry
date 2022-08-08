@@ -33,7 +33,7 @@ namespace Network
 			return result;
 		}
 		
-		public static bool GetConnectionStatus()
+		public static bool IsConnectionAvailable()
 		{
 			try
 			{
