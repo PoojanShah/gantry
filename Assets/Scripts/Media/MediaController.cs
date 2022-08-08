@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Network;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -60,6 +61,8 @@ namespace Media
 
 		public void LoadMediaFromServer()
 		{
+			Debug.Log("Connection status: " + NetworkHelper.IsConnectionAvailable());
+			
 			var request = WebRequest.Create(QTS_URL);
 			try
 			{
