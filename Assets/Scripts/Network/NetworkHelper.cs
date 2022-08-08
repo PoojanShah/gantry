@@ -10,7 +10,7 @@ namespace Network
 		public const string PING_HOST = "google.com";
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
-		public const int PING_TIMEOUT = 3;
+		public const int PING_TIMEOUT = 500;
 
 		public static IPAddress GetMyIp()
 		{
@@ -33,13 +33,13 @@ namespace Network
 			return result;
 		}
 		
-		public static bool TestConnection()
+		public static bool GetConnectionStatus()
 		{
 			try
 			{
-				var P = new Ping();
-				var Status = P.Send(PING_HOST, PING_TIMEOUT);
-				return (Status.Status == IPStatus.Success);
+				var ping = new Ping();
+				var status = ping.Send(PING_HOST, PING_TIMEOUT);
+				return status.Status == IPStatus.Success;
 			}
 			catch 
 			{ 
@@ -50,7 +50,7 @@ namespace Network
 		
 		public static bool CheckIsFileExist(string url)
 		{
-			bool result = false;
+			var result = false;
  
 			var request = WebRequest.Create(url);
 			request.Timeout = FILE_EXIST_TIMEOUT;
