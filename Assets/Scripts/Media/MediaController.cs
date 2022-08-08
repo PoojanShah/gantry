@@ -61,7 +61,7 @@ namespace Media
 
 		public void LoadMediaFromServer()
 		{
-			Debug.Log("Connection status: " + NetworkHelper.TestConnection());
+			Debug.Log("Connection status: " + NetworkHelper.IsConnectionAvailable());
 			
 			var request = WebRequest.Create(QTS_URL);
 			try
