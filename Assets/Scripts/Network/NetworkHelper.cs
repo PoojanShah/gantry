@@ -48,7 +48,7 @@ namespace Network
 			return false;
 		}
 		
-		public static bool CheckIsFileExist(string url)
+		public static bool IsFileExist(string url)
 		{
 			var result = false;
  
@@ -70,8 +70,7 @@ namespace Network
 			{
 				response?.Close();
 			}
- 
- 
+
 			return result;
 		}
 	}
