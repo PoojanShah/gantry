@@ -79,13 +79,18 @@ namespace Screens
 					InitAdminMenu(screen);
 					break;
 				case ScreenType.LibraryMenu:
-					InitLibrary(screen);
+					//InitLibrary(screen);
+					InitLibraryOptions(screen);
 					break;
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
 				case ScreenType.OptionsMenu:
-					InitOptions(screen);
+					//InitOptions(screen);
+					InitLibraryOptions(screen);
+					break;
+				case ScreenType.LibraryOptions:
+					InitLibraryOptions(screen);
 					break;
 				case ScreenType.PasswordPopup:
 				default:
@@ -97,7 +102,7 @@ namespace Screens
 
 		private void InitMainMenu(GameObject screen)
 		{
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
 			var mainMenu = screen.GetComponent<MainMenu>();
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
@@ -125,21 +130,27 @@ namespace Screens
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(OpenPatternsEditor, 
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
-				() => OpenWindow(ScreenType.LibraryMenu),
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.LibraryOptions), PasswordType.SuperAdmin), 
+				() => OpenWindow(ScreenType.LibraryOptions),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
 
 		private void InitLibrary(GameObject screen)
 		{
 			var library = screen.GetComponent<LibraryScreen>();
-			library.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
+			//library.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
 		}
 
 		private void InitOptions(GameObject screen)
 		{
 			var options = screen.GetComponent<OptionsMenu>();
-			options.Init();
+			//options.Init();
+		}
+
+		private void InitLibraryOptions(GameObject screen)
+		{
+			var libraryOptions = screen.GetComponent<LibraryOptions>();
+			libraryOptions.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
 		}
 
 		private void InitExitPopUp(GameObject screen)

@@ -11,6 +11,7 @@ namespace Configs
 		PasswordPopup,
 		ExitConfirmationPopup,
 		OptionsMenu,
+		LibraryOptions,
 		MainMenuAndroid
 	}
 

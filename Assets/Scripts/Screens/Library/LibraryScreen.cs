@@ -9,25 +9,43 @@ namespace Library
 {
 	public class LibraryScreen : MonoBehaviour
 	{
-		[SerializeField] private Button _exitButton;
 		[SerializeField] private Toggle _extensionToggle;
 		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
 		[SerializeField] private Scrollbar _scrollbar;
+		[SerializeField] private Button _exitButton, _switchButton;
 
-		private Action _quitButtonAction;
 		private LibraryFile[] _files;
 
-		public void Init(ICommonFactory factory, Action quitButtonAction)
+		public void Init(ICommonFactory factory, Action exitButtonAction, Action switchButtonAction)
 		{
-			_quitButtonAction = quitButtonAction;
-
+			_exitButton.onClick.AddListener(exitButtonAction.Invoke);
+			_switchButton.onClick.AddListener(switchButtonAction.Invoke);
+			
 			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
-			_exitButton.onClick.AddListener(SaveAndExit);
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
 
 			InitMediaItems(factory);
+		}
+		
+		public void SaveAndExit()
+		{
+			try
+			{
+				var sw = new StreamWriter(Settings.ColorsConfigPath);
+
+				foreach (var kvp in Settings.VideoColors)
+					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
+
+				sw.Close();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
+			}
+
+			Clear();
 		}
 
 		private void InitMediaItems(ICommonFactory commonFactory)
@@ -54,7 +72,6 @@ namespace Library
 
 		private void Clear()
 		{
-			_exitButton.onClick.RemoveAllListeners();
 			_extensionToggle.onValueChanged.RemoveAllListeners();
 
 			if (_files != null)
@@ -64,10 +81,11 @@ namespace Library
 
 				_files = null;
 			}
+			
+			_exitButton.onClick.RemoveAllListeners();
+			_switchButton.onClick.RemoveAllListeners();
 
 			gameObject.SetActive(false);
-
-			_quitButtonAction?.Invoke();
 		}
 
 		private void ShowFileExtensions(bool isShown)
@@ -107,25 +125,6 @@ namespace Library
 			var libFile = callingObj.GetComponent<LibraryFile>();
 
 			ChangeColor(index, libFile, false);
-		}
-
-		private void SaveAndExit()
-		{
-			try
-			{
-				var sw = new StreamWriter(Settings.ColorsConfigPath);
-
-				foreach (var kvp in Settings.VideoColors)
-					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
-
-				sw.Close();
-			}
-			catch (Exception e)
-			{
-				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
-			}
-
-			Clear();
 		}
 
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
