@@ -34,12 +34,9 @@ namespace VideoPlaying
 			{
 				_projectionView.SetActive(true);
 				_projectionView.Init(StopAndHidePlayer);
-				_projectionView.Play(content);
-
-				return;
 			}
-
-			CreateProjectionView();
+			else
+				CreateProjectionView();
 
 			_projectionView.Play(content);
 		}
