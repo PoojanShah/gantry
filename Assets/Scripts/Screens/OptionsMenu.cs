@@ -10,15 +10,11 @@ namespace Screens
 		[SerializeField] private Toggle _sound,_rotation;
 		[SerializeField] private TMP_Dropdown _outputsNumber;
 		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort;
-		[SerializeField] private Button _exitButton, _switchButton;
 
 		private OptionsSettings _optionsSettings;
 		
-		public void Init(Action exitButtonAction, Action switchButtonAction)
+		public void Init()
 		{
-			_exitButton.onClick.AddListener(exitButtonAction.Invoke);
-			_switchButton.onClick.AddListener(switchButtonAction.Invoke);
-			
 			_optionsSettings = new OptionsSettings();
 			
 			LoadValues(_optionsSettings);
@@ -26,14 +22,12 @@ namespace Screens
 
 		public void SaveAndExit()
 		{
-			_optionsSettings.Save(_sound.isOn,
+			_optionsSettings.Save(
+				_sound.isOn,
 				_rotation.isOn,
 				_outputsNumber.value,
 				_cuoCoreIp.text,
 				Convert.ToInt32(_cuoCorePort.text));
-			
-			_exitButton.onClick.RemoveAllListeners();
-			_switchButton.onClick.RemoveAllListeners();
 		}
 
 		private void LoadValues(OptionsSettings optionsSettings)

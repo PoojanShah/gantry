@@ -11,14 +11,14 @@ namespace Screens
 	{
 		[SerializeField] private OptionsMenu _optionsMenu;
 		[SerializeField] private LibraryScreen _libraryScreen;
+		[SerializeField] private Button _exitButton;
 		
 		public void Init(ICommonFactory factory, Action quitAction)
 		{
-			_optionsMenu.Init(() =>Quit(quitAction), SwitchScreens);
-			_libraryScreen.Init(factory, () => Quit(quitAction), SwitchScreens);
+			_optionsMenu.Init();
+			_libraryScreen.Init(factory);
 			
-			_libraryScreen.gameObject.SetActive(false);
-			_optionsMenu.gameObject.SetActive(true);
+			_exitButton.onClick.AddListener(() => Quit(quitAction));
 		}
 
 		private void Quit(Action quitAction)
@@ -26,17 +26,11 @@ namespace Screens
 			_optionsMenu.SaveAndExit();
 			_libraryScreen.SaveAndExit();
 			
+			_exitButton.onClick.RemoveAllListeners();
+			
 			quitAction?.Invoke();
 			
 			Destroy(gameObject);
-		}
-
-		private void SwitchScreens()
-		{
-			var optionsIsActive = _optionsMenu.gameObject.activeSelf;
-			
-			_optionsMenu.gameObject.SetActive(!optionsIsActive);
-			_libraryScreen.gameObject.SetActive(optionsIsActive);
 		}
 	}
 }

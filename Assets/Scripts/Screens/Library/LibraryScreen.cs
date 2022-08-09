@@ -13,15 +13,11 @@ namespace Library
 		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
 		[SerializeField] private Scrollbar _scrollbar;
-		[SerializeField] private Button _exitButton, _switchButton;
 
 		private LibraryFile[] _files;
 
-		public void Init(ICommonFactory factory, Action exitButtonAction, Action switchButtonAction)
+		public void Init(ICommonFactory factory)
 		{
-			_exitButton.onClick.AddListener(exitButtonAction.Invoke);
-			_switchButton.onClick.AddListener(switchButtonAction.Invoke);
-			
 			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
@@ -82,9 +78,6 @@ namespace Library
 				_files = null;
 			}
 			
-			_exitButton.onClick.RemoveAllListeners();
-			_switchButton.onClick.RemoveAllListeners();
-
 			gameObject.SetActive(false);
 		}
 
