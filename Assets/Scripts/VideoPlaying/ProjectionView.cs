@@ -21,6 +21,14 @@ namespace VideoPlaying
 			_projection.Init();
 		}
 
+		public void SetSoundSettings(bool enableAudio)
+		{
+			foreach (var p in _players)
+			{
+				p.SetDirectAudioMute(0, !enableAudio);
+			}
+		}
+
 		public void Play(MediaContent content) => _projection.StartMovie(content);
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);
 		public Projection GetProjection() => _projection;

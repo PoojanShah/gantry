@@ -1,6 +1,7 @@
 using System;
 using Core;
 using Media;
+using Screens;
 using UnityEngine;
 
 namespace VideoPlaying
@@ -12,12 +13,14 @@ namespace VideoPlaying
 		private readonly Action _stopAction;
 
 		private ProjectionView _projectionView;
+		private OptionsSettings _optionsSettings;
 
 		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, Action stopAction)
 		{
 			_commonFactory = commonFactory;
 			_prefab = prefab;
 			_stopAction = stopAction;
+			_optionsSettings = new OptionsSettings();
 		}
 
 		public Projection GetProjection()
@@ -41,6 +44,8 @@ namespace VideoPlaying
 
 			CreateProjectionView();
 
+			SetSoundSettings();
+			
 			_projectionView.Play(content);
 		}
 
@@ -55,6 +60,12 @@ namespace VideoPlaying
 			_projectionView.SetActive(false);
 
 			_stopAction?.Invoke();
+		}
+
+		private void SetSoundSettings()
+		{
+			_optionsSettings.LoadValues();
+			_projectionView.SetSoundSettings(_optionsSettings.IsSoundOn);
 		}
 	}
 }
