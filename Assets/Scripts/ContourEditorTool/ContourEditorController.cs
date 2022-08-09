@@ -63,6 +63,7 @@ namespace ContourEditorTool
 				_projection.IsEditing = true;
 				_projection.enabled = true;
 				_projection.GetComponent<Toolbar>().enabled = true;
+				_projection.GetComponent<ContourEditor>().enabled = true;
 			}
 
 			InitProjection();
