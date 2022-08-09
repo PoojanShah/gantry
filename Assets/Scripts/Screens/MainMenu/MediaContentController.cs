@@ -54,7 +54,15 @@ namespace Assets.Scripts.Screens
 		{
 			var itemsToShow = GetMediaToShow();
 
-			for(var i = 0; i < )
+			for (var i = 0; i < _mediaItems.Length; i++)
+			{
+				if (i > itemsToShow.Length)
+				{
+					_mediaItems[i].gameObject.SetActive(false);
+
+					continue;
+				}
+			}
 		}
 
 		public void SetButtonInteractable(bool isBackButton, bool isInteractable)
