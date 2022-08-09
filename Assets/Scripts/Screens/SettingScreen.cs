@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Screens
 {
 	//TODO: Change name when screen will have name
-	public class LibraryOptions : MonoBehaviour
+	public class SettingScreen : MonoBehaviour
 	{
 		[SerializeField] private OptionsMenu _optionsMenu;
 		[SerializeField] private LibraryScreen _libraryScreen;

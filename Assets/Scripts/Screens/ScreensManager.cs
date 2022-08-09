@@ -78,19 +78,11 @@ namespace Screens
 				case ScreenType.AdminMenu:
 					InitAdminMenu(screen);
 					break;
-				case ScreenType.LibraryMenu:
-					//InitLibrary(screen);
-					InitLibraryOptions(screen);
-					break;
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
-				case ScreenType.OptionsMenu:
-					//InitOptions(screen);
-					InitLibraryOptions(screen);
-					break;
-				case ScreenType.LibraryOptions:
-					InitLibraryOptions(screen);
+				case ScreenType.SettingsScreen:
+					InitSettingsScreen(screen);
 					break;
 				case ScreenType.PasswordPopup:
 				default:
@@ -130,26 +122,13 @@ namespace Screens
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(OpenPatternsEditor, 
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.LibraryOptions), PasswordType.SuperAdmin), 
-				() => OpenWindow(ScreenType.LibraryOptions),
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen), PasswordType.SuperAdmin),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
 
-		private void InitLibrary(GameObject screen)
+		private void InitSettingsScreen(GameObject screen)
 		{
-			var library = screen.GetComponent<LibraryScreen>();
-			//library.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
-		}
-
-		private void InitOptions(GameObject screen)
-		{
-			var options = screen.GetComponent<OptionsMenu>();
-			//options.Init();
-		}
-
-		private void InitLibraryOptions(GameObject screen)
-		{
-			var libraryOptions = screen.GetComponent<LibraryOptions>();
+			var libraryOptions = screen.GetComponent<SettingScreen>();
 			libraryOptions.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
 		}
 

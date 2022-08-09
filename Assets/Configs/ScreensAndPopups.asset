@@ -17,20 +17,17 @@ MonoBehaviour:
     Prefab: {fileID: 1877378983142386902, guid: 2b9558d3a11fecf4188f5b0e522f7e6f,
       type: 3}
   - Type: 3
-    Prefab: {fileID: 2610025223677816249, guid: f184bafd404bedf4f94f20c1a96370c8,
+    Prefab: {fileID: 7534455446742936708, guid: 3dd31c25fd1d1314186e919c5423b5ae,
       type: 3}
   - Type: 4
-    Prefab: {fileID: 7534455446742936708, guid: 3dd31c25fd1d1314186e919c5423b5ae,
+    Prefab: {fileID: 2786991009734342560, guid: 389051b7b57594efe9244240f273e7da,
       type: 3}
   - Type: 1
     Prefab: {fileID: 5529332910021207383, guid: 7b11d942f48ec1d40b6cabc98ae4e97b,
       type: 3}
   - Type: 2
-    Prefab: {fileID: 2030411659212374181, guid: a4bdeb27c0d59b44bb337978ab966aff,
+    Prefab: {fileID: 2610025223677816249, guid: f184bafd404bedf4f94f20c1a96370c8,
       type: 3}
   - Type: 5
-    Prefab: {fileID: 2786991009734342560, guid: b90c4b9442aac48c5919fe102b02f3b7,
-      type: 3}
-  - Type: 6
-    Prefab: {fileID: 2786991009734342560, guid: 389051b7b57594efe9244240f273e7da,
+    Prefab: {fileID: 1877378983142386902, guid: 4f013764c4873034db8e19d43ed21278,
       type: 3}
