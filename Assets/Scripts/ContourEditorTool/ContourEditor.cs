@@ -30,7 +30,6 @@ namespace ContourEditorTool
 		private static List<Vertex> vertexDots = new List<Vertex>();
 		private static Texture2D[] icons;
 		private static int background;
-		private static int saveAsDefault = -1;
 		private static List<Vector3> lassoPoints = new List<Vector3>();
 		private static List<LineRenderer> lines = new List<LineRenderer>();
 		private static List<Blackout> blackouts = new List<Blackout>();
@@ -742,7 +741,6 @@ namespace ContourEditorTool
 							{
 								mode = Mode.save;
 								UIHelper.ResetWindowPosition();
-								saveAsDefault = -1;
 								SRSUtilities.guiMatrixNormalized = false;
 							},
 						shortcut = new KeyCode[] { KeyCode.S }
@@ -2076,8 +2074,7 @@ namespace ContourEditorTool
 
 			bw.Close();
 
-			if (saveAsDefault > -1) 
-				SaveDefaultConfiguration(fileName);
+			SaveDefaultConfiguration(path);
 
 			mode = Mode.normal;
 		}

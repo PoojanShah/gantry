@@ -16,11 +16,7 @@ namespace VideoPlaying
 		[SerializeField] private VideoPlayerScreen[] _screens;
 		[SerializeField] private Renderer _renderer;
 
-		public bool IsEditing
-		{
-			get => _contourEditor != null && _contourEditor.enabled;
-			set => _contourEditor.enabled = value;
-		}
+		public bool IsEditing;
 
 		public static Vector3 originalExtents;
 
@@ -114,14 +110,7 @@ namespace VideoPlaying
 			enabled = false;
 			_renderer.enabled = false;
 
-			transform.ApplyRecursively(t =>
-			{
-				/*Debug.Log("Processing: "+t.name+", test: "+t.name.StartsWith("Vertex"));*/
-				t.gameObject.SetActive(!t.name.StartsWith("Vertex"));
-			}, false); //keep after configuration loading which creates new vertices.
-
 			IsPlayMode = true;
-
 			//if (Settings.useCueCore)
 			//	SRSUtilities.TCPMessage(
 			//		((Settings.videoColor.ContainsKey(content.Name) &&
@@ -170,6 +159,11 @@ namespace VideoPlaying
 					_screens[i].SetTexture(loadImageFromFile);
 				}
 			}
+
+			const float showBlackoutsDelay = 0.1f;
+			yield return new WaitForSeconds(showBlackoutsDelay);
+
+			GetComponent<ContourEditor>().enabled = true;
 		}
 
 		public void StopMovie(int screenNum = -1)
@@ -184,6 +178,8 @@ namespace VideoPlaying
 
 			var screen = _screens[screenNum];
 			screen.Stop();
+
+			GetComponent<ContourEditor>().enabled = false;
 		}
 
 		public void Clear() => Destroy(_renderer.sharedMaterial.mainTexture);
