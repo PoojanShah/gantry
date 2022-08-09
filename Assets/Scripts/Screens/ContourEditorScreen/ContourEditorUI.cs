@@ -69,7 +69,12 @@ namespace Screens.ContourEditorScreen
 		public void ShowDensityPanel()
 		{
 			_commonFactory.InstantiateObject<DensityPanel>(_densityPanel.gameObject, _canvas)
-				.Init(() => ShowToolbar(true));
+				.Init(() =>
+				{
+					ContourEditor.HideGUI = false;
+
+					ShowToolbar(true);
+				});
 		}
 
 		private void SetToolTipByID(int block, int line, int id)
