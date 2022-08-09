@@ -45,6 +45,7 @@ namespace VideoPlaying
 		private void StopVideoPlaying()
 		{
 			ContourEditor.WipeBlackouts();
+			ContourEditor.ClearLassos();
 
 			_projection.IsPlayMode = false;
 			_projection.Clear();

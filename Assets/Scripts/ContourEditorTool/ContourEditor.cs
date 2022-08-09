@@ -1986,7 +1986,7 @@ namespace ContourEditorTool
 
 		private void SaveAndQuitToMenu()
 		{
-			_lassoObjects.Clear();
+			ClearLassos();
 
 			DeSelect();
 
@@ -2000,6 +2000,8 @@ namespace ContourEditorTool
 			
 			_quitButtonAction?.Invoke();
 		}
+
+		public static void ClearLassos() => _lassoObjects.Clear();
 
 		public static void LoadConfigurationByName(string name)
 		{
