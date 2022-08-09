@@ -2090,6 +2090,8 @@ namespace ContourEditorTool
 
 		public void LoadConfiguration(string fileName, int screen = -1)
 		{
+			selectedVertices.Clear();
+
 			Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
 			
 			var screenObj = screen > -1 ? _projection.Screens[screen].GetObject() : instance.gameObject;
