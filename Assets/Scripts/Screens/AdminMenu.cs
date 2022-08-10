@@ -8,17 +8,15 @@ namespace Screens
 	{
 		[SerializeField] private Button _playButton;
 		[SerializeField] private Button _editMapButton;
-		[SerializeField] private Button _optionButton;
-		[SerializeField] private Button _libraryButton;
+		[SerializeField] private Button _settingsButton;
 		[SerializeField] private Button _exitButton;
 
-		public void Init(Action onEditMapAction, Action onOptionAction, Action onLibraryAction,
+		public void Init(Action onEditMapAction, Action onSettingsAction,
 			Action onExitAction)
 		{
 			_playButton.onClick.AddListener(() => onExitAction?.Invoke());
 			_editMapButton.onClick.AddListener(() => { onEditMapAction?.Invoke(); });
-			_optionButton.onClick.AddListener(() => { onOptionAction?.Invoke(); });
-			_libraryButton.onClick.AddListener(() => { onLibraryAction?.Invoke(); });
+			_settingsButton.onClick.AddListener(() => { onSettingsAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onExitAction?.Invoke(); });
 		}
 	}

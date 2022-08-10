@@ -14,19 +14,23 @@ namespace Screens
 		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
 		private const string QTS_IP_TITLE = "Server IP: ";
 
-		[SerializeField] private Button _settingButton, _exitButton;
+		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private TMP_Text _currentPatternTitle, _serverIpTitle;
 		[SerializeField] private MediaContentController _contentController;
 
 		private MediaController _mediaController;
+		private OptionsSettings _settings;
 
 		public void Init(MediaController mediaController, Action<MediaContent> playVideoAction, Action onSettingAction,
-			Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory)
+			Action onQuitAction, GameObject mediaPrefab, ICommonFactory factory, OptionsSettings settings)
 		{
+			_settings = settings;
 			_mediaController = mediaController;
+
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
-			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
+			_muteButton.onClick.AddListener(SwitchSound);
+
 #if UNITY_STANDALONE_WIN
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 #endif
@@ -35,11 +39,9 @@ namespace Screens
 			_serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();
 		}
 
-		private void OnDestroy()
-		{
-			_settingButton?.onClick.RemoveAllListeners();
-			_exitButton.onClick.RemoveAllListeners();
-		}
+		private void SwitchSound() => _settings.SwitchSound();
+
+		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
 
 		private void InitCurrentConfigTitle()
 		{

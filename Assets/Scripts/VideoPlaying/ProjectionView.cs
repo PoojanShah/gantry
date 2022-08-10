@@ -1,5 +1,4 @@
 using System;
-using Configs;
 using ContourEditorTool;
 using Media;
 using UnityEngine;
@@ -19,6 +18,12 @@ namespace VideoPlaying
 			_stopAction = stopAction;
 
 			_projection.Init();
+		}
+		
+		public void SetSoundSettings(bool enableAudio)
+		{
+			foreach (var p in _players)
+				p.SetDirectAudioMute(0, !enableAudio);
 		}
 
 		public void Play(MediaContent content)
@@ -51,7 +56,6 @@ namespace VideoPlaying
 		private void StopVideoPlaying()
 		{
 			ContourEditor.WipeBlackouts();
-			ContourEditor.ClearLassos();
 
 			_projection.IsPlayMode = false;
 			_projection.Clear();

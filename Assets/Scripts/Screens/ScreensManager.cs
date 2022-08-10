@@ -19,11 +19,13 @@ namespace Screens
 		private readonly MainConfig _mainConfig;
 		private readonly ICommonFactory _factory;
 		private readonly MediaController _mediaController;
+		private readonly OptionsSettings _optionsSettings;
 		private GameObject _currentScreen;
 
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
-			Action<MediaContent> playAction, ContourEditorController contourEditorController, MediaController mediaController)
+			Action<MediaContent> playAction, ContourEditorController contourEditorController,
+			MediaController mediaController, OptionsSettings optionsSettings)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
@@ -33,6 +35,7 @@ namespace Screens
 			_mediaController = mediaController;
 
 			OpenWindow(ScreenType.MainMenu);
+			_optionsSettings = optionsSettings;
 		}
 #elif UNITY_ANDROID
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform)
@@ -78,14 +81,11 @@ namespace Screens
 				case ScreenType.AdminMenu:
 					InitAdminMenu(screen);
 					break;
-				case ScreenType.LibraryMenu:
-					InitLibrary(screen);
-					break;
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
-				case ScreenType.OptionsMenu:
-					InitOptions(screen);
+				case ScreenType.SettingsScreen:
+					InitSettingsScreen(screen);
 					break;
 				case ScreenType.PasswordPopup:
 				default:
@@ -97,11 +97,11 @@ namespace Screens
 
 		private void InitMainMenu(GameObject screen)
 		{
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
 			var mainMenu = screen.GetComponent<MainMenu>();
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
-				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+				Application.Quit, _mainConfig.MediaItemPrefab, _factory, _optionsSettings);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
 			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory);
@@ -125,21 +125,14 @@ namespace Screens
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(OpenPatternsEditor, 
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.OptionsMenu), PasswordType.SuperAdmin), 
-				() => OpenWindow(ScreenType.LibraryMenu),
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen), PasswordType.SuperAdmin),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
 
-		private void InitLibrary(GameObject screen)
+		private void InitSettingsScreen(GameObject screen)
 		{
-			var library = screen.GetComponent<LibraryScreen>();
-			library.Init(_factory, () => OpenWindow(ScreenType.AdminMenu));
-		}
-
-		private void InitOptions(GameObject screen)
-		{
-			var options = screen.GetComponent<OptionsMenu>();
-			options.Init();
+			var libraryOptions = screen.GetComponent<SettingScreen>();
+			libraryOptions.Init(_factory, () => OpenWindow(ScreenType.AdminMenu), _optionsSettings);
 		}
 
 		private void InitExitPopUp(GameObject screen)

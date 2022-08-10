@@ -7,10 +7,9 @@ namespace Configs
 	{
 		MainMenu = 0,
 		AdminMenu,
-		LibraryMenu,
 		PasswordPopup,
 		ExitConfirmationPopup,
-		OptionsMenu,
+		SettingsScreen,
 		MainMenuAndroid
 	}
 

@@ -9,25 +9,39 @@ namespace Library
 {
 	public class LibraryScreen : MonoBehaviour
 	{
-		[SerializeField] private Button _exitButton;
 		[SerializeField] private Toggle _extensionToggle;
 		[SerializeField] private GameObject _exampleFile;
 		[SerializeField] private RectTransform _contentHolder;
 		[SerializeField] private Scrollbar _scrollbar;
 
-		private Action _quitButtonAction;
 		private LibraryFile[] _files;
 
-		public void Init(ICommonFactory factory, Action quitButtonAction)
+		public void Init(ICommonFactory factory)
 		{
-			_quitButtonAction = quitButtonAction;
-
 			_extensionToggle.onValueChanged.AddListener(ShowFileExtensions);
-			_exitButton.onClick.AddListener(SaveAndExit);
 
 			_scrollbar.value = Constants.ScrollbarDefaultValue;
 
 			InitMediaItems(factory);
+		}
+		
+		public void SaveAndExit()
+		{
+			try
+			{
+				var sw = new StreamWriter(Settings.ColorsConfigPath);
+
+				foreach (var kvp in Settings.VideoColors)
+					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
+
+				sw.Close();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
+			}
+
+			Clear();
 		}
 
 		private void InitMediaItems(ICommonFactory commonFactory)
@@ -54,7 +68,6 @@ namespace Library
 
 		private void Clear()
 		{
-			_exitButton.onClick.RemoveAllListeners();
 			_extensionToggle.onValueChanged.RemoveAllListeners();
 
 			if (_files != null)
@@ -64,10 +77,8 @@ namespace Library
 
 				_files = null;
 			}
-
+			
 			gameObject.SetActive(false);
-
-			_quitButtonAction?.Invoke();
 		}
 
 		private void ShowFileExtensions(bool isShown)
@@ -109,37 +120,20 @@ namespace Library
 			ChangeColor(index, libFile, false);
 		}
 
-		private void SaveAndExit()
-		{
-			try
-			{
-				var sw = new StreamWriter(Settings.ColorsConfigPath);
-
-				foreach (var kvp in Settings.VideoColors)
-					sw.WriteLine(kvp.Key + Core.Constants.Colon + kvp.Value);
-
-				sw.Close();
-			}
-			catch (Exception e)
-			{
-				Debug.LogError("Error writing file " + Settings.ColorsConfigPath + Core.Constants.Colon + e);
-			}
-
-			Clear();
-		}
-
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
 		{
-			Settings.VideoColors[Settings.MediaLibrary[index]] = Constants
-				.colorDefaults[
-					SRSUtilities.Wrap(
-						Constants.colorDefaults.IndexOfFirstMatch(cd =>
-							cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]) + (next ? 1 : -1),
-						Constants.colorDefaults.Length)].Key;
+			var colorSettingIndex = Settings.MediaLibrary[index];
+			var colorSearchIndex = Constants.colorDefaults.IndexOfFirstMatch(cd =>
+				cd.Key == Settings.VideoColors[colorSettingIndex]) + (next ? 1 : -1);
+			
+			var colorIndex = SRSUtilities.Wrap(colorSearchIndex, Constants.colorDefaults.Length);
+			
+			Settings.VideoColors[colorSettingIndex] = 
+				Constants.colorDefaults[colorIndex].Key;
 
-			var colorTitle = Settings.VideoColors[Settings.MediaLibrary[index]];
+			var colorTitle = Settings.VideoColors[colorSettingIndex];
 			var color = Constants.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]).Value;
+				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[colorSettingIndex]).Value;
 
 			libFile.SetColorText(colorTitle, color);
 		}

@@ -7,29 +7,23 @@ namespace Screens
 {
 	public class OptionsMenu : MonoBehaviour
 	{
-		[SerializeField] private Button _exitButton;
 		[SerializeField] private Toggle _sound,_rotation;
 		[SerializeField] private TMP_Dropdown _outputsNumber;
 		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort;
 
 		private OptionsSettings _optionsSettings;
 		
-		public void Init()
+		public void Init(OptionsSettings settings)
 		{
-			_optionsSettings = new OptionsSettings();
+			_optionsSettings = settings;
 			
 			LoadValues(_optionsSettings);
-			
-			_exitButton.onClick.AddListener(() =>
-			{
-				_optionsSettings.Save(_sound.isOn,
-					_rotation.isOn,
-					_outputsNumber.value,
-					_cuoCoreIp.text,
-					Convert.ToInt32(_cuoCorePort.text));
-				
-				Destroy(gameObject);
-			});
+		}
+
+		public void SaveAndExit()
+		{
+			_optionsSettings.Save(_sound.isOn, _rotation.isOn, _outputsNumber.value, 
+				_cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
 		}
 
 		private void LoadValues(OptionsSettings optionsSettings)
