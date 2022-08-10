@@ -14,29 +14,20 @@ namespace VideoPlaying
 
 		private MediaContent _content;
 		private Action<int> _onClick;
-
-#if UNITY_STANDALONE_WIN
 		public void Init(MediaContent content, Action<int> onClickAction)
 		{
 			_content = content;
 			_onClick = onClickAction;
 
+#if UNITY_STANDALONE
 			_title.text = content.Name.Split(Constants.Dot)[0];
+#elif UNITY_ANDROID
+			_title.text = content.Id.ToString();
+#endif
 
 			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);
 		}
-
-#elif UNITY_ANDROID
-		public void Init(int id, Action<int> onClickAction)
-		{
-			_onClick = onClickAction;
-
-			_title.text = id.ToString();
-
-			_button.onClick.AddListener(ItemClicked);
-		}
-#endif
 		public void ItemClicked() => _onClick?.Invoke(_content.Id);
 		public void SetInteractable(bool isInteractable) => _button.interactable = isInteractable;
 		private void OnDestroy() => _button.onClick.RemoveAllListeners();

@@ -103,11 +103,7 @@ namespace Screens
 					continue;
 				}
 
-#if UNITY_STANDALONE
 				_mediaItems[i].Init(itemsToShow[i], PlayById);
-#elif UNITY_ANDROID
-				_mediaItems[i].Init(i, PlayById);
-#endif
 				_mediaItems[i].SetInteractable(true);
 				_mediaItems[i].gameObject.SetActive(true);
 			}
