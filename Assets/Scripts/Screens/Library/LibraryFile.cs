@@ -11,8 +11,8 @@ namespace Library
 		[SerializeField] private Image _thumbnailImage, _colorTextBackground;
 		[SerializeField] private TMP_Text _fileNameText, _colorText;
 		[SerializeField] private Button _nextColorButton, _previousColorButton;
-		[Range(0, 1)]
-		[SerializeField] private float _colorBackgroundAlpha;
+		
+		private const float COLOR_BACKGROUND_ALPHA = 0.2f;
 		public void Init(Action<GameObject, bool> onColorButtonPressed)
 		{
 			_nextColorButton.onClick.AddListener(() => onColorButtonPressed?.Invoke(gameObject, true));
@@ -31,7 +31,7 @@ namespace Library
 		{
 			_colorText.text = text;
 			_colorText.color = color;
-			color.a = _colorBackgroundAlpha; 
+			color.a = COLOR_BACKGROUND_ALPHA; 
 			_colorTextBackground.color = color;
 		}
 

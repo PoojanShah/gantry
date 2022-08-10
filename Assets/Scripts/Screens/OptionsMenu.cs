@@ -22,12 +22,8 @@ namespace Screens
 
 		public void SaveAndExit()
 		{
-			_optionsSettings.Save(
-				_sound.isOn,
-				_rotation.isOn,
-				_outputsNumber.value,
-				_cuoCoreIp.text,
-				Convert.ToInt32(_cuoCorePort.text));
+			_optionsSettings.Save(_sound.isOn, _rotation.isOn, _outputsNumber.value, 
+				_cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text));
 		}
 
 		private void LoadValues(OptionsSettings optionsSettings)

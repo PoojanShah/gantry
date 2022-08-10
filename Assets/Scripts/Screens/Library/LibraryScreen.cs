@@ -122,16 +122,18 @@ namespace Library
 
 		private static void ChangeColor(int index, LibraryFile libFile, bool next)
 		{
-			Settings.VideoColors[Settings.MediaLibrary[index]] = Constants
-				.colorDefaults[
-					SRSUtilities.Wrap(
-						Constants.colorDefaults.IndexOfFirstMatch(cd =>
-							cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]) + (next ? 1 : -1),
-						Constants.colorDefaults.Length)].Key;
+			var colorSettingIndex = Settings.MediaLibrary[index];
+			var colorSearchIndex = Constants.colorDefaults.IndexOfFirstMatch(cd =>
+				cd.Key == Settings.VideoColors[colorSettingIndex]) + (next ? 1 : -1);
+			
+			var colorIndex = SRSUtilities.Wrap(colorSearchIndex, Constants.colorDefaults.Length);
+			
+			Settings.VideoColors[colorSettingIndex] = 
+				Constants.colorDefaults[colorIndex].Key;
 
-			var colorTitle = Settings.VideoColors[Settings.MediaLibrary[index]];
+			var colorTitle = Settings.VideoColors[colorSettingIndex];
 			var color = Constants.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[index]]).Value;
+				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[colorSettingIndex]).Value;
 
 			libFile.SetColorText(colorTitle, color);
 		}

@@ -28,7 +28,7 @@ namespace Common
 			_factory = new CommonFactory();
 			_mediaController = new MediaController();
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
-				() => _screensManager.OpenWindow(ScreenType.MainMenu));
+				() => _screensManager.OpenWindow(ScreenType.MainMenu), new OptionsSettings());
 			_contourEditorController = new ContourEditorController(_projectionController, _factory, _mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,

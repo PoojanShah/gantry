@@ -15,12 +15,12 @@ namespace VideoPlaying
 		private ProjectionView _projectionView;
 		private OptionsSettings _optionsSettings;
 
-		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, Action stopAction)
+		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, Action stopAction, OptionsSettings optionsSettings)
 		{
 			_commonFactory = commonFactory;
 			_prefab = prefab;
 			_stopAction = stopAction;
-			_optionsSettings = new OptionsSettings();
+			_optionsSettings = optionsSettings;
 		}
 
 		public Projection GetProjection()
