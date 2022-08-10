@@ -85,9 +85,14 @@ namespace VideoPlaying
 
 		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
 		{
-			CameraHelper.SetBackgroundColor(Constants.colorDefaults
-				.FirstOrDefault(cd => cd.Key == Settings.VideoColors[Settings.MediaLibrary[int.Parse(mediaToPlay.Name)]])
-				.Value);
+			var settingsKey = mediaToPlay.Name;
+			var selectedColor = Settings.VideoColors[settingsKey];
+
+			var colorKeyValue = Constants.colorDefaults
+				.FirstOrDefault(cd => cd.Key == selectedColor);
+			var color32 = colorKeyValue
+				.Value;
+			CameraHelper.SetBackgroundColor(color32);
 
 			IsEditing = false;
 

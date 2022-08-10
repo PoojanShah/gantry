@@ -33,7 +33,7 @@ namespace Media
 				MediaFiles[i] = new MediaContent
 				{
 					Path = paths[i],
-					Name = Path.GetFileNameWithoutExtension(paths[i]),
+					Name = Path.GetFileName(paths[i]),
 					IsVideo = Path.GetExtension(paths[i]) == QTS_VIDEO_EXTENSION,
 					Id = i
 				};

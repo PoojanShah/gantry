@@ -1,4 +1,5 @@
 using System;
+using Core;
 using Media;
 using TMPro;
 using UnityEngine;
@@ -17,11 +18,10 @@ namespace VideoPlaying
 #if UNITY_STANDALONE_WIN
 		public void Init(MediaContent content, Action<int> onClickAction)
 		{
-			Debug.Log("init " + content.Name);
 			_content = content;
 			_onClick = onClickAction;
 
-			_title.text = content.Name;
+			_title.text = content.Name.Split(Constants.Dot)[0];
 
 			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);

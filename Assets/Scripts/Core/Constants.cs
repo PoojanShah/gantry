@@ -6,6 +6,7 @@ namespace Core
 	public static class Constants
 	{
 		public const string Colon = ":",
+			Dot = ".",
 			CorrectAdminPassword = "Kim41",
 			CorrectSuperPassword = "Jas375",
 			ExtensionMeta = ".meta",
