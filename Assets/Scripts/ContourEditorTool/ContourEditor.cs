@@ -30,7 +30,6 @@ namespace ContourEditorTool
 		private static List<Vertex> vertexDots = new List<Vertex>();
 		private static Texture2D[] icons;
 		private static int background;
-		private static int saveAsDefault = -1;
 		private static List<Vector3> lassoPoints = new List<Vector3>();
 		private static List<LineRenderer> lines = new List<LineRenderer>();
 		private static List<Blackout> blackouts = new List<Blackout>();
@@ -742,7 +741,6 @@ namespace ContourEditorTool
 							{
 								mode = Mode.save;
 								UIHelper.ResetWindowPosition();
-								saveAsDefault = -1;
 								SRSUtilities.guiMatrixNormalized = false;
 							},
 						shortcut = new KeyCode[] { KeyCode.S }
@@ -1986,7 +1984,7 @@ namespace ContourEditorTool
 
 		private void SaveAndQuitToMenu()
 		{
-			_lassoObjects.Clear();
+			ClearLassos();
 
 			DeSelect();
 
@@ -2000,6 +1998,8 @@ namespace ContourEditorTool
 			
 			_quitButtonAction?.Invoke();
 		}
+
+		public static void ClearLassos() => _lassoObjects.Clear();
 
 		public static void LoadConfigurationByName(string name)
 		{
@@ -2074,8 +2074,7 @@ namespace ContourEditorTool
 
 			bw.Close();
 
-			if (saveAsDefault > -1) 
-				SaveDefaultConfiguration(fileName);
+			SaveDefaultConfiguration(path);
 
 			mode = Mode.normal;
 		}
@@ -2088,6 +2087,8 @@ namespace ContourEditorTool
 
 		public void LoadConfiguration(string fileName, int screen = -1)
 		{
+			selectedVertices.Clear();
+
 			Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
 			
 			var screenObj = screen > -1 ? _projection.Screens[screen].GetObject() : instance.gameObject;
