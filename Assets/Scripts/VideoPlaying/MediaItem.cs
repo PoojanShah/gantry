@@ -27,7 +27,6 @@ namespace VideoPlaying
 			_button.onClick.AddListener(ItemClicked);
 		}
 
-		public void ItemClicked() => _onClick?.Invoke(_content.Id);
 #elif UNITY_ANDROID
 		public void Init(int id, Action<int> onClickAction)
 		{
@@ -38,6 +37,7 @@ namespace VideoPlaying
 			_button.onClick.AddListener(ItemClicked);
 		}
 #endif
+		public void ItemClicked() => _onClick?.Invoke(_content.Id);
 		public void SetInteractable(bool isInteractable) => _button.interactable = isInteractable;
 		private void OnDestroy() => _button.onClick.RemoveAllListeners();
 	}

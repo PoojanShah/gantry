@@ -27,9 +27,9 @@ namespace Screens
 			_mediaController = mediaController;
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
-
+#if UNITY_STANDALONE_WIN
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
-
+#endif
 			InitCurrentConfigTitle();
 
 			_serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();

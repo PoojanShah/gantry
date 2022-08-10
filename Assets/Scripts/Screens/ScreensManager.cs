@@ -104,7 +104,7 @@ namespace Screens
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
-			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory);
 #endif
 		}
 

@@ -21,8 +21,13 @@ namespace Screens
 		private ICommonFactory _factory;
 		private GameObject _mediaPrefab;
 		private MediaItem[] _mediaItems;
+#if UNITY_STANDALONE_WIN
 		private Action<MediaContent> _playVideoAction;
+#elif UNITY_ANDROID
+		private Action<int> _playVideoAction;
+#endif
 
+#if UNITY_STANDALONE_WIN
 		public void Init(MediaController mediaController, ICommonFactory factory, GameObject mediaPrefab,
 			Action<MediaContent> playVideoAction)
 		{
@@ -43,6 +48,24 @@ namespace Screens
 			SetButtonInteractable(true, false);
 			SetButtonInteractable(false, _mediaController.MediaFiles.Length > MEDIA_PER_PAGE);
 		}
+#elif UNITY_ANDROID
+		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction)
+		{
+			_playVideoAction = playVideoAction;
+			_mediaPrefab = mediaPrefab;
+			_factory = factory;
+
+			InitMediaItems();
+
+			_back.onClick.AddListener(ShowPreviousPage);
+			_forward.onClick.AddListener(ShowNextPage);
+
+			_currentPage = 0;
+
+			SetButtonInteractable(true, false);
+			SetButtonInteractable(false, false);
+		}
+#endif
 
 		private void InitMediaItems()
 		{
@@ -69,7 +92,11 @@ namespace Screens
 					continue;
 				}
 
+#if UNITY_STANDALONE_WIN
 				_mediaItems[i].Init(itemsToShow[i], PlayById);
+#elif UNITY_ANDROID
+				_mediaItems[i].Init(i, PlayById);
+#endif
 				_mediaItems[i].SetInteractable(true);
 				_mediaItems[i].gameObject.SetActive(true);
 			}
@@ -85,9 +112,13 @@ namespace Screens
 
 		public void PlayById(int id)
 		{
+#if UNITY_STANDALONE_WIN
 			var media = _mediaController.MediaFiles.First(mf => mf.Id == id);
 
 			_playVideoAction?.Invoke(media);
+#elif UNITY_ANDROID
+			_playVideoAction?.Invoke(id);
+#endif
 		}
 
 		private void ShowNextPage() => ChangePage(true);
