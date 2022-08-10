@@ -1,5 +1,4 @@
 using System;
-using Configs;
 using ContourEditorTool;
 using Media;
 using UnityEngine;
