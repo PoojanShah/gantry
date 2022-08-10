@@ -34,7 +34,8 @@ namespace Media
 				{
 					Path = paths[i],
 					Name = Path.GetFileNameWithoutExtension(paths[i]),
-					IsVideo = Path.GetExtension(paths[i]) == QTS_VIDEO_EXTENSION
+					IsVideo = Path.GetExtension(paths[i]) == QTS_VIDEO_EXTENSION,
+					Id = i
 				};
 			}
 		}
