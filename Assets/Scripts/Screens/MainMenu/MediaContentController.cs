@@ -17,14 +17,17 @@ namespace Screens
 		[SerializeField] private Transform _mediaParent;
 
 		private int _currentPage;
-		private MediaController _mediaController;
 		private ICommonFactory _factory;
 		private GameObject _mediaPrefab;
 		private MediaItem[] _mediaItems;
+
 #if UNITY_STANDALONE_WIN
+		private MediaController _mediaController;
 		private Action<MediaContent> _playVideoAction;
 #elif UNITY_ANDROID
 		private Action<int> _playVideoAction;
+		private int _mediaAmount;
+		private MediaContent[] _media;
 #endif
 
 #if UNITY_STANDALONE_WIN
@@ -49,13 +52,21 @@ namespace Screens
 			SetButtonInteractable(false, _mediaController.MediaFiles.Length > MEDIA_PER_PAGE);
 		}
 #elif UNITY_ANDROID
-		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction)
+		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction, int mediaAmount)
 		{
 			_playVideoAction = playVideoAction;
 			_mediaPrefab = mediaPrefab;
 			_factory = factory;
+			_mediaAmount = mediaAmount;
+			
+			_media = new MediaContent[mediaAmount];
+
+			for (var i = 0; i < mediaAmount; i++)
+				_media[i] = new MediaContent { Id = i };
 
 			InitMediaItems();
+
+			DisplayMedia();
 
 			_back.onClick.AddListener(ShowPreviousPage);
 			_forward.onClick.AddListener(ShowNextPage);
@@ -63,7 +74,7 @@ namespace Screens
 			_currentPage = 0;
 
 			SetButtonInteractable(true, false);
-			SetButtonInteractable(false, false);
+			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
 		}
 #endif
 
@@ -92,7 +103,7 @@ namespace Screens
 					continue;
 				}
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 				_mediaItems[i].Init(itemsToShow[i], PlayById);
 #elif UNITY_ANDROID
 				_mediaItems[i].Init(i, PlayById);
@@ -112,7 +123,7 @@ namespace Screens
 
 		public void PlayById(int id)
 		{
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 			var media = _mediaController.MediaFiles.First(mf => mf.Id == id);
 
 			_playVideoAction?.Invoke(media);
@@ -128,21 +139,31 @@ namespace Screens
 		{
 			var startIndex = _currentPage * MEDIA_PER_PAGE;
 			var finishIndex = startIndex + MEDIA_PER_PAGE;
+			var result = new List<MediaContent>();
 
+#if UNITY_STANDALONE
 			if(finishIndex > _mediaController.MediaFiles.Length)
 				finishIndex = _mediaController.MediaFiles.Length;
 
-			var result = new List<MediaContent>();
-
-			for(var i = startIndex; i < finishIndex; i++)
+			for (var i = startIndex; i < finishIndex; i++)
 				result.Add(_mediaController.MediaFiles[i]);
+#elif UNITY_ANDROID
+			if (finishIndex > _media.Length)
+				finishIndex = _media.Length;
 
+			for (var i = startIndex; i < finishIndex; i++)
+				result.Add(_media[i]);
+#endif
 			return result.ToArray();
 		}
 
 		private void ChangePage(bool isPageIncreased)
 		{
+#if UNITY_STANDALONE
 			var maxPageNumber = _mediaController.MediaFiles.Length / MEDIA_PER_PAGE;
+#elif UNITY_ANDROID
+			var maxPageNumber = _media.Length / MEDIA_PER_PAGE;
+#endif
 
 			if (isPageIncreased)
 				_currentPage++;

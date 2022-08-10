@@ -18,23 +18,23 @@ namespace Screens
 		[SerializeField] private MediaContentController _contentController;
 
 		private List<MediaItem> _mediaItems;
-		private ICommonFactory _factory;
-		private GameObject _mediaPrefab;
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory)
 		{
-			_factory = factory;
-			_mediaPrefab = mediaPrefab;
+			void OnMediaAmountReceived(int amount)
+			{
+				_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand, amount);
 
-			_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand);
+				LocalNetworkClient.OnMediaAmountReceived -= OnMediaAmountReceived;
+			}
+
+			LocalNetworkClient.OnMediaAmountReceived += OnMediaAmountReceived;
 
 			_connectButton.onClick.AddListener(ConnectClicked);
 
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
 			InitIpLabel();
-
-			//LocalNetworkClient.OnMediaAmountReceived += InitMediaItems;
 		}
 
 		private void ConnectClicked()

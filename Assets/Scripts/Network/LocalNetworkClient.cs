@@ -40,8 +40,6 @@ namespace Network
 
 					if (!_isLoaded)
 					{
-						Debug.Log(mediaAmount);
-
 						OnMediaAmountReceived?.Invoke(mediaAmount);
 
 						_isLoaded = true;
