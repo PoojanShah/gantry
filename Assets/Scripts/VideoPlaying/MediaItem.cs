@@ -17,11 +17,13 @@ namespace VideoPlaying
 #if UNITY_STANDALONE_WIN
 		public void Init(MediaContent content, Action<int> onClickAction)
 		{
+			Debug.Log("init " + content.Name);
 			_content = content;
 			_onClick = onClickAction;
 
 			_title.text = content.Name;
 
+			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);
 		}
 

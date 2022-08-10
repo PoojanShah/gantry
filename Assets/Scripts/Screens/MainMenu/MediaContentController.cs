@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core;
 using Media;
 using UnityEngine;
@@ -20,14 +21,19 @@ namespace Screens
 		private ICommonFactory _factory;
 		private GameObject _mediaPrefab;
 		private MediaItem[] _mediaItems;
+		private Action<MediaContent> _playVideoAction;
 
-		public void Init(MediaController mediaController, ICommonFactory factory, GameObject mediaPrefab)
+		public void Init(MediaController mediaController, ICommonFactory factory, GameObject mediaPrefab,
+			Action<MediaContent> playVideoAction)
 		{
+			_playVideoAction = playVideoAction;
 			_mediaPrefab = mediaPrefab;
 			_factory = factory;
 			_mediaController = mediaController;
 
 			InitMediaItems();
+
+			DisplayMedia();
 
 			_back.onClick.AddListener(ShowPreviousPage);
 			_forward.onClick.AddListener(ShowNextPage);
@@ -66,7 +72,6 @@ namespace Screens
 				_mediaItems[i].Init(itemsToShow[i], PlayById);
 				_mediaItems[i].SetInteractable(true);
 				_mediaItems[i].gameObject.SetActive(true);
-
 			}
 		}
 
@@ -80,12 +85,9 @@ namespace Screens
 
 		public void PlayById(int id)
 		{
-			var media = _mediaItems[id];
+			var media = _mediaController.MediaFiles.First(mf => mf.Id == id);
 
-			if (media == null)
-				return;
-
-			media.ItemClicked();
+			_playVideoAction?.Invoke(media);
 		}
 
 		private void ShowNextPage() => ChangePage(true);

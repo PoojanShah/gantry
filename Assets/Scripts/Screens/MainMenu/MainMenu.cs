@@ -28,7 +28,7 @@ namespace Screens
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_exitButton.onClick.AddListener(() => { onQuitAction?.Invoke(); });
 
-			_contentController.Init(_mediaController, factory, mediaPrefab);
+			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 
 			InitCurrentConfigTitle();
 
