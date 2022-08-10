@@ -7,12 +7,13 @@ namespace Library
 {
 	public class LibraryFile : MonoBehaviour
 	{
+		private const float COLOR_BACKGROUND_ALPHA = 0.2f;
+		
 		[SerializeField] private Transform _transform;
 		[SerializeField] private Image _thumbnailImage, _colorTextBackground;
 		[SerializeField] private TMP_Text _fileNameText, _colorText;
 		[SerializeField] private Button _nextColorButton, _previousColorButton;
 		
-		private const float COLOR_BACKGROUND_ALPHA = 0.2f;
 		public void Init(Action<GameObject, bool> onColorButtonPressed)
 		{
 			_nextColorButton.onClick.AddListener(() => onColorButtonPressed?.Invoke(gameObject, true));
