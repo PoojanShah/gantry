@@ -16,11 +16,8 @@ namespace Screens
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
 
-		public OptionsSettings()
-		{
-			LoadValues();
-		}
-		
+		public OptionsSettings() => Load();
+
 		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
 		{
 			IsSoundOn = sound;
@@ -28,11 +25,11 @@ namespace Screens
 			OutputsNumber = outputsNumber;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
-			
+
 			SaveToPlayerPrefs();
 		}
 
-		public void LoadValues()
+		public void Load()
 		{
 			CuoCoreIp = PlayerPrefs.GetString(CUO_CORE_IP_KEY, CuoCoreIp);
 			CuoCorePort = PlayerPrefs.GetInt(CUE_CORE_PORT_KEY, CuoCorePort);
@@ -47,6 +44,13 @@ namespace Screens
 			PlayerPrefs.SetInt(CUE_CORE_PORT_KEY, CuoCorePort);
 			PlayerPrefs.SetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
 			PlayerPrefs.SetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn));
+			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
+		}
+
+		public void SwitchSound()
+		{
+			IsSoundOn = !IsSoundOn;
+
 			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 		}
 	}

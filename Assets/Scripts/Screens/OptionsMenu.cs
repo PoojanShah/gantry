@@ -13,9 +13,9 @@ namespace Screens
 
 		private OptionsSettings _optionsSettings;
 		
-		public void Init()
+		public void Init(OptionsSettings settings)
 		{
-			_optionsSettings = new OptionsSettings();
+			_optionsSettings = settings;
 			
 			LoadValues(_optionsSettings);
 		}

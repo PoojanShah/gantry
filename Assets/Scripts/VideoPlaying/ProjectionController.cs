@@ -61,7 +61,7 @@ namespace VideoPlaying
 
 		private void SetSoundSettings()
 		{
-			_optionsSettings.LoadValues();
+			_optionsSettings.Load();
 			_projectionView.SetSoundSettings(_optionsSettings.IsSoundOn);
 		}
 	}
