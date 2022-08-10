@@ -23,8 +23,9 @@ namespace Screens
 		{
 			void OnMediaAmountReceived(int amount)
 			{
+#if UNITY_ANDROID
 				_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand, amount);
-
+#endif
 				LocalNetworkClient.OnMediaAmountReceived -= OnMediaAmountReceived;
 			}
 
