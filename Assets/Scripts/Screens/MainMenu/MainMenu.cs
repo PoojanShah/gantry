@@ -13,10 +13,11 @@ namespace Screens
 	{
 		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
 		private const string QTS_IP_TITLE = "Server IP: ";
+		private const string QTS_VERSION_PREFIX = "v";
 
 		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle, _serverIpTitle;
+		[SerializeField] private TMP_Text _currentPatternTitle, _serverIpTitle, _versionTitle;
 		[SerializeField] private MediaContentController _contentController;
 
 		private MediaController _mediaController;
@@ -36,11 +37,14 @@ namespace Screens
 #endif
 			InitCurrentConfigTitle();
 
-			_serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();
+			InitIpTitle();
+
+			InitVersionTitle();
 		}
 
+		private void InitVersionTitle() => _versionTitle.text = QTS_VERSION_PREFIX + Application.version;
+		private void InitIpTitle() => _serverIpTitle.text = QTS_IP_TITLE + NetworkHelper.GetMyIp();
 		private void SwitchSound() => _settings.SwitchSound();
-
 		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
 
 		private void InitCurrentConfigTitle()
