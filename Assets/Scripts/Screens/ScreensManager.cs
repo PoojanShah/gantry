@@ -101,21 +101,21 @@ namespace Screens
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
-			mainMenu.Init(Application.Quit, _mainConfig.MediaItemPrefab, _factory);
+			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory);
 #endif
 		}
 
 		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
 		{
-			var mainMenu = _currentScreen.GetComponent<MainMenu>();
-			mainMenu.ClearMediaItems();
-			mainMenu.InitMediaItems(media, factory, mediaPrefab, PlayVideo);
+			return;
+			//var mainMenu = _currentScreen.GetComponent<MainMenu>();
+			//mainMenu.ClearMediaItems();
+			//mainMenu.InitMediaItems(media, factory, mediaPrefab, PlayVideo);
 		}
 
 		public void SetMediaInteractable()
 		{
 			var mainMenu = _currentScreen.GetComponent<MainMenu>();
-			mainMenu.SetMediaInteractable();
 		}
 
 		private void InitAdminMenu(GameObject screen)
