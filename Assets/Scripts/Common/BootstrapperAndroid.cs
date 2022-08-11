@@ -23,7 +23,6 @@ namespace Common
 #if UNITY_ANDROID
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform);
 
-
 			InitNetwork();
 		}
 
