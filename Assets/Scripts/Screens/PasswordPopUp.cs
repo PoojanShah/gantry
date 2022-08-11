@@ -21,9 +21,17 @@ namespace Screens
 		[SerializeField] private TMP_InputField _inputField;
 		[SerializeField] private TMP_Text _descriptionText;
 		
-		public void Init(Action<string> onOkButtonClick, PasswordType type)
+		public void Init(Action<string> onOkButtonClick, Action onCancelAction, PasswordType type)
 		{
-			_cancelButton.onClick.AddListener(Close);
+			_cancelButton.onClick.AddListener(() =>
+			{
+				onCancelAction?.Invoke();
+
+				_cancelButton.onClick.RemoveAllListeners();
+
+				Close();
+			});
+
 			_okButton.onClick.AddListener(() => onOkButtonClick.Invoke(_inputField.text));
 
 #if UNITY_EDITOR

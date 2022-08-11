@@ -124,7 +124,7 @@ namespace Screens
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
-			adminMenu.Init(OpenPatternsEditor, 
+			adminMenu.Init(OpenPatternsEditor,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen), PasswordType.SuperAdmin),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
@@ -151,6 +151,10 @@ namespace Screens
 				onContinue?.Invoke();
 				Object.Destroy(screen);
 			}
+
+			Action cancelAction = type == PasswordType.Admin
+				? () => OpenWindow(ScreenType.MainMenu)
+				: () => OpenWindow(ScreenType.AdminMenu);
 			
 			passwordPopUp.Init((password) =>
 			{
@@ -160,7 +164,7 @@ namespace Screens
 				LoginHelper.LogInByType(type);
 				onContinue?.Invoke();
 				Object.Destroy(screen);
-			}, type);
+			}, cancelAction, type);
 		}
 
 		private void PlayVideo(MediaContent content)
