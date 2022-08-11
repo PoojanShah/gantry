@@ -667,6 +667,7 @@ MonoBehaviour:
     _gameObject: {fileID: 48927143286672905}
     _renderer: {fileID: 48927143286672906}
   _renderer: {fileID: 48927143547244677}
+  IsEditing: 0
   _contourEditor: {fileID: 48927143547244675}
 --- !u!114 &48927143547244675
 MonoBehaviour:
@@ -687,11 +688,10 @@ MonoBehaviour:
   activeVertex: {fileID: 2800000, guid: 999ba61c1f5af79439ac4720def8ff54, type: 3}
   inactiveVertex: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   backgrounds:
-  - {fileID: 2800000, guid: 5252e57f9a110fa4f8c08fd1f023af32, type: 3}
-  - {fileID: 2800000, guid: ee88f0ef5a4397643ac37f806d43df4e, type: 3}
-  - {fileID: 2800000, guid: 854c2de736359ad4dafa0f5eaefd5b84, type: 3}
-  - {fileID: 2800000, guid: 060710e81b3715a4982df8508b49f10e, type: 3}
-  - {fileID: 2800000, guid: 07dbdb52c79963b45b72e8ada1f0daeb, type: 3}
+  - {fileID: 2800000, guid: 20f9ce5aeeb4e4b379176a7ace17055e, type: 3}
+  - {fileID: 2800000, guid: 28eb402e744c7492ebb99bb41d73c0da, type: 3}
+  - {fileID: 2800000, guid: 841dabb68ffa84a05a6047475721b153, type: 3}
+  - {fileID: 2800000, guid: 72fd25f6acec9409cb0a5efa8b1832fb, type: 3}
   toolbar: {fileID: 48927143547244684}
   lassoLine: {fileID: 1264669741}
   lassoPoint: {fileID: 639814126}
@@ -716,4 +716,3 @@ MonoBehaviour:
     width: 0
     height: 0
   isNeedToShow: 0
-  info: {fileID: 0}
