@@ -33,9 +33,9 @@ namespace Screens
 			_playAction = playAction;
 			_contourEditorController = contourEditorController;
 			_mediaController = mediaController;
-
-			OpenWindow(ScreenType.MainMenu);
 			_optionsSettings = optionsSettings;
+			
+			OpenWindow(ScreenType.MainMenu);
 		}
 #elif UNITY_ANDROID
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform)
