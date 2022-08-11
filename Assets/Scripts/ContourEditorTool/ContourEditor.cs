@@ -906,7 +906,7 @@ namespace ContourEditorTool
 			{
 				case 3:
 					Reset(-1, true, true);
-					Restart();
+					Restart(originalColumns);
 					break;
 				case 4:
 					SaveAndQuitToMenu();
@@ -1047,11 +1047,11 @@ namespace ContourEditorTool
 			}
 		}
 
-		public void Restart(int screenNum = -1)
+		public void Restart(int newOriginalColumns = -1)
 		{
 			//Start Anew.
 			UIHelper.ResetWindowPosition();
-			originalColumns = -1;
+			originalColumns = newOriginalColumns;
 			//AddUndoStep();
 		}
 
