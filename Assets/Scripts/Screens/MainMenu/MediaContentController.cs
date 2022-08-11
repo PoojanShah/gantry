@@ -26,7 +26,6 @@ namespace Screens
 		private Action<MediaContent> _playVideoAction;
 #elif UNITY_ANDROID
 		private Action<int> _playVideoAction;
-		private int _mediaAmount;
 		private MediaContent[] _media;
 #endif
 
@@ -52,17 +51,23 @@ namespace Screens
 			SetButtonInteractable(false, _mediaController.MediaFiles.Length > MEDIA_PER_PAGE);
 		}
 #elif UNITY_ANDROID
-		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction, int mediaAmount)
+		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction,
+			Dictionary<int, string> mediaDictionary)
 		{
 			_playVideoAction = playVideoAction;
 			_mediaPrefab = mediaPrefab;
 			_factory = factory;
-			_mediaAmount = mediaAmount;
-			
+
+			var mediaAmount = mediaDictionary.Count;
+
 			_media = new MediaContent[mediaAmount];
 
+			var keys = mediaDictionary.Keys.ToArray();
+
 			for (var i = 0; i < mediaAmount; i++)
-				_media[i] = new MediaContent { Id = i };
+			{
+				_media[i] = new MediaContent { Id = keys[i], Name = mediaDictionary[keys[i]] };
+			}
 
 			InitMediaItems();
 
@@ -97,7 +102,7 @@ namespace Screens
 			for (var i = 0; i < _mediaItems.Length; i++)
 			{
 				if (i + 1 > itemsToShow.Length)
-				{
+				{ 
 					_mediaItems[i].gameObject.SetActive(false);
 
 					continue;

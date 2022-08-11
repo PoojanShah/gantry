@@ -7,6 +7,8 @@ namespace Core
 	{
 		public const string Colon = ":",
 			Dot = ".",
+			DoubleDot = ":",
+			Underscore = "_",
 			CorrectAdminPassword = "Kim41",
 			CorrectSuperPassword = "Jas375",
 			ExtensionMeta = ".meta",

@@ -97,7 +97,7 @@ namespace Screens
 
 		private void InitMainMenu(GameObject screen)
 		{
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+#if UNITY_STANDALONE
 			var mainMenu = screen.GetComponent<MainMenu>();
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 

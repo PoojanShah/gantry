@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Core;
 using UnityEngine;
 
 namespace Network
 {
 	public class LocalNetworkClient
 	{
-		public static event Action<int> OnMediaAmountReceived;
+		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
 
 		private static bool _isLoaded = false;
 
@@ -16,7 +18,7 @@ namespace Network
 		{
 			Debug.Log("start client");
 
-			var receivedData = new byte[NetworkHelper.BUFFER_SIZE];
+			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];
 
 			try
 			{
@@ -31,19 +33,33 @@ namespace Network
 				{
 					socket.Connect(remoteEP);
 
-					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PREFIX + videoId);
+					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
 
 					socket.Send(messageToSend);
 
-					var bytesRec = socket.Receive(receivedData);
-					var mediaAmount = int.Parse(Encoding.ASCII.GetString(receivedData, 0, bytesRec));
+					var receivedBytes = socket.Receive(bytesBuffer);
 
-					if (!_isLoaded)
+					void HandleReceivedMessage()
 					{
-						OnMediaAmountReceived?.Invoke(mediaAmount);
+						var receivedData = Encoding.ASCII.GetString(bytesBuffer, 0, receivedBytes);
+						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
+						var parsedData = receivedData.Split(Constants.Underscore);
 
-						_isLoaded = true;
+						int.TryParse(parsedData[0], out var mediaAmount);
+
+						var mediaDictionary = new Dictionary<int, string>(mediaAmount);
+
+						for (var i = 1; i < parsedData.Length; i++)
+						{
+							var videoData = parsedData[i].Split(Constants.DoubleDot);
+
+							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
+						}
+
+						OnMediaInfoReceived?.Invoke(mediaDictionary);
 					}
+
+					HandleReceivedMessage();
 
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();

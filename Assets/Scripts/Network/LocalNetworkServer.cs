@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Core;
 using Media;
 using UnityEngine;
 
@@ -73,10 +74,15 @@ namespace Network
 			}
 
 			_clientSockets.Add(socket);
+
 			socket.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
+
 			Debug.Log("Client connected, waiting for request...");
 
-			var data = Encoding.ASCII.GetBytes(_mediaController.MediaFiles.Length.ToString());
+			var message = _mediaController.MediaFiles.Length.ToString();
+			message = AddMediaInfo(message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
+
+			var data = Encoding.ASCII.GetBytes(message);
 			socket.Send(data);
 
 			_serverSocket.BeginAccept(AcceptCallback, null);
@@ -117,17 +123,29 @@ namespace Network
 
 			current.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
-			var mediaId = int.Parse(text.Split('_')[1]);
+			var mediaId = int.Parse(text.Split(Constants.Underscore)[1]);
 
-			if(mediaId < 0)
+			if (mediaId < 0)
 				return;
 
 			ReceivedId = mediaId;
 		}
 
+		private static string AddMediaInfo(string message)
+		{
+			foreach (var media in _mediaController.MediaFiles)
+			{
+				var part = string.Format(NetworkHelper.NETWORK_MESSAGE_INFO_FORMAT, media.Name, media.Id);
+
+				message += part;
+			}
+
+			return message;
+		}
+
 		private static void SetRegister(Socket socket, string text)
 		{
-			string[] subStrings = text.Split(',');
+			string[] subStrings = text.Split(Constants.Coma);
 			if (subStrings[0].Contains("register"))
 			{
 				SocketStruct cs = new SocketStruct();
