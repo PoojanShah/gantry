@@ -30,6 +30,7 @@ namespace Screens
 			}
 
 			LocalNetworkClient.OnMediaAmountReceived += OnMediaAmountReceived;
+			LocalNetworkClient.OnMediaInfoReceived += UpdateMediaTitle;
 
 			_connectButton.onClick.AddListener(ConnectClicked);
 
@@ -40,6 +41,7 @@ namespace Screens
 
 		public void UpdateMediaTitle(int id, string title)
 		{
+			Debug.Log("updating title in " + title);
 			_contentController.UpdateMediaTitle(id, title);
 		}
 
@@ -87,6 +89,8 @@ namespace Screens
 		{
 			_connectButton.onClick.RemoveAllListeners();
 			_ipEnd.onEndEdit.RemoveAllListeners();
+
+			LocalNetworkClient.OnMediaInfoReceived -= UpdateMediaTitle;
 		}
 	}
 }

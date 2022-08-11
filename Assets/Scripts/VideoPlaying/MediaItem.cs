@@ -22,14 +22,19 @@ namespace VideoPlaying
 #if UNITY_STANDALONE
 			_title.text = content.Name.Split(Constants.Dot)[0];
 #elif UNITY_ANDROID
-			_title.text = content.Id.ToString();
+			_title.text = string.IsNullOrEmpty(content.Name) ? content.Id.ToString() : content.Name;
 #endif
 
 			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);
 		}
 
-		public void UpdateTitle(string title) => _title.text = title;
+		public void UpdateTitle(string title)
+		{
+			_title.text = title;
+			_content.Name = title;
+		}
+
 		public void ItemClicked() => _onClick?.Invoke(_content.Id);
 		public void SetInteractable(bool isInteractable) => _button.interactable = isInteractable;
 		private void OnDestroy() => _button.onClick.RemoveAllListeners();

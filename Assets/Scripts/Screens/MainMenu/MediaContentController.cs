@@ -97,7 +97,7 @@ namespace Screens
 			for (var i = 0; i < _mediaItems.Length; i++)
 			{
 				if (i + 1 > itemsToShow.Length)
-				{
+				{ 
 					_mediaItems[i].gameObject.SetActive(false);
 
 					continue;

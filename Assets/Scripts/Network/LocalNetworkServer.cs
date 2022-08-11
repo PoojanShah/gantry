@@ -74,13 +74,18 @@ namespace Network
 			}
 
 			_clientSockets.Add(socket);
+
 			socket.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
+
 			Debug.Log("Client connected, waiting for request...");
 
-			var data = Encoding.ASCII.GetBytes(_mediaController.MediaFiles.Length.ToString());
-			socket.Send(data);
+			var message = _mediaController.MediaFiles.Length.ToString();
+			message = AddMediaInfo(message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 
-			SendMediaData(socket);
+			Debug.Log(message);
+
+			var data = Encoding.ASCII.GetBytes(message);
+			socket.Send(data);
 
 			_serverSocket.BeginAccept(AcceptCallback, null);
 		}
@@ -128,15 +133,16 @@ namespace Network
 			ReceivedId = mediaId;
 		}
 
-		private static void SendMediaData(Socket socket)
+		private static string AddMediaInfo(string message)
 		{
 			foreach (var media in _mediaController.MediaFiles)
 			{
-				var data = Encoding.ASCII.GetBytes(
-					string.Format(NetworkHelper.NETWORK_MESSAGE_INFO_FORMAT, media.Name, media.Id));
+				var part = string.Format(NetworkHelper.NETWORK_MESSAGE_INFO_FORMAT, media.Name, media.Id);
 
-				socket.Send(data);
+				message += part;
 			}
+
+			return message;
 		}
 
 		private static void SetRegister(Socket socket, string text)

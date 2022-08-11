@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Core;
-using Screens;
 using UnityEngine;
 
 namespace Network
@@ -11,14 +10,9 @@ namespace Network
 	public class LocalNetworkClient
 	{
 		public static event Action<int> OnMediaAmountReceived;
+		public static event Action<int, string> OnMediaInfoReceived;
 
 		private static bool _isLoaded = false;
-		private static MainMenuAndroid _menu;
-
-		public LocalNetworkClient(MainMenuAndroid menu)
-		{
-			_menu = menu;
-		}
 
 		public static void SendPlayMessage(int ipLastNumber, int videoId)
 		{
@@ -48,8 +42,11 @@ namespace Network
 					void HandleReceivedMessage()
 					{
 						var receivedData = Encoding.ASCII.GetString(bytesBuffer, 0, receivedBytes);
-
-						if (int.TryParse(receivedData, out var result))
+						Debug.Log(receivedData);
+						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
+						var parsedData = receivedData.Split(Constants.Underscore);
+						
+						if (int.TryParse(parsedData[0], out var result))
 						{
 							if (!_isLoaded)
 							{
@@ -57,15 +54,13 @@ namespace Network
 
 								_isLoaded = true;
 							}
-
-							return;
 						}
 
-						var videoData = receivedData.Split(Constants.Underscore);
-
-						if (videoData.Length == NetworkHelper.VIDEO_DATA_AMOUNT)
+						for (var i = 1; i < parsedData.Length; i++)
 						{
-							_menu.UpdateMediaTitle(int.Parse(videoData[2]), videoData[1]);
+							var videoData = parsedData[i].Split(Constants.DoubleDot);
+
+							OnMediaInfoReceived?.Invoke(int.Parse(videoData[1]), videoData[0]);
 						}
 					}
 
