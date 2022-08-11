@@ -14,25 +14,16 @@ namespace VideoPlaying
 
 		private MediaContent _content;
 		private Action<int> _onClick;
+
 		public void Init(MediaContent content, Action<int> onClickAction)
 		{
 			_content = content;
 			_onClick = onClickAction;
 
-#if UNITY_STANDALONE
 			_title.text = content.Name.Split(Constants.Dot)[0];
-#elif UNITY_ANDROID
-			_title.text = string.IsNullOrEmpty(content.Name) ? content.Id.ToString() : content.Name;
-#endif
 
 			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);
-		}
-
-		public void UpdateTitle(string title)
-		{
-			_title.text = title;
-			_content.Name = title;
 		}
 
 		public void ItemClicked() => _onClick?.Invoke(_content.Id);

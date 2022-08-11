@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,8 +10,7 @@ namespace Network
 {
 	public class LocalNetworkClient
 	{
-		public static event Action<int> OnMediaAmountReceived;
-		public static event Action<int, string> OnMediaInfoReceived;
+		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
 
 		private static bool _isLoaded = false;
 
@@ -42,26 +42,21 @@ namespace Network
 					void HandleReceivedMessage()
 					{
 						var receivedData = Encoding.ASCII.GetString(bytesBuffer, 0, receivedBytes);
-						Debug.Log(receivedData);
 						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 						var parsedData = receivedData.Split(Constants.Underscore);
-						
-						if (int.TryParse(parsedData[0], out var result))
-						{
-							if (!_isLoaded)
-							{
-								OnMediaAmountReceived?.Invoke(result);
 
-								_isLoaded = true;
-							}
-						}
+						int.TryParse(parsedData[0], out var mediaAmount);
+
+						var mediaDictionary = new Dictionary<int, string>(mediaAmount);
 
 						for (var i = 1; i < parsedData.Length; i++)
 						{
 							var videoData = parsedData[i].Split(Constants.DoubleDot);
 
-							OnMediaInfoReceived?.Invoke(int.Parse(videoData[1]), videoData[0]);
+							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
 						}
+
+						OnMediaInfoReceived?.Invoke(mediaDictionary);
 					}
 
 					HandleReceivedMessage();

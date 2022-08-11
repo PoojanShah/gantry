@@ -82,8 +82,6 @@ namespace Network
 			var message = _mediaController.MediaFiles.Length.ToString();
 			message = AddMediaInfo(message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 
-			Debug.Log(message);
-
 			var data = Encoding.ASCII.GetBytes(message);
 			socket.Send(data);
 

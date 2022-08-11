@@ -21,28 +21,21 @@ namespace Screens
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory)
 		{
-			void OnMediaAmountReceived(int amount)
+			void OnMediaInfoReceived(Dictionary<int, string> dictionary)
 			{
 #if UNITY_ANDROID
-				_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand, amount);
+				_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand, dictionary);
 #endif
-				LocalNetworkClient.OnMediaAmountReceived -= OnMediaAmountReceived;
+				LocalNetworkClient.OnMediaInfoReceived -= OnMediaInfoReceived;
 			}
 
-			LocalNetworkClient.OnMediaAmountReceived += OnMediaAmountReceived;
-			LocalNetworkClient.OnMediaInfoReceived += UpdateMediaTitle;
+			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;
 
 			_connectButton.onClick.AddListener(ConnectClicked);
 
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
 			InitIpLabel();
-		}
-
-		public void UpdateMediaTitle(int id, string title)
-		{
-			Debug.Log("updating title in " + title);
-			_contentController.UpdateMediaTitle(id, title);
 		}
 
 		private void ConnectClicked()
@@ -89,8 +82,6 @@ namespace Screens
 		{
 			_connectButton.onClick.RemoveAllListeners();
 			_ipEnd.onEndEdit.RemoveAllListeners();
-
-			LocalNetworkClient.OnMediaInfoReceived -= UpdateMediaTitle;
 		}
 	}
 }
