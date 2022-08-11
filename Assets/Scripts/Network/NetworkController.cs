@@ -15,9 +15,9 @@ namespace Network
 			_server = new LocalNetworkServer(mediaController);
 		}
 #elif UNITY_ANDROID
-		public NetworkController()
+		public NetworkController(MainMenuAndroid menu)
 		{
-			_client = new LocalNetworkClient();
+			_client = new LocalNetworkClient(menu);
 		}
 #endif
 

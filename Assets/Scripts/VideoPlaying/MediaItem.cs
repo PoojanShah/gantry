@@ -28,6 +28,8 @@ namespace VideoPlaying
 			_button.onClick.RemoveAllListeners();
 			_button.onClick.AddListener(ItemClicked);
 		}
+
+		public void UpdateTitle(string title) => _title.text = title;
 		public void ItemClicked() => _onClick?.Invoke(_content.Id);
 		public void SetInteractable(bool isInteractable) => _button.interactable = isInteractable;
 		private void OnDestroy() => _button.onClick.RemoveAllListeners();

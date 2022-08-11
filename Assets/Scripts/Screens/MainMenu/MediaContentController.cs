@@ -109,6 +109,8 @@ namespace Screens
 			}
 		}
 
+		public void UpdateMediaTitle(int id, string title) => _mediaItems[id].UpdateTitle(title);
+
 		public void SetButtonInteractable(bool isBackButton, bool isInteractable)
 		{
 			if(isBackButton)

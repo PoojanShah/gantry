@@ -2,6 +2,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Core;
+using Screens;
 using UnityEngine;
 
 namespace Network
@@ -11,12 +13,18 @@ namespace Network
 		public static event Action<int> OnMediaAmountReceived;
 
 		private static bool _isLoaded = false;
+		private static MainMenuAndroid _menu;
+
+		public LocalNetworkClient(MainMenuAndroid menu)
+		{
+			_menu = menu;
+		}
 
 		public static void SendPlayMessage(int ipLastNumber, int videoId)
 		{
 			Debug.Log("start client");
 
-			var receivedData = new byte[NetworkHelper.BUFFER_SIZE];
+			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];
 
 			try
 			{
@@ -31,19 +39,37 @@ namespace Network
 				{
 					socket.Connect(remoteEP);
 
-					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PREFIX + videoId);
+					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
 
 					socket.Send(messageToSend);
 
-					var bytesRec = socket.Receive(receivedData);
-					var mediaAmount = int.Parse(Encoding.ASCII.GetString(receivedData, 0, bytesRec));
+					var receivedBytes = socket.Receive(bytesBuffer);
 
-					if (!_isLoaded)
+					void HandleReceivedMessage()
 					{
-						OnMediaAmountReceived?.Invoke(mediaAmount);
+						var receivedData = Encoding.ASCII.GetString(bytesBuffer, 0, receivedBytes);
 
-						_isLoaded = true;
+						if (int.TryParse(receivedData, out var result))
+						{
+							if (!_isLoaded)
+							{
+								OnMediaAmountReceived?.Invoke(result);
+
+								_isLoaded = true;
+							}
+
+							return;
+						}
+
+						var videoData = receivedData.Split(Constants.Underscore);
+
+						if (videoData.Length == NetworkHelper.VIDEO_DATA_AMOUNT)
+						{
+							_menu.UpdateMediaTitle(int.Parse(videoData[2]), videoData[1]);
+						}
 					}
+
+					HandleReceivedMessage();
 
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();

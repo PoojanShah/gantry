@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Core;
 using Media;
 using UnityEngine;
 
@@ -79,6 +80,8 @@ namespace Network
 			var data = Encoding.ASCII.GetBytes(_mediaController.MediaFiles.Length.ToString());
 			socket.Send(data);
 
+			SendMediaData(socket);
+
 			_serverSocket.BeginAccept(AcceptCallback, null);
 		}
 
@@ -117,17 +120,28 @@ namespace Network
 
 			current.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
-			var mediaId = int.Parse(text.Split('_')[1]);
+			var mediaId = int.Parse(text.Split(Constants.Underscore)[1]);
 
-			if(mediaId < 0)
+			if (mediaId < 0)
 				return;
 
 			ReceivedId = mediaId;
 		}
 
+		private static void SendMediaData(Socket socket)
+		{
+			foreach (var media in _mediaController.MediaFiles)
+			{
+				var data = Encoding.ASCII.GetBytes(
+					string.Format(NetworkHelper.NETWORK_MESSAGE_INFO_FORMAT, media.Name, media.Id));
+
+				socket.Send(data);
+			}
+		}
+
 		private static void SetRegister(Socket socket, string text)
 		{
-			string[] subStrings = text.Split(',');
+			string[] subStrings = text.Split(Constants.Coma);
 			if (subStrings[0].Contains("register"))
 			{
 				SocketStruct cs = new SocketStruct();

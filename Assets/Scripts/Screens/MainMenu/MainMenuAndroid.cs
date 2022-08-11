@@ -38,6 +38,11 @@ namespace Screens
 			InitIpLabel();
 		}
 
+		public void UpdateMediaTitle(int id, string title)
+		{
+			_contentController.UpdateMediaTitle(id, title);
+		}
+
 		private void ConnectClicked()
 		{
 			if (!int.TryParse(_ipEnd.text, out var number))
