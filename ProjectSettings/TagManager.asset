@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Blackout
+  - Projection
   layers:
   - Default
   - TransparentFX

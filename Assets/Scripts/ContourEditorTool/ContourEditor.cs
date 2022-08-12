@@ -190,6 +190,11 @@ namespace ContourEditorTool
 					if (IsToolsBlocked)
 						return;
 
+					var ray = CameraHelper.Camera.ScreenPointToRay(Input.mousePosition);
+
+					if (!Physics.Raycast(ray, out _, 100.0f))
+						return;
+
 					//Draw
 					if (Blackout.moving < 0)
 						switch (Blackout.shape)
