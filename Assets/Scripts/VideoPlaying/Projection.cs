@@ -56,7 +56,7 @@ namespace VideoPlaying
 
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
 			originalExtents = Vector3.one * 5;
-			Debug.Log("originalExtents: " + Projection.originalExtents);
+			Debug.Log("originalExtents: " + originalExtents);
 			transform.localScale = new Vector3(4f / 3f, 1, 1);
 
 			for (var i = 0; i < _screens.Length; i++)

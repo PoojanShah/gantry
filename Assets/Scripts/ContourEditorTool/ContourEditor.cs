@@ -543,6 +543,8 @@ namespace ContourEditorTool
 			originalColumns = columns = densityOption;
 
 			Reset(-1, true, true);
+
+			FitCameraWithProjectionBorder();
 		}
 		
 		private static void DrawEllipseAround(Vector2 a, Vector2 b)
@@ -627,7 +629,8 @@ namespace ContourEditorTool
 			Reset();
 			//originalVerts=GetComponent<MeshFilter>().mesh.vertices;
 			//originalTriangles=GetComponent<MeshFilter>().mesh.triangles;
-			instance.transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
+			instance.transform.localScale =
+				new Vector3(Settings.originalScaleX * (_projection.IsEditing ? Settings.EditorSizeFactor : 1.0f), 1, 1);
 			foreach (GameObject o in new GameObject[] { lassoPoint, lassoLine.gameObject })
 				Graphics.SetAlpha(o.GetComponent<Renderer>().material, editingLassoAlpha);
 			ResetLassoVisuals();
@@ -636,7 +639,6 @@ namespace ContourEditorTool
 			for (int i = 0; i < toolMenu.Length; i++) toolMenu[i] = new ToolbarMenu.Item[3];
 			string[] shapes = Enum.GetNames(typeof(Shape));
 
-			//TODO: delete this region after tests
 			#region Buttons 
 
 			for (int s = 0; s < shapes.Length; s++)
@@ -834,8 +836,21 @@ namespace ContourEditorTool
 				new ToolbarMenu(backgroundMenu, true) { selectedCategoryFarbe = Color.white },
 				new ToolbarMenu(actionMenu, false)
 			});
-			
-			#endregion 
+
+			#endregion
+		}
+
+		public void FitCameraWithProjectionBorder()
+		{
+			if (!_projection.IsEditing)
+				return;
+
+			var defaultScale = Settings.originalScaleX;
+			var currentScale = Settings.originalScaleX * Settings.EditorSizeFactor;
+
+			var x = (defaultScale - currentScale) * 5.0f;
+
+			transform.localPosition = new Vector3(x, transform.localPosition.y, transform.localPosition.z);
 		}
 
 		private static void ResetTools()

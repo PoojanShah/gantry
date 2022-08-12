@@ -51,7 +51,7 @@ namespace ContourEditorTool
 					quitAction?.Invoke();
 				}
 
-				_contourEditor.Init(CloseEditor); 
+				_contourEditor.Init(CloseEditor);
 				_contourEditor.Reset();
 				_contourEditor.Restart();
 			}

@@ -7,6 +7,7 @@ using Core;
 
 public static class Settings
 {
+	public const float EditorSizeFactor = 0.93f;
 	public const int ScreenWidth = 1920, ScreenHeight = 1080;
 
 	public static int InitialScreenWidth;
@@ -33,7 +34,7 @@ public static class Settings
 		Dual
 	};
 
-	public static float originalScaleX = (float)Screen.width / (float)Screen.height;
+	public static float originalScaleX = Screen.width / (float)Screen.height;
 
 	public static MonitorMode monitorMode { get; set; } = MonitorMode.Single;
 
