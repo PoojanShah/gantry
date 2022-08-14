@@ -1,6 +1,7 @@
 using System;
 using ContourEditorTool;
 using Media;
+using Screens;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -13,11 +14,11 @@ namespace VideoPlaying
 
 		private Action _stopAction;
 
-		public void Init(Action stopAction)
+		public void Init(Action stopAction, OptionsSettings optionsSettings)
 		{
 			_stopAction = stopAction;
 
-			_projection.Init();
+			_projection.Init(optionsSettings);
 		}
 		
 		public void SetSoundSettings(bool enableAudio)

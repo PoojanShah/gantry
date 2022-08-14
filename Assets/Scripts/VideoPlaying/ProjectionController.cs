@@ -15,7 +15,8 @@ namespace VideoPlaying
 		private ProjectionView _projectionView;
 		private OptionsSettings _optionsSettings;
 
-		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, Action stopAction, OptionsSettings optionsSettings)
+		public ProjectionController(ICommonFactory commonFactory, GameObject prefab, Action stopAction,
+			OptionsSettings optionsSettings)
 		{
 			_commonFactory = commonFactory;
 			_prefab = prefab;
@@ -34,23 +35,19 @@ namespace VideoPlaying
 		public void Play(MediaContent content)
 		{
 			if (_projectionView != null)
-			{
 				_projectionView.SetActive(true);
-				_projectionView.Init(StopAndHidePlayer);
-			}
 			else
 				CreateProjectionView();
+
+			_projectionView.Init(StopAndHidePlayer, _optionsSettings);
 
 			SetSoundSettings();
 			
 			_projectionView.Play(content);
 		}
 
-		private void CreateProjectionView()
-		{
+		private void CreateProjectionView() =>
 			_projectionView = _commonFactory.InstantiateObject<ProjectionView>(_prefab);
-			_projectionView.Init(StopAndHidePlayer);
-		}
 
 		private void StopAndHidePlayer()
 		{
@@ -59,10 +56,6 @@ namespace VideoPlaying
 			_stopAction?.Invoke();
 		}
 
-		private void SetSoundSettings()
-		{
-			_optionsSettings.Load();
-			_projectionView.SetSoundSettings(_optionsSettings.IsSoundOn);
-		}
+		private void SetSoundSettings() => _projectionView.SetSoundSettings(_optionsSettings.IsSoundOn);
 	}
 }
