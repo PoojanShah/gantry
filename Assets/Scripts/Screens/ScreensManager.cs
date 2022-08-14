@@ -100,7 +100,7 @@ namespace Screens
 #if UNITY_STANDALONE
 			var mainMenu = screen.GetComponent<MainMenu>();
 			mainMenu.Init(_mediaController, PlayVideo,
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu), PasswordType.Admin), 
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu)), 
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory, _optionsSettings);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
@@ -125,7 +125,7 @@ namespace Screens
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(OpenPatternsEditor,
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen), PasswordType.SuperAdmin),
+				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen)),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
 
@@ -141,30 +141,28 @@ namespace Screens
 			exitPopUp.Init(Application.Quit);
 		}
 
-		private void OpenPasswordPopUp(Action onContinue, PasswordType type)
+		private void OpenPasswordPopUp(Action onContinue)
 		{
 			var screen = ShowScreen(ScreenType.PasswordPopup);
 			var passwordPopUp = screen.GetComponent<PasswordPopUp>();
 
-			if (LoginHelper.IsLoggedInByType(type))
+			if (LoginHelper.IsLoggedIn())
 			{
 				onContinue?.Invoke();
 				Object.Destroy(screen);
 			}
 
-			Action cancelAction = type == PasswordType.Admin
-				? () => OpenWindow(ScreenType.MainMenu)
-				: () => OpenWindow(ScreenType.AdminMenu);
-			
+			void CancelAction() => OpenWindow(ScreenType.MainMenu);
+
 			passwordPopUp.Init((password) =>
 			{
-				if (password != LoginHelper.GetPasswordByType(type))
+				if (password != LoginHelper.GetPassword())
 					return;
 				
-				LoginHelper.LogInByType(type);
+				LoginHelper.SaveLogin();
 				onContinue?.Invoke();
 				Object.Destroy(screen);
-			}, cancelAction, type);
+			}, CancelAction);
 		}
 
 		private void PlayVideo(MediaContent content)
