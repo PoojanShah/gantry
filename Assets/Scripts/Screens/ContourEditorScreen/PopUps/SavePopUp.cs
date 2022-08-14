@@ -9,6 +9,7 @@ namespace Screens.ContourEditorScreen.PopUps
 	public class SavePopUp : MonoBehaviour
 	{
 		[SerializeField] private TMP_InputField _inputField;
+		[SerializeField] private Toggle _saveAsDefaultToggle;
 		[SerializeField] private Button _saveButton, _cancelButton;
 
 		private Action _onClose;
@@ -25,7 +26,7 @@ namespace Screens.ContourEditorScreen.PopUps
 
 		private void SaveButtonAction()
 		{
-			ContourEditor.SaveConfiguration(_inputField.text);
+			ContourEditor.SaveConfiguration(_inputField.text, _saveAsDefaultToggle.isOn);
 
 			Clear();
 		}

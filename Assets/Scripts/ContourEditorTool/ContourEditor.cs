@@ -2008,7 +2008,7 @@ namespace ContourEditorTool
 			SaveDefaultConfiguration(name);
 		}
 		
-		public static void SaveConfiguration(string fileName)
+		public static void SaveConfiguration(string fileName, bool isDefault)
 		{
 			/*#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
 				return;
@@ -2074,7 +2074,8 @@ namespace ContourEditorTool
 
 			bw.Close();
 
-			SaveDefaultConfiguration(path);
+			if(isDefault) 
+				SaveDefaultConfiguration(path);
 
 			mode = Mode.normal;
 		}
