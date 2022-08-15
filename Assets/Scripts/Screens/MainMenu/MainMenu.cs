@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using System.Linq;
 using Core;
 using Media;
 using Network;
@@ -40,6 +41,26 @@ namespace Screens
 			InitIpTitle();
 
 			InitVersionTitle();
+
+			CheckCrash(playVideoAction);
+		}
+
+		private void CheckCrash(Action<MediaContent> playVideoAction)
+		{
+			if(!PlayerPrefs.HasKey(Constants.LastPlayedMediaHash))
+				return;
+
+			var mediaName = Path.GetFileName(PlayerPrefs.GetString(Constants.LastPlayedMediaHash));
+
+			if(string.IsNullOrEmpty(mediaName))
+				return;
+
+			var media = _mediaController.MediaFiles.FirstOrDefault(m => m.Name == mediaName);
+
+			if(media == null)
+				return;
+
+			playVideoAction?.Invoke(media);
 		}
 
 		private void InitVersionTitle() => _versionTitle.text = QTS_VERSION_PREFIX + Application.version;

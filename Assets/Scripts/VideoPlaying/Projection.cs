@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.IO;
 using System.Collections;
@@ -100,8 +101,8 @@ namespace VideoPlaying
 
 			var colorKeyValue = Constants.colorDefaults
 				.FirstOrDefault(cd => cd.Key == selectedColor);
-			var color32 = colorKeyValue
-				.Value;
+			var color32 = colorKeyValue.Value;
+
 			CameraHelper.SetBackgroundColor(color32);
 
 			IsEditing = false;
@@ -173,12 +174,20 @@ namespace VideoPlaying
 					_screens[i].Player.Stop();
 					_screens[i].SetTexture(loadImageFromFile);
 				}
+
+				SaveCurrentVideoPlaying(true, content);
 			}
 
 			const float showBlackoutsDelay = 0.1f;
 			yield return new WaitForSeconds(showBlackoutsDelay);
 
 			GetComponent<ContourEditor>().enabled = true;
+		}
+
+		public void SaveCurrentVideoPlaying(bool isSave, MediaContent mediaContent = null)
+		{
+			PlayerPrefs.SetString(Constants.LastPlayedMediaHash, isSave ? mediaContent.Path : string.Empty);
+			PlayerPrefs.Save();
 		}
 
 		public void StopMovie(int screenNum = -1)
@@ -197,13 +206,11 @@ namespace VideoPlaying
 			GetComponent<ContourEditor>().enabled = false;
 		}
 
-		public void Clear() => Destroy(_renderer.sharedMaterial.mainTexture);
-
-		public void Rotate(int displayId = 0)
+		public void Clear()
 		{
-			const float rotateAmount = 180.0f;
+			SaveCurrentVideoPlaying(false);
 
-			_screens[displayId].Transform.Rotate(new Vector3(0, rotateAmount, 0));
+			Destroy(_renderer.sharedMaterial.mainTexture);
 		}
 	}
 }

@@ -25,6 +25,8 @@ namespace Common
 		{
 			CameraHelper.Init();
 
+			InitSettings();
+
 			_factory = new CommonFactory();
 			_mediaController = new MediaController();
 			
@@ -42,8 +44,6 @@ namespace Common
 			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
 
 			_mediaController.LoadMediaFromServer();
-
-			InitSettings();
 
 			InitNetwork();
 		}
