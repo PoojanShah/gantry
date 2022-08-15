@@ -192,8 +192,11 @@ namespace ContourEditorTool
 
 					var ray = CameraHelper.Camera.ScreenPointToRay(Input.mousePosition);
 
-					if (!Physics.Raycast(ray, out _, 100.0f))
-						return;
+					var isPointerOutOfArea = !Physics.Raycast(ray, out _, 100.0f);
+
+					//if (isPointerOutOfArea)
+					//	return;
+					
 
 					//Draw
 					if (Blackout.moving < 0)
@@ -201,13 +204,33 @@ namespace ContourEditorTool
 						{
 							case Shape.rect:
 								if (dragging)
-									Graphics.DrawBox(
-										SRSUtilities.RectAround(
-											Input.GetKey(centeredSelectionKey)
-												? SRSUtilities.adjustedFlipped +
-												  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-												: downPoint.FlipY(), SRSUtilities.adjustedFlipped),
-										new Color(0, 0, 0, 1));
+								{
+									var adjustedFlipped = Input.GetKey(centeredSelectionKey)
+										? SRSUtilities.adjustedFlipped +
+										  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
+										: downPoint.FlipY();
+
+									if (isPointerOutOfArea)
+									{
+										Debug.Log("restore good value");
+
+										adjustedFlipped = _adjustedValue;
+
+										Graphics.DrawBox(
+											SRSUtilities.RectAround(adjustedFlipped, _lastMousePositionInArea),
+											new Color(0, 0, 0, 1));
+									}
+									else
+									{
+										_adjustedValue = adjustedFlipped;
+										_lastMousePositionInArea = SRSUtilities.adjustedFlipped;
+
+										Graphics.DrawBox(
+											SRSUtilities.RectAround(adjustedFlipped, SRSUtilities.adjustedFlipped),
+											new Color(0, 0, 0, 1));
+									}
+								}
+
 								break;
 							case Shape.ellipse:
 								if (dragging)
@@ -1418,10 +1441,10 @@ namespace ContourEditorTool
 				return; //See that the script that inherits from Draggable2D is called prior to this in the Update queue.
 			downPoint = (Vector2)SRSUtilities.adjustedMousePosition;
 			if (currentTool.OnMouseDown != null) currentTool.OnMouseDown(downPoint);
-			Debug.Log("Projection.MouseDown() downPoint: " + downPoint + ",SRSUtilities.adjustedMousePosition: " +
-			          SRSUtilities.adjustedMousePosition + ",flipped: " + SRSUtilities.adjustedFlipped + ",adjusted: " +
-			          SRSUtilities.adjustedMousePosition + ",adjustedFlipped: " + SRSUtilities.adjustedFlipped +
-			          ",screen dimensions: " + Screen.width + "," + Screen.height);
+			//Debug.Log("Projection.MouseDown() downPoint: " + downPoint + ",SRSUtilities.adjustedMousePosition: " +
+			//          SRSUtilities.adjustedMousePosition + ",flipped: " + SRSUtilities.adjustedFlipped + ",adjusted: " +
+			//          SRSUtilities.adjustedMousePosition + ",adjustedFlipped: " + SRSUtilities.adjustedFlipped +
+			//          ",screen dimensions: " + Screen.width + "," + Screen.height);
 		}
 
 		private static Blackout lassoBlackout = null;
@@ -1969,6 +1992,8 @@ namespace ContourEditorTool
 
 		public static bool HideGUI = false;
 		private static List<GameObject> _lassoObjects = new List<GameObject>();
+		private static Vector2 _adjustedValue;
+		private static Vector2 _lastMousePositionInArea;
 
 		private void OnGUI()
 		{
