@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Core;
 using Network;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -48,6 +49,15 @@ namespace Media
 			texture.LoadImage(bytes);
 
 			return texture;
+		}
+
+		public static Texture2D LoadThumbnail(string mediaName)
+		{
+			var noExtensionName = Path.GetFileNameWithoutExtension(mediaName);
+			var realPath = Path.Combine(Settings.ThumbnailsPath,
+				Constants.ThumbnailsPrefix + noExtensionName + Constants.ExtensionPng);
+
+			return !File.Exists(realPath) ? null : LoadImageFromFile(realPath);
 		}
 
 		private void LoadMediaFromLocalStorage()

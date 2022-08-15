@@ -11,14 +11,35 @@ namespace VideoPlaying
 	{
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Button _button;
+		[SerializeField] private RawImage _thumbnail;
+		[SerializeField] private Sprite _defaultThumbnail;
 
 		private MediaContent _content;
 		private Action<int> _onClick;
+		private bool _isThumbnailReplaced;
 
-		public void Init(MediaContent content, Action<int> onClickAction)
+		public void Init(MediaContent content, Action<int> onClickAction, Texture2D thumbnail)
 		{
 			_content = content;
 			_onClick = onClickAction;
+
+			if (thumbnail != null)
+			{
+				_thumbnail.texture = thumbnail;
+
+				_isThumbnailReplaced = true;
+			}
+			else
+			{
+				if (_isThumbnailReplaced)
+				{
+					_isThumbnailReplaced = false;
+
+					Destroy(_thumbnail.texture);
+
+					_thumbnail.texture = _defaultThumbnail.texture;
+				}
+			}
 
 			_title.text = content.Name.Split(Constants.Dot)[0];
 

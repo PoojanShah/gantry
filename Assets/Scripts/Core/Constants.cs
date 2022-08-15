@@ -11,12 +11,14 @@ namespace Core
 			Underscore = "_",
 			CorrectAdminPassword = "Ch$2001_+",
 			ExtensionMeta = ".meta",
+			ExtensionPng = ".png",
 			GantryExtension = ".gantry",
 			GantrySearchPattern = "*.gantry",
 			AllFilesPattern = "*.*",
 			SquareBracerOpen = "[",
 			SquareBracerClose = "]",
-			Coma = ",";
+			Coma = ",",
+			ThumbnailsPrefix = "thumb-";
 
 		public const string DefaultConfigHash = "DefaultConfiguration";
 		public const float ScrollbarDefaultValue = 1.0f;

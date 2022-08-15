@@ -12,19 +12,21 @@ public static class Settings
 	public static int InitialScreenWidth;
 	public static string[] MediaLibrary;
 	public static Dictionary<string, string> VideoColors = new();
-	public static bool IsRotation = true;
 	public static string BuildPath = Directory.GetParent(Application.dataPath).ToString();
 	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
 	public static readonly string MediaPath = BuildPath + "/Build/DownloadedGantryMedia/";
+	public static readonly string ThumbnailsPath = BuildPath + "/Build/DownloadedGantryMedia/Thumbs/";
 	public static string GantryPatternsPath = BuildPath + "/Build/meshes/";
 #elif UNITY_STANDALONE_WIN
 	public static readonly string MediaPath = BuildPath + "/DownloadedGantryMedia/";
+	public static readonly string ThumbnailsPath = BuildPath + "/DownloadedGantryMedia/Thumbs/";
 	public static string GantryPatternsPath = BuildPath + "/meshes/";
 #elif UNITY_ANDROID
 	public static readonly string MediaPath = string.Empty;
 	public static string GantryPatternsPath = string.Empty;
+	public static readonly string ThumbnailsPath = string.Empty;
 #endif
 
 	public enum MonitorMode

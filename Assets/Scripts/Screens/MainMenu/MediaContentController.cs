@@ -108,7 +108,9 @@ namespace Screens
 					continue;
 				}
 
-				_mediaItems[i].Init(itemsToShow[i], PlayById);
+				var thumbnail = MediaController.LoadThumbnail(itemsToShow[i].Name);
+
+				_mediaItems[i].Init(itemsToShow[i], PlayById, thumbnail);
 				_mediaItems[i].SetInteractable(true);
 				_mediaItems[i].gameObject.SetActive(true);
 			}

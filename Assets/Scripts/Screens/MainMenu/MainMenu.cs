@@ -32,7 +32,7 @@ namespace Screens
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_muteButton.onClick.AddListener(SwitchSound);
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 #endif
 			InitCurrentConfigTitle();
