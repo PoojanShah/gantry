@@ -86,6 +86,8 @@ namespace Screens.ContourEditorScreen
 
 		private void ShowSavePopUp()
 		{
+			_hideLines?.Invoke();
+			
 			ShowToolbar(false);
 
 			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas)
@@ -94,6 +96,8 @@ namespace Screens.ContourEditorScreen
 
 		private void ShowLoadPopUp()
 		{
+			_hideLines?.Invoke();
+			
 			ShowToolbar(false);
 
 			_commonFactory.InstantiateObject<LoadPopUp>(_loadPopUp.gameObject, _canvas)
