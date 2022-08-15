@@ -10,7 +10,8 @@ namespace Configs
 		PasswordPopup,
 		ExitConfirmationPopup,
 		SettingsScreen,
-		MainMenuAndroid
+		MainMenuAndroid,
+		LoginToServerPopup
 	}
 
 	[System.Serializable]

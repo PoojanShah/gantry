@@ -84,6 +84,9 @@ namespace Screens
 				case ScreenType.ExitConfirmationPopup:
 					InitExitPopUp(screen);
 					break;
+				case ScreenType.LoginToServerPopup:
+					InitServerPopUp(screen);
+					break;
 				case ScreenType.SettingsScreen:
 					InitSettingsScreen(screen);
 					break;
@@ -104,7 +107,8 @@ namespace Screens
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory, _optionsSettings);
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
-			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory);
+			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory, 
+				() => OpenWindow(ScreenType.LoginToServerPopup));
 #endif
 		}
 
@@ -139,6 +143,12 @@ namespace Screens
 		{
 			var exitPopUp = screen.GetComponent<ExitPopUp>();
 			exitPopUp.Init(Application.Quit);
+		}
+
+		private void InitServerPopUp(GameObject screen)
+		{
+			var serverPopup = screen.GetComponent<ServerLoginPopup>();
+			serverPopup.Init();
 		}
 
 		private void OpenPasswordPopUp(Action onContinue)

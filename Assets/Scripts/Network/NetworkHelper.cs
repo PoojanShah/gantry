@@ -15,6 +15,8 @@ namespace Network
 		public const int PING_TIMEOUT = 500;
 		public const int VIDEO_DATA_AMOUNT = 3;
 
+		public static int LastIpNumber = -1;
+
 		public static IPAddress GetMyIp()
 		{
 			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
