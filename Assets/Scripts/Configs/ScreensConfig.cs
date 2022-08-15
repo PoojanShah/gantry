@@ -11,7 +11,8 @@ namespace Configs
 		ExitConfirmationPopup,
 		SettingsScreen,
 		MainMenuAndroid,
-		LoginToServerPopup
+		LoginToServerPopup,
+		OverwritePopup
 	}
 
 	[System.Serializable]
