@@ -21,7 +21,7 @@ namespace Screens
 		private GameObject _mediaPrefab;
 		private MediaItem[] _mediaItems;
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 		private MediaController _mediaController;
 		private Action<MediaContent> _playVideoAction;
 #elif UNITY_ANDROID
