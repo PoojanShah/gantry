@@ -31,17 +31,14 @@ namespace Screens.ContourEditorScreen
 		[Header("Additional buttons")] 
 		[SerializeField] private AdditionalButton[] _additionalButtons;
 
-		private Action _hideLines;
 		private ICommonFactory _commonFactory;
 
 		public void Init(ICommonFactory commonFactory)
 		{
 			_commonFactory = commonFactory;
 
-			_hideLines += HideLinesAction;
-			
 			foreach (var block in _toolBar)
-				block.Init(_hideLines, SetToolTipByID, OnPointerExit, _currentInstrument);
+				block.Init(CloseToolbarSections, SetToolTipByID, OnPointerExit, _currentInstrument);
 
 			foreach (var button in _additionalButtons)
 			{
@@ -86,6 +83,8 @@ namespace Screens.ContourEditorScreen
 
 		private void ShowSavePopUp()
 		{
+			CloseToolbarSections();
+			
 			ShowToolbar(false);
 
 			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas)
@@ -94,19 +93,21 @@ namespace Screens.ContourEditorScreen
 
 		private void ShowLoadPopUp()
 		{
+			CloseToolbarSections();
+
 			ShowToolbar(false);
 
 			_commonFactory.InstantiateObject<LoadPopUp>(_loadPopUp.gameObject, _canvas)
 				.Init(_commonFactory, () => ShowToolbar(true));
 		}
 
-		private void HideLinesAction()
+		private void CloseToolbarSections()
 		{
 			foreach (var block in _toolBar)
 			foreach (var line in block.Lines)
 				line.HideLine();
 		}
-		
+
 		private void OnPointerExit() => _title.text = string.Empty;
 
 		private void OnDestroy()
