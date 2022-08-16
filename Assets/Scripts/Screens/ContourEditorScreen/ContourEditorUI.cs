@@ -87,8 +87,8 @@ namespace Screens.ContourEditorScreen
 			
 			ShowToolbar(false);
 
-			_commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas)
-				.Init(() => ShowToolbar(true));
+			var savePopup = _commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas);
+			savePopup.Init(() => ShowToolbar(true));
 		}
 
 		private void ShowLoadPopUp()
