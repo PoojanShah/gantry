@@ -36,7 +36,7 @@ namespace Screens
 #if UNITY_STANDALONE
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 #endif
-			InitCurrentConfigTitle();
+			//InitCurrentConfigTitle();
 
 			InitIpTitle();
 

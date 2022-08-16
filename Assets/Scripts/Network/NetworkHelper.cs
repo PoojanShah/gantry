@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace Network
 {
@@ -13,7 +14,6 @@ namespace Network
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
 		public const int PING_TIMEOUT = 500;
-		public const int VIDEO_DATA_AMOUNT = 3;
 
 		public static int LastIpNumber = -1;
 
@@ -22,7 +22,11 @@ namespace Network
 			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-			return ipHostInfo.AddressList[1];
+			var ip = ipHostInfo.AddressList[1];
+
+			return ip.AddressFamily == AddressFamily.InterNetworkV6
+				? ipHostInfo.AddressList[0]
+				: ipHostInfo.AddressList[1];
 #elif UNITY_ANDROID
 			return ipHostInfo.AddressList[0];
 #endif
