@@ -159,11 +159,7 @@ namespace Screens
 
 		private void ChangePage(bool isPageIncreased)
 		{
-#if UNITY_STANDALONE
 			var maxPageNumber = GetMaxPageNumber();
-#elif UNITY_ANDROID
-			var maxPageNumber = _media.Length / MEDIA_PER_PAGE;
-#endif
 
 			if (isPageIncreased)
 				_currentPage++;
@@ -179,7 +175,11 @@ namespace Screens
 
 		private int GetMaxPageNumber()
 		{
+#if UNITY_STANDALONE
 			var maxPageNumber = _mediaController.MediaFiles.Length / MEDIA_PER_PAGE;
+#elif UNITY_ANDROID
+			var maxPageNumber = _media.Length / MEDIA_PER_PAGE;
+#endif
 			return maxPageNumber;
 		}
 

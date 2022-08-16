@@ -68,11 +68,14 @@ namespace VideoPlaying
 
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
 			originalExtents = Vector3.one * extentsFactor;
-			transform.localScale = new Vector3(4f / 3f, 1, 1); //??????????
+
+			var scale = new Vector3(Settings.ScreenWidth / (float)Settings.ScreenHeight, 1.0f, 1.0f);
+
+			transform.localScale = scale;
 
 			for (var i = 0; i < _screens.Length; i++)
 			{
-				_screens[i].Transform.localScale = new Vector3(4f / 3f, 1, 1);
+				_screens[i].Transform.localScale = scale;
 				_screens[i].Transform.position = ScreenPosition(i);
 			}
 		}
