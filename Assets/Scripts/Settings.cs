@@ -13,20 +13,22 @@ public static class Settings
 	public static string[] MediaLibrary;
 	public static Dictionary<string, string> VideoColors = new();
 	public static string BuildPath = Directory.GetParent(Application.dataPath).ToString();
-	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 
 #if UNITY_EDITOR
 	public static readonly string MediaPath = BuildPath + "/Build/DownloadedGantryMedia/";
 	public static readonly string ThumbnailsPath = BuildPath + "/Build/DownloadedGantryMedia/Thumbs/";
 	public static string GantryPatternsPath = BuildPath + "/Build/meshes/";
+	public static string ColorsConfigPath = BuildPath + "/Build/moviecolors.cfg";
 #elif UNITY_STANDALONE_WIN
 	public static readonly string MediaPath = BuildPath + "/DownloadedGantryMedia/";
 	public static readonly string ThumbnailsPath = BuildPath + "/DownloadedGantryMedia/Thumbs/";
 	public static string GantryPatternsPath = BuildPath + "/meshes/";
+	public static string ColorsConfigPath = BuildPath + "/moviecolors.cfg";
 #elif UNITY_ANDROID
 	public static readonly string MediaPath = string.Empty;
 	public static string GantryPatternsPath = string.Empty;
 	public static readonly string ThumbnailsPath = string.Empty;
+	public static string ColorsConfigPath = string.Empty;
 #endif
 
 	public enum MonitorMode
@@ -55,11 +57,9 @@ public static class Settings
 		if(MediaLibrary == null || MediaLibrary.Length == 0)
 			return;
 
-		for (var i = 0; i < MediaLibrary.Length; i++)
-			if (!VideoColors.ContainsKey(MediaLibrary[i]))
-				VideoColors[MediaLibrary[i]] =
-					Constants.colorDefaults[i % Constants.colorDefaults.Length]
-						.Key;
+		foreach (var media in MediaLibrary)
+			if (!VideoColors.ContainsKey(media))
+				VideoColors[media] = Constants.colorDefaults[1].Key;
 	}
 
 	private static void LoadMediaLibrary()
