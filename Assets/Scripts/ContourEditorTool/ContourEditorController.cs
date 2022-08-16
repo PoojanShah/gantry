@@ -17,13 +17,13 @@ namespace ContourEditorTool
 		private Projection _projection;
 		private ContourEditor _contourEditor;
 		private ContourEditorUI _editorUi;
-		
-		public ContourEditorController(ProjectionController projectionCOntroller, ICommonFactory factory,
+
+		public ContourEditorController(ProjectionController projectionController, ICommonFactory factory,
 			GameObject editorUiPrefab)
 		{
 			_factory = factory;
 			_editorUiPrefab = editorUiPrefab;
-			_projectionController = projectionCOntroller;
+			_projectionController = projectionController;
 		}
 
 		public void ShowTools(bool isShow)

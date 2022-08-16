@@ -21,6 +21,7 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Image _currentInstrument;
 
+		[SerializeField] private GameObject _overwritePopUp;
 		[Header("Save popup")] 
 		[SerializeField] private SavePopUp _savePopUp;
 		[SerializeField] private Button _saveButton;
@@ -88,7 +89,18 @@ namespace Screens.ContourEditorScreen
 			ShowToolbar(false);
 
 			var savePopup = _commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas);
-			savePopup.Init(() => ShowToolbar(true));
+			savePopup.Init(() => ShowToolbar(true), () => ShowOverwritePopUp(savePopup.Save));
+		}
+
+		private void ShowOverwritePopUp(Action saveAction)
+		{
+			var savePopup = _commonFactory.InstantiateObject<OverwritePopup>(_overwritePopUp, _canvas);
+			savePopup.Init(() =>
+			{
+				saveAction?.Invoke();
+
+				ShowToolbar(true);
+			});
 		}
 
 		private void ShowLoadPopUp()

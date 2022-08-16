@@ -4739,6 +4739,8 @@ MonoBehaviour:
   _toolBarTransform: {fileID: 3292558694917332523}
   _title: {fileID: 4088220418197317801}
   _currentInstrument: {fileID: 8505355092596384088}
+  _overwritePopUp: {fileID: 7534455446742936708, guid: a3891dfaa909fa349b90cba998add20a,
+    type: 3}
   _savePopUp: {fileID: 7255451771460565035, guid: a0c8765ceb4bf4c7d8bdfacbf956b936,
     type: 3}
   _saveButton: {fileID: 3031670120353946799}

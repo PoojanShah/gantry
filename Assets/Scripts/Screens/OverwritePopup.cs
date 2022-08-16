@@ -11,7 +11,12 @@ namespace Screens
 		public void Init(Action confirmAction)
 		{
 			_cancelButton.onClick.AddListener(Close);
-			_confirmButton.onClick.AddListener(() => confirmAction());
+			_confirmButton.onClick.AddListener(() =>
+			{
+				confirmAction();
+
+				Close();
+			});
 		}
 
 		private void Close()
