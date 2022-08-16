@@ -16,7 +16,7 @@ namespace Screens
 		[SerializeField] private Button _back, _forward;
 		[SerializeField] private Transform _mediaParent;
 
-		private int _currentPage;
+		private static int _currentPage = 0;
 		private ICommonFactory _factory;
 		private GameObject _mediaPrefab;
 		private MediaItem[] _mediaItems;
@@ -45,10 +45,7 @@ namespace Screens
 			_back.onClick.AddListener(ShowPreviousPage);
 			_forward.onClick.AddListener(ShowNextPage);
 
-			_currentPage = 0;
-
-			SetButtonInteractable(true, false);
-			SetButtonInteractable(false, _mediaController.MediaFiles.Length > MEDIA_PER_PAGE);
+			RefreshPagesButtons();
 		}
 #elif UNITY_ANDROID
 		public void Init(ICommonFactory factory, GameObject mediaPrefab, Action<int> playVideoAction,
@@ -163,7 +160,7 @@ namespace Screens
 		private void ChangePage(bool isPageIncreased)
 		{
 #if UNITY_STANDALONE
-			var maxPageNumber = _mediaController.MediaFiles.Length / MEDIA_PER_PAGE;
+			var maxPageNumber = GetMaxPageNumber();
 #elif UNITY_ANDROID
 			var maxPageNumber = _media.Length / MEDIA_PER_PAGE;
 #endif
@@ -177,8 +174,19 @@ namespace Screens
 
 			DisplayMedia();
 
+			RefreshPagesButtons();
+		}
+
+		private int GetMaxPageNumber()
+		{
+			var maxPageNumber = _mediaController.MediaFiles.Length / MEDIA_PER_PAGE;
+			return maxPageNumber;
+		}
+
+		private void RefreshPagesButtons()
+		{
 			SetButtonInteractable(true, _currentPage > 0);
-			SetButtonInteractable(false, _currentPage != maxPageNumber);
+			SetButtonInteractable(false, _currentPage != GetMaxPageNumber());
 		}
 	}
 }
