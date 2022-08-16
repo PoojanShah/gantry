@@ -34,7 +34,8 @@ namespace Common
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu), optionsSettings);
-			_contourEditorController = new ContourEditorController(_projectionController, _factory, _mainConfig.ContourEditorUiPrefab);
+			_contourEditorController = new ContourEditorController(_projectionController, _factory,
+				_mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
 				_contourEditorController, _mediaController, optionsSettings);
