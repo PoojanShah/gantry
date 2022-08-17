@@ -24,8 +24,6 @@ namespace VideoPlaying
 
 		[SerializeField] private ContourEditor _contourEditor;
 
-		public static int currentSlideLoop = 0;
-
 		public static int DisplaysAmount
 		{
 			get
