@@ -7,12 +7,19 @@ using System.Linq;
 using ContourToolsAndUtilities;
 using VideoPlaying;
 using Core;
+using UnityEngine.EventSystems;
 
 namespace ContourEditorTool
 {
 	public partial class ContourEditor : MonoBehaviour
 	{
-		public static bool IsToolsBlocked = true;
+		private static bool _isToolBlocked = true;
+
+		public static bool IsToolsBlocked
+		{
+			get => _isToolBlocked || EventSystem.current.currentSelectedGameObject != null;
+			set => _isToolBlocked = value;
+		}
 
 		public static KeyCode
 			deselectBlackoutKey = KeyCode.LeftShift,
@@ -1570,7 +1577,6 @@ namespace ContourEditorTool
 			
 			blackout.lassoObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 			blackout.lassoObject.GetComponent<MeshRenderer>().material.color = blackout.farbe;
-			//blackout.lassoObject.GetComponent<MeshRenderer>().material.color=Color.white;
 		}
 
 		private static float groupSelectThreshold = 4;
