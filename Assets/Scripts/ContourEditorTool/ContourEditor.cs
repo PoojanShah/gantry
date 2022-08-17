@@ -14,6 +14,11 @@ namespace ContourEditorTool
 	public partial class ContourEditor : MonoBehaviour
 	{
 		private static bool _isToolBlocked = true;
+		public static ContourEditor instance;
+		public static bool HideGUI = false;
+		public static List<int> selectedVertices = new List<int>();
+		public static ToolMode toolMode = ToolMode.vertex;
+		public static Vector3 rawSize = new Vector3(5, 0, 5);
 
 		public static bool IsToolsBlocked
 		{
@@ -29,10 +34,6 @@ namespace ContourEditorTool
 			coarseInchKey = KeyCode.LeftShift,
 			createLassoBlackoutKey = KeyCode.Return;
 
-		public static List<int> selectedVertices = new List<int>();
-		public static ToolMode toolMode = ToolMode.vertex;
-		public static Vector3 rawSize = new Vector3(5, 0, 5);
-
 		private static Color selectedBlackoutColor = new Color(0, 0, 0.5f, 0.5f);
 		private static List<Vertex> vertexDots = new List<Vertex>();
 		private static Texture2D[] icons;
@@ -43,7 +44,7 @@ namespace ContourEditorTool
 		private static List<UndoStep> undos = new List<UndoStep>();
 		private static int undo = 0;
 		private static float editingLassoAlpha = 0.5f;
-		public static ContourEditor instance;
+		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
 		private static Tool[] toolBehaviour = new Tool[]
 		{
@@ -1518,7 +1519,12 @@ namespace ContourEditorTool
 		public static void ShowLassoObjects(bool isShow)
 		{
 			foreach (var lassoObject in _lassoObjects)
+			{
+				if(lassoObject == null)
+					continue;
+
 				lassoObject.SetActive(isShow);
+			}
 		}
 
 		private static void BuildLassoMesh(Blackout blackout, Vector3[] lassoPoints)
@@ -1940,8 +1946,11 @@ namespace ContourEditorTool
 
 		public static void DrawBlackouts(bool adjusted = false)
 		{
-			foreach (Blackout b in blackouts)
+			foreach (var b in blackouts)
 			{
+				if(b == null)
+					continue;
+
 				if (b.lassoObject == null)
 				{
 					//Lasso blackouts have their own meshes on objects of which the 3D engine will take care.
@@ -1981,9 +1990,6 @@ namespace ContourEditorTool
 			Reset(-1, true, true);
 			
 		}
-
-		public static bool HideGUI = false;
-		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
 		private void OnGUI()
 		{
