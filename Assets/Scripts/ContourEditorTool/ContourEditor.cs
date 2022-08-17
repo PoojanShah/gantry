@@ -518,6 +518,47 @@ namespace ContourEditorTool
 						DrawPerspectiveZones(
 							scaleMode == ScaleMode.horizontal ? Color.yellow : new Color(1, 0.5f, 0, 1));
 				},
+			},
+			new Tool
+			{
+				OnMouseDown = (p) => 
+				{
+					if (IsToolsBlocked)
+						return;
+					
+					int b;
+					for (b = blackouts.Count - 1; b > -1; b--)
+						if (blackouts[b].Contains(SRSUtilities.adjustedFlipped))
+						{
+							Blackout.Select(b);
+							break;
+						}
+					
+					if (Blackout.selected > -1 && blackouts[Blackout.selected].Contains(p.FlipY()))
+						blackouts[Blackout.moving = Blackout.selected].SetOffsetFrom(p.FlipY());
+				},
+				OnDrag = (p) =>
+				{
+					if (IsToolsBlocked)
+						return;
+
+					if (Blackout.moving <= -1) 
+						return;
+					
+					if (blackouts[Blackout.moving].lassoObject != null) 
+						Blackout.MoveSelectedBy(MouseHelper.delta, false);
+					else 
+						blackouts[Blackout.moving].screenPosition = p.FlipY() + Blackout.moveOffset;
+				},
+				OnFinishDrag = (p) =>
+				{
+					if (IsToolsBlocked)
+						return;
+					
+					if (Blackout.moving > -1) Blackout.moving = -1;
+					
+					Blackout.DeSelect();
+				}
 			}
 		};
 
@@ -531,7 +572,8 @@ namespace ContourEditorTool
 		{
 			vertex = 0,
 			blackout,
-			scale
+			scale,
+			hand,
 		};
 
 		public Toolbar toolbar;
@@ -632,8 +674,10 @@ namespace ContourEditorTool
 				Graphics.SetAlpha(o.GetComponent<Renderer>().material, editingLassoAlpha);
 			ResetLassoVisuals();
 			//Dictionary<GUIContent,Action>[] toolMenu=new Dictionary<GUIContent,Action>[3];//Set Up Toolbar
-			ToolbarMenu.Item[][] toolMenu = new ToolbarMenu.Item[4][]; //Set Up Toolbar
-			for (int i = 0; i < toolMenu.Length; i++) toolMenu[i] = new ToolbarMenu.Item[3];
+			ToolbarMenu.Item[][] toolMenu = new ToolbarMenu.Item[5][]; //Set Up Toolbar
+			for (int i = 0; i < toolMenu.Length-1; i++) 
+				toolMenu[i] = new ToolbarMenu.Item[3];
+			toolMenu[4] = new ToolbarMenu.Item[1];
 			string[] shapes = Enum.GetNames(typeof(Shape));
 
 			//TODO: delete this region after tests
@@ -708,6 +752,11 @@ namespace ContourEditorTool
 					}[s]
 				};
 			}
+			toolMenu[4][0] = new ToolbarMenu.Item()
+			{
+				buttonContent = new GUIContent(null + " Hand"),
+				info = $"HAND"
+			};
 
 			for (int i = 0; i < toolMenu.Length; i++)
 			for (int j = 0; j < toolMenu[i].Length; j++)

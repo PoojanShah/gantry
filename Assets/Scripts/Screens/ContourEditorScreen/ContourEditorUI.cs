@@ -17,6 +17,7 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private DensityPanel _densityPanel;
 		[Header("Toolbar")] 
 		[SerializeField] private ToolBarLinesBlock[] _toolBar;
+		[SerializeField] private Button _handInstrumentButton;
 		[SerializeField] private Transform _toolBarTransform;
 		[SerializeField] private TMP_Text _title;
 		[SerializeField] private Image _currentInstrument;
@@ -48,20 +49,12 @@ namespace Screens.ContourEditorScreen
 			}
 
 			_currentInstrument.sprite = _toolBar[0].Lines[0].Instruments[0].Button.image.sprite;
-
+			
+			_handInstrumentButton.onClick.AddListener(HandInstrumentInteraction);
 			_saveButton.onClick.AddListener(ShowSavePopUp);
 			_loadButton.onClick.AddListener(ShowLoadPopUp);
 			
 			ShowToolbar(false);
-		}
-
-		private void ShowToolbar(bool isShow)
-		{
-			_toolBarTransform.gameObject.SetActive(isShow);
-
-			ContourEditor.IsToolsBlocked = !isShow;
-
-			ContourEditor.ShowLassoObjects(isShow);
 		}
 
 		public void ShowDensityPanel()
@@ -73,6 +66,21 @@ namespace Screens.ContourEditorScreen
 
 					ShowToolbar(true);
 				});
+		}
+		
+		private void ShowToolbar(bool isShow)
+		{
+			_toolBarTransform.gameObject.SetActive(isShow);
+
+			ContourEditor.IsToolsBlocked = !isShow;
+
+			ContourEditor.ShowLassoObjects(isShow);
+		}
+
+		private void HandInstrumentInteraction()
+		{
+			ContourEditor.instance.MouseUp();
+			ContourEditor.instance.toolbar.menus[0].SelectItemFromUI(0, 4, 0);
 		}
 
 		private void SetToolTipByID(int block, int line, int id)

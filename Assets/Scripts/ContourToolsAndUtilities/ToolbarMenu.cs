@@ -62,7 +62,7 @@ namespace ContourToolsAndUtilities
 		public void SelectItemFromUI(int block, int i, int j)
 		{
 			SelectItem(block, i, j);
-			Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
+			//Debug.Log("Button hit: " + items[i][j].buttonContent.tooltip + " i: " + i + " j: " + j);
 		}
     
 		//Setting contour editor based on toolbar.
