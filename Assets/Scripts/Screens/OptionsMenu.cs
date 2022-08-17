@@ -1,4 +1,5 @@
 using System;
+using Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ namespace Screens
 {
 	public class OptionsMenu : MonoBehaviour
 	{
+		[SerializeField] private TMP_Text _serverIpTitle;
 		[SerializeField] private Toggle _sound,_rotation;
 		[SerializeField] private TMP_Dropdown _outputsNumber;
 		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort;
@@ -18,7 +20,10 @@ namespace Screens
 			_optionsSettings = settings;
 			
 			LoadValues(_optionsSettings);
+
+			InitIpTitle();
 		}
+		private void InitIpTitle() => _serverIpTitle.text = NetworkHelper.GetMyIp().ToString();
 
 		public void SaveAndExit()
 		{
