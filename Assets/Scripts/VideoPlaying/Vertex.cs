@@ -43,10 +43,8 @@ namespace VideoPlaying
 		{
 			RaycastHit hit;
 			if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-			{
-				Debug.LogError("Didn't hit.");
 				return;
-			}
+
 			Vector3 newPos = new Vector3(hit.point.x + dragDifferential.x, y, hit.point.z + dragDifferential.z);
 			ContourEditor.instance.MoveSelectedVerticesBy(newPos - transform.position);
 			ContourEditor.downPoint = -Vector2.one;
