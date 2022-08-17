@@ -72,5 +72,7 @@ namespace VideoPlaying
 
 			_stopAction?.Invoke();
 		}
+
+		public void ApplyRotation() => _projection.ApplyRotation();
 	}
 }
