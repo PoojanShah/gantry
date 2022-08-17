@@ -462,14 +462,7 @@ namespace ContourEditorTool
 							float perspectiveFactor = (scaleMode == ScaleMode.normal
 								? 1
 								: Mathf.Abs(1 - (pivot + perpendicularProximity)));
-							//if(i==22||i==19)Debug.Log("Verts["+i+"] before: "+verts[i]+", perpendicularProximity: "+perpendicularProximity+", pivot: "+pivot+", perspectiveFactor: "+perspectiveFactor);
-							if (i == 22 || i == 40)
-								Debug.Log("pivot: " + pivot + ", perp: " + perpendicularProximity + ", scaleSnapshot[" +
-								          i + "].z: " + scaleSnapshot[i].z + ", convergingEdgeWorld.y: " +
-								          convergingEdgeWorld.y + ", tween: " +
-								          Mathf.Clamp(
-									          (SRSUtilities.adjustedMousePosition.y - downPoint.y) /
-									          (convergingEdgeScreen.y - downPoint.y), clampMin.y, clampMax.y));
+
 							verts[i] = new Vector3(
 								scalePivot.x < 0
 									? verts[i].x
