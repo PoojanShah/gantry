@@ -189,8 +189,7 @@ namespace ContourEditorTool
 						          new Vector2(blackouts[Blackout.moving].rect.x, blackouts[Blackout.moving].rect.y));
 					}
 					else if (Blackout.shape == Shape.lasso)
-						for (int i = 0; i < 2; i++)
-							AddLassoPoint(p, Color.black);
+						AddLassoPoint(p, Color.black);
 				},
 				Draw = (p) =>
 				{
@@ -317,8 +316,7 @@ namespace ContourEditorTool
 						          new Vector2(blackouts[Blackout.moving].rect.x, blackouts[Blackout.moving].rect.y));
 					}
 					else if (Blackout.shape == Shape.lasso)
-						for (int i = 0; i < 2; i++)
-							AddLassoPoint(p, Color.white);
+						AddLassoPoint(p, Color.white);
 				},
 				Draw = (p) =>
 				{
@@ -1449,15 +1447,11 @@ namespace ContourEditorTool
 
 		private void MouseDown()
 		{
-			Debug.Log("Projection.MouseDown()");
 			if (Draggable2D.draggingAnything)
 				return; //See that the script that inherits from Draggable2D is called prior to this in the Update queue.
 			downPoint = (Vector2)SRSUtilities.adjustedMousePosition;
 			if (currentTool.OnMouseDown != null) currentTool.OnMouseDown(downPoint);
-			Debug.Log("Projection.MouseDown() downPoint: " + downPoint + ",SRSUtilities.adjustedMousePosition: " +
-			          SRSUtilities.adjustedMousePosition + ",flipped: " + SRSUtilities.adjustedFlipped + ",adjusted: " +
-			          SRSUtilities.adjustedMousePosition + ",adjustedFlipped: " + SRSUtilities.adjustedFlipped +
-			          ",screen dimensions: " + Screen.width + "," + Screen.height);
+			
 		}
 
 		private static Blackout lassoBlackout = null;
@@ -1536,8 +1530,8 @@ namespace ContourEditorTool
 
 		private static void BuildLassoMesh(Blackout blackout, Vector3[] lassoPoints)
 		{
-			Debug.Log("BuildLassoMesh(" + blackout + "," + lassoPoints.Length + "), blackout farbe: " + blackout.farbe);
-			//MeshFilter filter=(blackout.lassoObject=blackout.lassoObject??new GameObject("lassoObject",typeof(MeshFilter),typeof(MeshRenderer))).GetComponent<MeshFilter>();
+			Debug.Log(ContourEditor.lassoPoints.Count);
+
 			if (blackout.lassoObject == null)
 				blackout.lassoObject = CreateLassoObject(blackout.farbe /*.WithAlpha(editingLassoAlpha)*/);
 			Vector3 durchschnitt = Vector3.zero;
@@ -1554,9 +1548,7 @@ namespace ContourEditorTool
 			mesh.vertices = verts;
 			//mesh.vertices=lassoPoints.ToArray();
 			//lassoPoints.Clear();
-			Debug.Log("lassoPoints.Count: " + lassoPoints.Length + ",mesh.vertices.Length: " + mesh.vertices.Length +
-			          ",0: " + mesh.vertices[0] + ",1: " + mesh.vertices[1] + ",2: " + mesh.vertices[2] + ",3: " +
-			          mesh.vertices[3]);
+			
 			Vector3[] normals = new Vector3[mesh.vertices.Length];
 			for (int n = 0; n < normals.Length; n++) normals[n] = Vector3.back;
 			Vector2[] uvs = new Vector2[mesh.vertices.Length];
@@ -1638,12 +1630,7 @@ namespace ContourEditorTool
 
 		public void MouseUp()
 		{
-			Debug.Log("Projection.MouseUp(); downPoint: " + downPoint + ",beyond threshold: " +
-			          (Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) > groupSelectThreshold) +
-			          ",distance: " +
-			          Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) + ",threshold: " +
-			          groupSelectThreshold + ",adjustedMousePosition: " +
-			          SRSUtilities.adjustedMousePosition /*+",didMouseDownSpecial: "+didMouseDownSpecial*/);
+			
 			if (dragging)
 			{
 				if (currentTool.OnFinishDrag != null) currentTool.OnFinishDrag(SRSUtilities.adjustedMousePosition);
