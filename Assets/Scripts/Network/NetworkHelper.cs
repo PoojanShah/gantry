@@ -22,18 +22,21 @@ namespace Network
 
 		public static IPAddress GetMyIp()
 		{
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
 			var ip = GetLocalIpAddress();
 
 			if (IPAddress.TryParse(ip, out var parsed))
-			{
 				return parsed;
-			}
-			else
-			{
-				Debug.LogError("Can't get your local IP address. Android app will not be able to connect");
 
-				return null;
-			}
+			Debug.LogError("Can't get your local IP address. Android app will not be able to connect");
+
+			return null;
+
+#elif UNITY_ANDROID
+			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+			
+			return ipHostInfo.AddressList[0];
+#endif
 		}
 
 		private static string GetLocalIpAddress()
