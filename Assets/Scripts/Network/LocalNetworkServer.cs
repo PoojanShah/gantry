@@ -41,6 +41,10 @@ namespace Network
 			Debug.Log("Setting up server...");
 
 			var myIpAddress = NetworkHelper.GetMyIp();
+
+			if(myIpAddress == null)
+				return;
+
 			var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
 
 			_serverSocket.Bind(endPoint);

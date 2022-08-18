@@ -1,6 +1,9 @@
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using UnityEngine;
+using Ping = System.Net.NetworkInformation.Ping;
 
 namespace Network
 {
@@ -19,17 +22,40 @@ namespace Network
 
 		public static IPAddress GetMyIp()
 		{
-			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-			var ip = ipHostInfo.AddressList[1];
+			var ip = GetLocalIpAddress();
 
-			return ip.AddressFamily == AddressFamily.InterNetworkV6
-				? ipHostInfo.AddressList[0]
-				: ipHostInfo.AddressList[1];
+			if (IPAddress.TryParse(ip, out var parsed))
+				return parsed;
+
+			Debug.LogError("Can't get your local IP address. Android app will not be able to connect");
+
+			return null;
+
 #elif UNITY_ANDROID
+			var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+			
 			return ipHostInfo.AddressList[0];
 #endif
+		}
+
+		private static string GetLocalIpAddress()
+		{
+			foreach (var netI in NetworkInterface.GetAllNetworkInterfaces())
+			{
+				if (netI.NetworkInterfaceType != NetworkInterfaceType.Wireless80211 &&
+				    (netI.NetworkInterfaceType != NetworkInterfaceType.Ethernet ||
+				     netI.OperationalStatus != OperationalStatus.Up)) continue;
+				foreach (var uniIpAddrInfo in netI.GetIPProperties().UnicastAddresses.Where(x => netI.GetIPProperties().GatewayAddresses.Count > 0))
+				{
+
+					if (uniIpAddrInfo.Address.AddressFamily == AddressFamily.InterNetwork &&
+					    uniIpAddrInfo.AddressPreferredLifetime != uint.MaxValue)
+						return uniIpAddrInfo.Address.ToString();
+				}
+			}
+
+			return null;
 		}
 
 		public static string GetMyIpWithoutLastNumberString()

@@ -23,8 +23,7 @@ namespace VideoPlaying
 		public static Vector3 originalExtents;
 
 		[SerializeField] private ContourEditor _contourEditor;
-
-		public static int currentSlideLoop = 0;
+		private OptionsSettings _settings;
 
 		public static int DisplaysAmount
 		{
@@ -54,17 +53,13 @@ namespace VideoPlaying
 
 		public void Init(OptionsSettings settings)
 		{
+			_settings = settings;
+
 			GetComponent<MeshFilter>().mesh.Clear();
 
-			const float rotationSetting = 180.0f;
 			const float extentsFactor = 5;
 
-			foreach (var videoPlayerScreen in _screens)
-			{
-				videoPlayerScreen.Transform.localRotation = !settings.IsRotationOn
-					? Quaternion.Euler(0.0f, 0.0f, 0.0f)
-					: Quaternion.Euler(0.0f, rotationSetting, 0.0f);
-			}
+			ApplyRotation();
 
 			transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
 			originalExtents = Vector3.one * extentsFactor;
@@ -77,6 +72,18 @@ namespace VideoPlaying
 			{
 				_screens[i].Transform.localScale = scale;
 				_screens[i].Transform.position = ScreenPosition(i);
+			}
+		}
+
+		public void ApplyRotation()
+		{
+			const float rotationSetting = 180.0f;
+
+			foreach (var videoPlayerScreen in _screens)
+			{
+				videoPlayerScreen.Transform.localRotation = !_settings.IsRotationOn
+					? Quaternion.Euler(0.0f, 0.0f, 0.0f)
+					: Quaternion.Euler(0.0f, rotationSetting, 0.0f);
 			}
 		}
 

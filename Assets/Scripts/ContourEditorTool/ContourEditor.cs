@@ -7,12 +7,24 @@ using System.Linq;
 using ContourToolsAndUtilities;
 using VideoPlaying;
 using Core;
+using UnityEngine.EventSystems;
 
 namespace ContourEditorTool
 {
 	public partial class ContourEditor : MonoBehaviour
 	{
-		public static bool IsToolsBlocked = true;
+		private static bool _isToolBlocked = true;
+		public static ContourEditor instance;
+		public static bool HideGUI = false;
+		public static List<int> selectedVertices = new List<int>();
+		public static ToolMode toolMode = ToolMode.vertex;
+		public static Vector3 rawSize = new Vector3(5, 0, 5);
+
+		public static bool IsToolsBlocked
+		{
+			get => _isToolBlocked || EventSystem.current.currentSelectedGameObject != null;
+			set => _isToolBlocked = value;
+		}
 
 		public static KeyCode
 			deselectBlackoutKey = KeyCode.LeftShift,
@@ -36,8 +48,8 @@ namespace ContourEditorTool
 		private static List<UndoStep> undos = new List<UndoStep>();
 		private static int undo = 0;
 		private static float editingLassoAlpha = 0.5f;
+		private static List<GameObject> _lassoObjects = new List<GameObject>();
 		private static Vector2 mousePositionByDrag;
-		public static ContourEditor instance;
 
 		private static Tool[] toolBehaviour = new Tool[]
 		{
@@ -183,8 +195,7 @@ namespace ContourEditorTool
 						          new Vector2(blackouts[Blackout.moving].rect.x, blackouts[Blackout.moving].rect.y));
 					}
 					else if (Blackout.shape == Shape.lasso)
-						for (int i = 0; i < 2; i++)
-							AddLassoPoint(p, Color.black);
+						AddLassoPoint(p, Color.black);
 				},
 				Draw = (p) =>
 				{
@@ -311,8 +322,7 @@ namespace ContourEditorTool
 						          new Vector2(blackouts[Blackout.moving].rect.x, blackouts[Blackout.moving].rect.y));
 					}
 					else if (Blackout.shape == Shape.lasso)
-						for (int i = 0; i < 2; i++)
-							AddLassoPoint(p, Color.white);
+						AddLassoPoint(p, Color.white);
 				},
 				Draw = (p) =>
 				{
@@ -425,8 +435,7 @@ namespace ContourEditorTool
 					if (IsToolsBlocked)
 						return;
 
-					if (ScaleZones().Any((r) => r.Contains(mousePositionByDrag, true)))
-						BeginScale(mousePositionByDrag, scaleMode);
+					if (ScaleZones().Any((r) => r.Contains(p, true))) BeginScale(p, scaleMode);
 				},
 				OnDrag = (p) =>
 				{
@@ -459,14 +468,7 @@ namespace ContourEditorTool
 							float perspectiveFactor = (scaleMode == ScaleMode.normal
 								? 1
 								: Mathf.Abs(1 - (pivot + perpendicularProximity)));
-							//if(i==22||i==19)Debug.Log("Verts["+i+"] before: "+verts[i]+", perpendicularProximity: "+perpendicularProximity+", pivot: "+pivot+", perspectiveFactor: "+perspectiveFactor);
-							if (i == 22 || i == 40)
-								Debug.Log("pivot: " + pivot + ", perp: " + perpendicularProximity + ", scaleSnapshot[" +
-								          i + "].z: " + scaleSnapshot[i].z + ", convergingEdgeWorld.y: " +
-								          convergingEdgeWorld.y + ", tween: " +
-								          Mathf.Clamp(
-									          (SRSUtilities.adjustedMousePosition.y - downPoint.y) /
-									          (convergingEdgeScreen.y - downPoint.y), clampMin.y, clampMax.y));
+
 							verts[i] = new Vector3(
 								scalePivot.x < 0
 									? verts[i].x
@@ -519,8 +521,6 @@ namespace ContourEditorTool
 					else
 						DrawPerspectiveZones(
 							scaleMode == ScaleMode.horizontal ? Color.yellow : new Color(1, 0.5f, 0, 1));
-
-					mousePositionByDrag = p;
 				},
 			},
 			new Tool
@@ -1446,15 +1446,11 @@ namespace ContourEditorTool
 
 		private void MouseDown()
 		{
-			Debug.Log("Projection.MouseDown()");
 			if (Draggable2D.draggingAnything)
 				return; //See that the script that inherits from Draggable2D is called prior to this in the Update queue.
 			downPoint = (Vector2)SRSUtilities.adjustedMousePosition;
 			if (currentTool.OnMouseDown != null) currentTool.OnMouseDown(downPoint);
-			Debug.Log("Projection.MouseDown() downPoint: " + downPoint + ",SRSUtilities.adjustedMousePosition: " +
-			          SRSUtilities.adjustedMousePosition + ",flipped: " + SRSUtilities.adjustedFlipped + ",adjusted: " +
-			          SRSUtilities.adjustedMousePosition + ",adjustedFlipped: " + SRSUtilities.adjustedFlipped +
-			          ",screen dimensions: " + Screen.width + "," + Screen.height);
+			
 		}
 
 		private static Blackout lassoBlackout = null;
@@ -1528,13 +1524,18 @@ namespace ContourEditorTool
 		public static void ShowLassoObjects(bool isShow)
 		{
 			foreach (var lassoObject in _lassoObjects)
+			{
+				if(lassoObject == null)
+					continue;
+
 				lassoObject.SetActive(isShow);
+			}
 		}
 
 		private static void BuildLassoMesh(Blackout blackout, Vector3[] lassoPoints)
 		{
-			Debug.Log("BuildLassoMesh(" + blackout + "," + lassoPoints.Length + "), blackout farbe: " + blackout.farbe);
-			//MeshFilter filter=(blackout.lassoObject=blackout.lassoObject??new GameObject("lassoObject",typeof(MeshFilter),typeof(MeshRenderer))).GetComponent<MeshFilter>();
+			Debug.Log(ContourEditor.lassoPoints.Count);
+
 			if (blackout.lassoObject == null)
 				blackout.lassoObject = CreateLassoObject(blackout.farbe /*.WithAlpha(editingLassoAlpha)*/);
 			Vector3 durchschnitt = Vector3.zero;
@@ -1551,9 +1552,7 @@ namespace ContourEditorTool
 			mesh.vertices = verts;
 			//mesh.vertices=lassoPoints.ToArray();
 			//lassoPoints.Clear();
-			Debug.Log("lassoPoints.Count: " + lassoPoints.Length + ",mesh.vertices.Length: " + mesh.vertices.Length +
-			          ",0: " + mesh.vertices[0] + ",1: " + mesh.vertices[1] + ",2: " + mesh.vertices[2] + ",3: " +
-			          mesh.vertices[3]);
+			
 			Vector3[] normals = new Vector3[mesh.vertices.Length];
 			for (int n = 0; n < normals.Length; n++) normals[n] = Vector3.back;
 			Vector2[] uvs = new Vector2[mesh.vertices.Length];
@@ -1574,7 +1573,6 @@ namespace ContourEditorTool
 			
 			blackout.lassoObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 			blackout.lassoObject.GetComponent<MeshRenderer>().material.color = blackout.farbe;
-			//blackout.lassoObject.GetComponent<MeshRenderer>().material.color=Color.white;
 		}
 
 		private static float groupSelectThreshold = 4;
@@ -1636,12 +1634,7 @@ namespace ContourEditorTool
 
 		public void MouseUp()
 		{
-			Debug.Log("Projection.MouseUp(); downPoint: " + downPoint + ",beyond threshold: " +
-			          (Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) > groupSelectThreshold) +
-			          ",distance: " +
-			          Vector2.Distance(downPoint, SRSUtilities.adjustedMousePosition) + ",threshold: " +
-			          groupSelectThreshold + ",adjustedMousePosition: " +
-			          SRSUtilities.adjustedMousePosition /*+",didMouseDownSpecial: "+didMouseDownSpecial*/);
+			
 			if (dragging)
 			{
 				if (currentTool.OnFinishDrag != null) currentTool.OnFinishDrag(SRSUtilities.adjustedMousePosition);
@@ -1958,8 +1951,11 @@ namespace ContourEditorTool
 
 		public static void DrawBlackouts(bool adjusted = false)
 		{
-			foreach (Blackout b in blackouts)
+			foreach (var b in blackouts)
 			{
+				if(b == null)
+					continue;
+
 				if (b.lassoObject == null)
 				{
 					//Lasso blackouts have their own meshes on objects of which the 3D engine will take care.
@@ -1999,9 +1995,6 @@ namespace ContourEditorTool
 			Reset(-1, true, true);
 			
 		}
-
-		public static bool HideGUI = false;
-		private static List<GameObject> _lassoObjects = new List<GameObject>();
 
 		private void OnGUI()
 		{

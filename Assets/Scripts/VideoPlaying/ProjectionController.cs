@@ -35,19 +35,25 @@ namespace VideoPlaying
 		public void Play(MediaContent content)
 		{
 			if (_projectionView != null)
+			{
 				_projectionView.SetActive(true);
+			}
 			else
 				CreateProjectionView();
 
-			_projectionView.Init(StopAndHidePlayer, _optionsSettings);
+			_projectionView.ApplyRotation();
 
 			SetSoundSettings();
 			
 			_projectionView.Play(content);
 		}
 
-		private void CreateProjectionView() =>
+		private void CreateProjectionView()
+		{
 			_projectionView = _commonFactory.InstantiateObject<ProjectionView>(_prefab);
+			_projectionView.Init(StopAndHidePlayer, _optionsSettings);
+			_projectionView.ApplyRotation();
+		}
 
 		private void StopAndHidePlayer()
 		{

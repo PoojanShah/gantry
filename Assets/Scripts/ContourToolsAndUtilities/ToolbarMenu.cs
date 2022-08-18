@@ -69,7 +69,6 @@ namespace ContourToolsAndUtilities
 		public void SelectItem(int block, int i, int j/*,bool unfurl=false*/)
 		{
 			if (selectedCategory != i && OnChangeCategory != null) OnChangeCategory(i);
-			Debug.Log("Toolbar.Menu.SelectItem(" + i + "," + j +/*","+unfurl+*/") selectedCategory now: " + selectedCategory + ", unfurled: " + unfurled + ", sticky: " + sticky);
 
 			if (unfurled) unfurledMenu = -1;//Unfurl(i,false);
 			selectedCategory = !sticky && selectedCategory == i ? -1 : i;
