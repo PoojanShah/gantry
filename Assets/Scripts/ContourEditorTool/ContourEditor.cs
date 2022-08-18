@@ -34,10 +34,6 @@ namespace ContourEditorTool
 			coarseInchKey = KeyCode.LeftShift,
 			createLassoBlackoutKey = KeyCode.Return;
 
-		public static List<int> selectedVertices = new List<int>();
-		public static ToolMode toolMode = ToolMode.vertex;
-		public static Vector3 rawSize = new Vector3(5, 0, 5);
-
 		private static Color selectedBlackoutColor = new Color(0, 0, 0.5f, 0.5f);
 		private static List<Vertex> vertexDots = new List<Vertex>();
 		private static Texture2D[] icons;
@@ -435,7 +431,8 @@ namespace ContourEditorTool
 					if (IsToolsBlocked)
 						return;
 
-					if (ScaleZones().Any((r) => r.Contains(p, true))) BeginScale(p, scaleMode);
+					if (ScaleZones().Any((r) => r.Contains(mousePositionByDrag, true)))
+						BeginScale(mousePositionByDrag, scaleMode);
 				},
 				OnDrag = (p) =>
 				{
@@ -521,6 +518,8 @@ namespace ContourEditorTool
 					else
 						DrawPerspectiveZones(
 							scaleMode == ScaleMode.horizontal ? Color.yellow : new Color(1, 0.5f, 0, 1));
+
+					mousePositionByDrag = p;
 				},
 			},
 			new Tool
