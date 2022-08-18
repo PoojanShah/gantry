@@ -45,6 +45,7 @@ namespace ContourEditorTool
 		private static int undo = 0;
 		private static float editingLassoAlpha = 0.5f;
 		private static List<GameObject> _lassoObjects = new List<GameObject>();
+		private static Vector2 mousePositionByDrag;
 
 		private static Tool[] toolBehaviour = new Tool[]
 		{
@@ -430,7 +431,8 @@ namespace ContourEditorTool
 					if (IsToolsBlocked)
 						return;
 
-					if (ScaleZones().Any((r) => r.Contains(p, true))) BeginScale(p, scaleMode);
+					if (ScaleZones().Any((r) => r.Contains(mousePositionByDrag, true)))
+						BeginScale(mousePositionByDrag, scaleMode);
 				},
 				OnDrag = (p) =>
 				{
@@ -516,6 +518,8 @@ namespace ContourEditorTool
 					else
 						DrawPerspectiveZones(
 							scaleMode == ScaleMode.horizontal ? Color.yellow : new Color(1, 0.5f, 0, 1));
+
+					mousePositionByDrag = p;
 				},
 			},
 			new Tool
