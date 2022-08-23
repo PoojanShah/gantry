@@ -60,7 +60,9 @@ namespace Network
 					}
 
 					HandleReceivedMessage();
-
+					
+					NetworkHelper.SaveIP(NetworkHelper.GetMyIpWithoutLastNumberString(), ipLastNumber);
+					
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();
 				}
