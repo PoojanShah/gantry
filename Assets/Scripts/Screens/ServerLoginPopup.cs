@@ -15,6 +15,8 @@ namespace Screens
 
 		public void Init()
 		{
+			TryUseOldIP();
+			
 			_connectButton.onClick.AddListener(ConnectClicked);
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
@@ -52,6 +54,14 @@ namespace Screens
 			_ipEnd.text = number.ToString();
 
 			NetworkHelper.LastIpNumber = int.Parse(_ipEnd.text);
+		}
+
+		private void TryUseOldIP()
+		{
+			if (!NetworkHelper.IsSavedIpValid())
+				return;
+
+			_ipEnd.text = NetworkHelper.LastIpNumber.ToString();
 		}
 
 		private void Close()
