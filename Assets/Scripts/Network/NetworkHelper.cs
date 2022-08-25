@@ -12,6 +12,7 @@ namespace Network
 		public const int BUFFER_SIZE = 512;
 		public const int PORT = 8888;
 		public const string NETWORK_MESSAGE_PLAY_PREFIX = "Play_";
+		public const string NETWORK_MESSAGE_MUTE = "Mute";
 		public const string NETWORK_MESSAGE_INFO_FORMAT = "_{0}:{1}"; //0 - name, 1 - id
 		public const string PING_HOST = "google.com";
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";

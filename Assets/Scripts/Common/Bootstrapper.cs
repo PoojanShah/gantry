@@ -20,6 +20,7 @@ namespace Common
 		private ContourEditorController _contourEditorController;
 		private MediaController _mediaController;
 		private NetworkController _networkController;
+		private OptionsSettings _settings;
 
 		private void Awake()
 		{
@@ -30,15 +31,15 @@ namespace Common
 			_factory = new CommonFactory();
 			_mediaController = new MediaController();
 			
-			var optionsSettings = new OptionsSettings();
+			_settings = new OptionsSettings();
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
-				() => _screensManager.OpenWindow(ScreenType.MainMenu), optionsSettings);
+				() => _screensManager.OpenWindow(ScreenType.MainMenu), _settings);
 			_contourEditorController = new ContourEditorController(_projectionController, _factory,
 				_mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController, _mediaController, optionsSettings);
+				_contourEditorController, _mediaController, _settings);
 #endif
 
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
@@ -66,7 +67,7 @@ namespace Common
 		private void InitNetwork()
 		{
 #if UNITY_STANDALONE_WIN
-			_networkController = new NetworkController(_mediaController);
+			_networkController = new NetworkController(_mediaController, _settings);
 #endif
 		}
 

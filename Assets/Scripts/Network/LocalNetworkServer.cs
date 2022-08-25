@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using Core;
 using Media;
+using Screens;
 using UnityEngine;
 
 namespace Network
@@ -24,12 +25,14 @@ namespace Network
 
 		private static readonly byte[] _buffer = new byte[NetworkHelper.BUFFER_SIZE];
 		private static MediaController _mediaController;
+		private static OptionsSettings _settings;
 
 		public static int ReceivedId = -1;
 
-		public LocalNetworkServer(MediaController mediaController)
+		public LocalNetworkServer(MediaController mediaController, OptionsSettings settings)
 		{
 			_mediaController = mediaController;
+			_settings = settings;
 
 			SetupServer();
 		}
@@ -127,12 +130,20 @@ namespace Network
 
 			current.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
 
-			var mediaId = int.Parse(text.Split(Constants.Underscore)[1]);
+			HandleReceivedMessage(text);
+		}
 
-			if (mediaId < 0)
-				return;
+		private static void HandleReceivedMessage(string text)
+		{
+			if (text == NetworkHelper.NETWORK_MESSAGE_MUTE)
+				_settings.SwitchSound();
+			else if (int.TryParse(text.Split(Constants.Underscore)[1], out var mediaId))
+			{
+				if (mediaId < 0)
+					return;
 
-			ReceivedId = mediaId;
+				ReceivedId = mediaId;
+			}
 		}
 
 		private static string AddMediaInfo(string message)

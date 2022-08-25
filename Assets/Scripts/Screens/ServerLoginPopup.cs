@@ -33,7 +33,7 @@ namespace Screens
 			if (!int.TryParse(_ipEnd.text, out var number))
 				return;
 
-			LocalNetworkClient.SendPlayMessage(number, -1);
+			LocalNetworkClient.Connect(number);
 
 			Close();
 		}

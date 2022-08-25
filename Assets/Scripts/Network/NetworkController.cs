@@ -1,5 +1,6 @@
 using System;
 using Media;
+using Screens;
 
 namespace Network
 {
@@ -9,9 +10,9 @@ namespace Network
 		private LocalNetworkClient _client;
 
 #if UNITY_STANDALONE_WIN
-		public NetworkController(MediaController mediaController)
+		public NetworkController(MediaController mediaController, OptionsSettings settings)
 		{
-			_server = new LocalNetworkServer(mediaController);
+			_server = new LocalNetworkServer(mediaController, settings);
 		}
 #elif UNITY_ANDROID
 		public NetworkController()
