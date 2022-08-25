@@ -124,10 +124,11 @@ namespace Network
 			var savedIP = PlayerPrefs.GetString(FIRST_PART_IP_KEY, "");
 			var savedLastPartOfIP = PlayerPrefs.GetInt(SECOND_PART_IP_KEY, defaultForLastPart);
 
-			if (savedIP != GetMyIpWithoutLastNumberString() && savedLastPartOfIP != defaultForLastPart)
+			if (savedIP != GetMyIpWithoutLastNumberString() && savedLastPartOfIP < 0)
 				return false;
 
 			LastIpNumber = savedLastPartOfIP;
+
 			return true;
 		}
 	}
