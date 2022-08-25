@@ -13,8 +13,13 @@ namespace Screens
 		[SerializeField] private TMP_InputField _ipEnd;
 		[SerializeField] private TMP_Text _ipStart;
 
+		private static bool _isConnectionStarted = false;
+
 		public void Init()
 		{
+			if(!_isConnectionStarted)
+				TryUseSavedIp();
+			
 			_connectButton.onClick.AddListener(ConnectClicked);
 			_ipEnd.onEndEdit.AddListener(VerifyIpNumber);
 
@@ -52,6 +57,18 @@ namespace Screens
 			_ipEnd.text = number.ToString();
 
 			NetworkHelper.LastIpNumber = int.Parse(_ipEnd.text);
+		}
+
+		private void TryUseSavedIp()
+		{
+			if (!NetworkHelper.IsSavedIpValid())
+				return;
+
+			_isConnectionStarted = true;
+
+			_ipEnd.text = NetworkHelper.LastIpNumber.ToString();
+
+			ConnectClicked();
 		}
 
 		private void Close()

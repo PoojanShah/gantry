@@ -688,6 +688,7 @@ MonoBehaviour:
   activeVertex: {fileID: 2800000, guid: 999ba61c1f5af79439ac4720def8ff54, type: 3}
   inactiveVertex: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   backgrounds:
+  - {fileID: 2800000, guid: 8a4048701d99f424184774003d1f4aa3, type: 3}
   - {fileID: 2800000, guid: 20f9ce5aeeb4e4b379176a7ace17055e, type: 3}
   - {fileID: 2800000, guid: 28eb402e744c7492ebb99bb41d73c0da, type: 3}
   - {fileID: 2800000, guid: 841dabb68ffa84a05a6047475721b153, type: 3}

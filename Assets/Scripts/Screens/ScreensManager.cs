@@ -169,7 +169,6 @@ namespace Screens
 				if (password != LoginHelper.GetPassword())
 					return;
 				
-				LoginHelper.SaveLogin();
 				onContinue?.Invoke();
 				Object.Destroy(screen);
 			}, CancelAction);
