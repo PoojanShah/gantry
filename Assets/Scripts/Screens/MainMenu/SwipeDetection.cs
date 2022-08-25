@@ -22,7 +22,7 @@ namespace Screens
 		
 		private void Update()
 		{
-			if(_onSwipeAction == null)
+			if(Input.touchCount == 0 || _onSwipeAction == null)
 				return;
 			
 			var inputPhase = Input.GetTouch(0).phase;
@@ -47,10 +47,8 @@ namespace Screens
 			if (!_isSwiping)
 				return;
 			
-			ResetValues();
-			
 			var endPos = Input.GetTouch(0).position;
-			var swipeDelta = (endPos - _startPosition);
+			var swipeDelta = endPos - _startPosition;
 			
 			if (swipeDelta.magnitude < SWIPE_MINIMAL_RANGE)
 				return;
@@ -58,11 +56,13 @@ namespace Screens
 			if (Mathf.Abs(swipeDelta.x) <= Mathf.Abs(swipeDelta.y)) //Check isHorisontal
 				return;
 			
-			var direction = swipeDelta.x > 0 
+			var direction = swipeDelta.x < 0 
 				? SwipeDirectionEnum.Right 
 				: SwipeDirectionEnum.Left;
 
 			_onSwipeAction?.Invoke(direction);
+
+			ResetValues();
 		}
 
 		private void ResetValues()
