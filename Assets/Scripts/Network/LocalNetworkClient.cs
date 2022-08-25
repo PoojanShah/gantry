@@ -22,7 +22,8 @@ namespace Network
 
 			try
 			{
-				var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + ipLastNumber);
+				var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
+				var ipAddress = IPAddress.Parse(ipFirstPart + ipLastNumber);
 				var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
 				
 				Debug.Log("Connecting to + " + remoteEP);
@@ -61,7 +62,7 @@ namespace Network
 
 					HandleReceivedMessage();
 					
-					NetworkHelper.SaveIP(NetworkHelper.GetMyIpWithoutLastNumberString(), ipLastNumber);
+					NetworkHelper.SaveIP(ipFirstPart, ipLastNumber);
 					
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();

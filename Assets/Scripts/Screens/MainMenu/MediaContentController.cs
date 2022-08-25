@@ -30,7 +30,7 @@ namespace Screens
 		private MediaContent[] _media;
 #endif
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 		public void Init(MediaController mediaController, ICommonFactory factory, GameObject mediaPrefab,
 			Action<MediaContent> playVideoAction)
 		{
@@ -79,7 +79,7 @@ namespace Screens
 			SetButtonInteractable(true, false);
 			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
 			
-			_swipeDetection.Init(SwipeAction);
+			_swipeDetection.Init(DoSwipe);
 		}
 #endif
 
@@ -192,12 +192,12 @@ namespace Screens
 			SetButtonInteractable(false, _currentPage != GetMaxPageNumber());
 		}
 
-		private void SwipeAction(SwipeDirectionEnum direction)
+		private void DoSwipe(bool isRight)
 		{
-			if (direction == SwipeDirectionEnum.Left && _currentPage > 0)
+			if (!isRight && _currentPage > 0)
 				ShowPreviousPage();
 			
-			if (direction == SwipeDirectionEnum.Right && _currentPage != GetMaxPageNumber()) 
+			if (isRight && _currentPage != GetMaxPageNumber()) 
 				ShowNextPage();
 		}
 	}

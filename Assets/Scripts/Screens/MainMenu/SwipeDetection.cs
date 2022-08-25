@@ -3,22 +3,15 @@ using UnityEngine;
 
 namespace Screens
 {
-	public enum SwipeDirectionEnum
-	{
-		Left,
-		Right
-	}
 	public class SwipeDetection : MonoBehaviour
 	{
 		private const  float SWIPE_MINIMAL_RANGE = 10f;
 		private bool _isSwiping;
 		private Vector2 _startPosition;
-		private Action<SwipeDirectionEnum> _onSwipeAction;
+		private Action<bool> _onSwipeAction;
 
-		public void Init(Action<SwipeDirectionEnum> onSwipeAction)
-		{
-			_onSwipeAction += onSwipeAction;
-		}
+		public void Init(Action<bool> onSwipeAction) => 
+			_onSwipeAction = onSwipeAction;
 		
 		private void Update()
 		{
@@ -55,12 +48,10 @@ namespace Screens
 			
 			if (Mathf.Abs(swipeDelta.x) <= Mathf.Abs(swipeDelta.y)) //Check isHorisontal
 				return;
-			
-			var direction = swipeDelta.x < 0 
-				? SwipeDirectionEnum.Right 
-				: SwipeDirectionEnum.Left;
 
-			_onSwipeAction?.Invoke(direction);
+			var isRight = swipeDelta.x < 0;
+
+			_onSwipeAction?.Invoke(isRight);
 
 			ResetValues();
 		}
@@ -71,9 +62,6 @@ namespace Screens
 			_startPosition = Vector2.zero;
 		}
 
-		private void OnDestroy()
-		{
-			_onSwipeAction = null;
-		}
+		private void OnDestroy() => _onSwipeAction = null;
 	}
 }
