@@ -18,6 +18,7 @@ namespace Core
 			SquareBracerOpen = "[",
 			SquareBracerClose = "]",
 			Coma = ",",
+			Hyphen = "-",
 			ThumbnailsPrefix = "thumb-";
 
 		public const string DefaultConfigHash = "DefaultConfiguration";

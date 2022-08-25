@@ -1,4 +1,4 @@
-using System.Linq;
+using Core;
 using UnityEngine;
 
 namespace Configs
@@ -8,7 +8,17 @@ namespace Configs
 	{
 		public Sprite[] Thumbnails;
 
-		public Sprite GetThumbnail(string mediaName) =>
-			Thumbnails.FirstOrDefault(thumb => thumb.name.Contains(mediaName));
+		public Sprite GetThumbnail(string mediaName)
+		{
+			foreach (var t in Thumbnails)
+			{
+				var thumbSplitName = t.name.Split(Constants.Hyphen)[1];
+
+				if(mediaName == thumbSplitName)
+					return t;
+			}
+
+			return null;
+		}
 	}
 }

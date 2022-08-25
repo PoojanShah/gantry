@@ -3,11 +3,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using Core;
 using Network;
+using TMPro;
 using UnityEngine.UI;
 
 namespace Screens
 {
-	public class MainMenuAndroid : MonoBehaviour
+	public class MainMenuAndroid : MainMenuBase
 	{
 		[SerializeField] private MediaContentController _contentController;
 		[SerializeField] private Button _settingsButton, _muteButton;
@@ -16,6 +17,8 @@ namespace Screens
 		{
 			_settingsButton.onClick.AddListener(() => showServerPopup?.Invoke());
 			_muteButton.onClick.AddListener(LocalNetworkClient.SendMuteMessage);
+
+			InitVersionTitle();
 
 			void OnMediaInfoReceived(Dictionary<int, string> dictionary)
 			{

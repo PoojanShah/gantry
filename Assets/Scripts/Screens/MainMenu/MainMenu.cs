@@ -10,14 +10,10 @@ using UnityEngine.UI;
 
 namespace Screens
 {
-	public class MainMenu : MonoBehaviour
+	public class MainMenu : MainMenuBase
 	{
-		private const string QTS_PATTERN_TITLE = "Selected pattern: ";
-		private const string QTS_VERSION_PREFIX = "v";
-
 		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
-		[SerializeField] private TMP_Text _currentPatternTitle, _versionTitle;
 		[SerializeField] private MediaContentController _contentController;
 
 		private MediaController _mediaController;
@@ -35,8 +31,6 @@ namespace Screens
 #if UNITY_STANDALONE
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 #endif
-			//InitCurrentConfigTitle();
-
 			InitVersionTitle();
 
 			CheckCrash(playVideoAction);
@@ -60,21 +54,7 @@ namespace Screens
 			playVideoAction?.Invoke(media);
 		}
 
-		private void InitVersionTitle() => _versionTitle.text = QTS_VERSION_PREFIX + Application.version;
 		private void SwitchSound() => _settings.SwitchSound();
 		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
-
-		private void InitCurrentConfigTitle()
-		{
-			const string defaultConfigKey = Constants.DefaultConfigHash;
-
-			if (!PlayerPrefs.HasKey(defaultConfigKey) || !File.Exists(PlayerPrefs.GetString(defaultConfigKey)))
-				return;
-
-			var title = PlayerPrefs.GetString(defaultConfigKey);
-
-			if(_currentPatternTitle)
-				_currentPatternTitle.text = QTS_PATTERN_TITLE + Path.GetFileNameWithoutExtension(title);
-		}
 	}
 }
