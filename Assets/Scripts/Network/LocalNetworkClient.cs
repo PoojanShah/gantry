@@ -34,7 +34,8 @@ namespace Network
 
 			try
 			{
-				var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + _ipLastNumber);
+				var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
+				var ipAddress = IPAddress.Parse(ipFirstPart + _ipLastNumber);
 				var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
 
 				Debug.Log("Connecting to + " + remoteEP);
@@ -72,7 +73,9 @@ namespace Network
 					}
 
 					HandleReceivedMessage();
-
+					
+					NetworkHelper.SaveIP(ipFirstPart, _ipLastNumber);
+					
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();
 				}

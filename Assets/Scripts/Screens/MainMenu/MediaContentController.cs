@@ -15,6 +15,7 @@ namespace Screens
 
 		[SerializeField] private Button _back, _forward;
 		[SerializeField] private Transform _mediaParent;
+		[SerializeField] private SwipeDetection _swipeDetection;
 
 		private static int _currentPage = 0;
 		private ICommonFactory _factory;
@@ -29,7 +30,7 @@ namespace Screens
 		private MediaContent[] _media;
 #endif
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 		public void Init(MediaController mediaController, ICommonFactory factory, GameObject mediaPrefab,
 			Action<MediaContent> playVideoAction)
 		{
@@ -77,6 +78,8 @@ namespace Screens
 
 			SetButtonInteractable(true, false);
 			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
+			
+			_swipeDetection.Init(DoSwipe);
 		}
 #endif
 
@@ -187,6 +190,15 @@ namespace Screens
 		{
 			SetButtonInteractable(true, _currentPage > 0);
 			SetButtonInteractable(false, _currentPage != GetMaxPageNumber());
+		}
+
+		private void DoSwipe(bool isRight)
+		{
+			if (!isRight && _currentPage > 0)
+				ShowPreviousPage();
+			
+			if (isRight && _currentPage != GetMaxPageNumber()) 
+				ShowNextPage();
 		}
 	}
 }

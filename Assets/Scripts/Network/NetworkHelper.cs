@@ -18,6 +18,8 @@ namespace Network
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
 		public const int PING_TIMEOUT = 500;
+		private const string FIRST_PART_IP_KEY = "firstPartIP";
+		private const string SECOND_PART_IP_KEY = "secondPartIP";
 
 		public static int LastIpNumber = -1;
 
@@ -108,6 +110,27 @@ namespace Network
 			}
 
 			return result;
+		}
+
+		public static void SaveIP(string ipFirstPart, int ipSecondPart)
+		{
+			PlayerPrefs.SetString(FIRST_PART_IP_KEY, ipFirstPart);
+			PlayerPrefs.SetInt(SECOND_PART_IP_KEY, ipSecondPart);
+			PlayerPrefs.Save();
+		}
+
+		public static bool IsSavedIpValid()
+		{
+			const int notInitializedIpNumber = -1;
+			var savedIP = PlayerPrefs.GetString(FIRST_PART_IP_KEY, string.Empty);
+			var savedLastPartOfIP = PlayerPrefs.GetInt(SECOND_PART_IP_KEY, notInitializedIpNumber);
+
+			if (savedIP != GetMyIpWithoutLastNumberString() && savedLastPartOfIP < 0)
+				return false;
+
+			LastIpNumber = savedLastPartOfIP;
+
+			return true;
 		}
 	}
 }
