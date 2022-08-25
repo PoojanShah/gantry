@@ -19,7 +19,6 @@ namespace Network
 		public const int PING_TIMEOUT = 500;
 		private const string FIRST_PART_IP_KEY = "firstPartIP";
 		private const string SECOND_PART_IP_KEY = "secondPartIP";
-		private const int DEFAULT_FOR_LAST_PART = -1;
 
 		public static int LastIpNumber = -1;
 
@@ -121,8 +120,9 @@ namespace Network
 
 		public static bool IsSavedIpValid()
 		{
+			const int notInitializedIpNumber = -1;
 			var savedIP = PlayerPrefs.GetString(FIRST_PART_IP_KEY, string.Empty);
-			var savedLastPartOfIP = PlayerPrefs.GetInt(SECOND_PART_IP_KEY, DEFAULT_FOR_LAST_PART);
+			var savedLastPartOfIP = PlayerPrefs.GetInt(SECOND_PART_IP_KEY, notInitializedIpNumber);
 
 			if (savedIP != GetMyIpWithoutLastNumberString() && savedLastPartOfIP < 0)
 				return false;
