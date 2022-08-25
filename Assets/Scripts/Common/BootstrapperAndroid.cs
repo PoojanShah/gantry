@@ -1,5 +1,6 @@
 using Configs;
 using Core;
+using Media;
 using Network;
 using Screens;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Common
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
 		private NetworkController _networkController;
+		private MediaController _mediaController;
 
 		private void Awake()
 		{
@@ -21,6 +23,8 @@ namespace Common
 
 			_factory = new CommonFactory();
 #if UNITY_ANDROID
+			_mediaController = new MediaController(_mainConfig.ThumbnailsConfig);
+
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform);
 
 			InitNetwork();

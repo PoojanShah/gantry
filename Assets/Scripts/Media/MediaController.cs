@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Configs;
 using Core;
 using Network;
 using UnityEngine;
@@ -18,12 +19,19 @@ namespace Media
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
 		private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
+		
 		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
+		private static ThumbnailsConfig _thumbnailsConfig;
 
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
-		public MediaController() => LoadMediaFromLocalStorage();
+		public MediaController(ThumbnailsConfig thumbnailsConfig)
+		{
+			_thumbnailsConfig = thumbnailsConfig;
+
+			LoadMediaFromLocalStorage();
+		}
 
 		public void InitMediaContent(string[] paths)
 		{
@@ -53,6 +61,10 @@ namespace Media
 
 		public static Texture2D LoadThumbnail(string mediaName)
 		{
+			var thumbnail = _thumbnailsConfig.GetThumbnail(Path.GetFileNameWithoutExtension(mediaName));
+
+			return thumbnail == null ? null : thumbnail.texture;
+
 			var noExtensionName = Path.GetFileNameWithoutExtension(mediaName);
 			var realPath = Path.Combine(Settings.ThumbnailsPath,
 				Constants.ThumbnailsPrefix + noExtensionName + Constants.ExtensionPng);
