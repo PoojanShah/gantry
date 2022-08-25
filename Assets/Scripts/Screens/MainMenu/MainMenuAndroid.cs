@@ -10,16 +10,17 @@ namespace Screens
 	public class MainMenuAndroid : MonoBehaviour
 	{
 		[SerializeField] private MediaContentController _contentController;
-		[SerializeField] private Button _settingsButton;
+		[SerializeField] private Button _settingsButton, _muteButton;
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory, Action showServerPopup)
 		{
 			_settingsButton.onClick.AddListener(() => showServerPopup?.Invoke());
+			_muteButton.onClick.AddListener(LocalNetworkClient.SendMuteMessage);
 
 			void OnMediaInfoReceived(Dictionary<int, string> dictionary)
 			{
 #if UNITY_ANDROID
-				_contentController.Init(factory, mediaPrefab, SendPlayVideoCommand, dictionary);
+				_contentController.Init(factory, mediaPrefab, LocalNetworkClient.SendPlayMessage, dictionary);
 #endif
 				LocalNetworkClient.OnMediaInfoReceived -= OnMediaInfoReceived;
 			}
@@ -27,8 +28,10 @@ namespace Screens
 			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;
 		}
 
-		private void OnDestroy() => _settingsButton.onClick.RemoveAllListeners();
-		private static void SendPlayVideoCommand(int videoId) =>
-			LocalNetworkClient.SendPlayMessage(NetworkHelper.LastIpNumber, videoId);
+		private void OnDestroy()
+		{
+			_settingsButton.onClick.RemoveAllListeners();
+			_muteButton.onClick.RemoveAllListeners();
+		}
 	}
 }

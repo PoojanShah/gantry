@@ -12,9 +12,21 @@ namespace Network
 	{
 		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
 
-		private static bool _isLoaded = false;
+		private static int _ipLastNumber = -1;
 
-		public static void SendPlayMessage(int ipLastNumber, int videoId)
+		public static void Connect(int ipLastNumber)
+		{
+			_ipLastNumber = ipLastNumber;
+
+			SendPlayMessage(-1); //init connection
+		}
+
+		public static void SendPlayMessage(int videoId) =>
+			SendMessage(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
+
+		public static void SendMuteMessage() => SendMessage(NetworkHelper.NETWORK_MESSAGE_MUTE);
+
+		public static void SendMessage(string message)
 		{
 			Debug.Log("start client");
 
@@ -22,18 +34,18 @@ namespace Network
 
 			try
 			{
-				var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + ipLastNumber);
+				var ipAddress = IPAddress.Parse(NetworkHelper.GetMyIpWithoutLastNumberString() + _ipLastNumber);
 				var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
-				
+
 				Debug.Log("Connecting to + " + remoteEP);
-				
+
 				var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 				try
 				{
 					socket.Connect(remoteEP);
 
-					var messageToSend = Encoding.ASCII.GetBytes(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
+					var messageToSend = Encoding.ASCII.GetBytes(message);
 
 					socket.Send(messageToSend);
 
