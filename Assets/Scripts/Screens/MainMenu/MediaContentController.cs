@@ -15,6 +15,7 @@ namespace Screens
 
 		[SerializeField] private Button _back, _forward;
 		[SerializeField] private Transform _mediaParent;
+		[SerializeField] private SwipeDetection _swipeDetection;
 
 		private static int _currentPage = 0;
 		private ICommonFactory _factory;
@@ -77,6 +78,8 @@ namespace Screens
 
 			SetButtonInteractable(true, false);
 			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
+			
+			_swipeDetection.Init(SwipeAction);
 		}
 #endif
 
@@ -187,6 +190,15 @@ namespace Screens
 		{
 			SetButtonInteractable(true, _currentPage > 0);
 			SetButtonInteractable(false, _currentPage != GetMaxPageNumber());
+		}
+
+		private void SwipeAction(SwipeDirectionEnum direction)
+		{
+			if (direction == SwipeDirectionEnum.Left && _currentPage > 0)
+				ShowPreviousPage();
+			
+			if (direction == SwipeDirectionEnum.Right && _currentPage != GetMaxPageNumber()) 
+				ShowNextPage();
 		}
 	}
 }
