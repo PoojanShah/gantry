@@ -67,7 +67,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 9aadde45ece12475ea4aac8381197c44, type: 3}
+    m_Font: {fileID: 12800000, guid: 001bb4a8dcfbe4c97bb70e33056255c5, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -356,6 +356,11 @@ PrefabInstance:
       propertyPath: m_text
       value: Cancel
       objectReference: {fileID: 0}
+    - target: {fileID: 3189823307704244650, guid: 751f7137cfffd4a16b1a4c191e687d64,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 18
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 751f7137cfffd4a16b1a4c191e687d64, type: 3}
 --- !u!114 &6397060597801634088 stripped
@@ -480,6 +485,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: QUIT
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189823307704244650, guid: 751f7137cfffd4a16b1a4c191e687d64,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 3189823307704244650, guid: 751f7137cfffd4a16b1a4c191e687d64,
         type: 3}

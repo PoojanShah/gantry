@@ -343,7 +343,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3ad4e336001b0fd498ee5854cc24cbf4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b3d8b697e88ea483abfd05e30b758648, type: 2}
   m_sharedMaterial: {fileID: -4889187765316675175, guid: 3ad4e336001b0fd498ee5854cc24cbf4,
     type: 2}
   m_fontSharedMaterials: []
@@ -480,7 +480,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Enter text...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 28ed10fb8caa65c4b87a79f50fdd3800, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1c777eef049124b5e91c3ce7c5b5d87b, type: 2}
   m_sharedMaterial: {fileID: 3223432279624901877, guid: 28ed10fb8caa65c4b87a79f50fdd3800,
     type: 2}
   m_fontSharedMaterials: []
