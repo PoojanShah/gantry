@@ -45,7 +45,7 @@ namespace Common
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
 			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
 
-			_mediaController.LoadMediaFromServer();
+			//_mediaController.LoadMediaFromServer();
 
 			InitNetwork();
 		}
