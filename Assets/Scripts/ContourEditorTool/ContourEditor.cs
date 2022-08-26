@@ -676,12 +676,15 @@ namespace ContourEditorTool
 			foreach (GameObject o in new GameObject[] { lassoPoint, lassoLine.gameObject })
 				Graphics.SetAlpha(o.GetComponent<Renderer>().material, editingLassoAlpha);
 			ResetLassoVisuals();
+			Debug.Log("Point CEI1");
 			//Dictionary<GUIContent,Action>[] toolMenu=new Dictionary<GUIContent,Action>[3];//Set Up Toolbar
 			ToolbarMenu.Item[][] toolMenu = new ToolbarMenu.Item[5][]; //Set Up Toolbar
 			for (int i = 0; i < toolMenu.Length-1; i++) 
 				toolMenu[i] = new ToolbarMenu.Item[3];
 			toolMenu[4] = new ToolbarMenu.Item[1];
 			string[] shapes = Enum.GetNames(typeof(Shape));
+			
+			Debug.Log("Point CEI2");
 
 			//TODO: delete this region after tests
 			#region Buttons 
@@ -888,6 +891,8 @@ namespace ContourEditorTool
 			});
 			
 			#endregion 
+			
+			Debug.Log("Point CEI3");
 		}
 
 		private static void ResetTools()

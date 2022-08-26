@@ -46,12 +46,16 @@ namespace ContourEditorTool
 			{
 				void CloseEditor()
 				{
+					Debug.Log("Point CE1");
 					ShowTools(false);
+					Debug.Log("Point CE2");
 
 					quitAction?.Invoke();
+					Debug.Log("Point CE3");
 				}
-
+				Debug.Log("Point show1");
 				_contourEditor.Init(CloseEditor); 
+				Debug.Log("Point show2");
 				_contourEditor.Reset();
 				_contourEditor.Restart();
 			}
