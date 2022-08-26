@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: MEDIA
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3ad4e336001b0fd498ee5854cc24cbf4, type: 2}
-  m_sharedMaterial: {fileID: -4889187765316675175, guid: 3ad4e336001b0fd498ee5854cc24cbf4,
+  m_fontAsset: {fileID: 11400000, guid: b3d8b697e88ea483abfd05e30b758648, type: 2}
+  m_sharedMaterial: {fileID: -7126277462495200682, guid: b3d8b697e88ea483abfd05e30b758648,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -604,11 +604,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e2482383e443bbb1c4ef3a1eb7965d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _versionTitle: {fileID: 699517785189102386}
   _settingButton: {fileID: 2630434759439471070}
   _muteButton: {fileID: 483316169550881666}
   _parent: {fileID: 5245405753123421393}
-  _currentPatternTitle: {fileID: 7459504218213183249}
-  _versionTitle: {fileID: 699517785189102386}
   _contentController: {fileID: 6972684279301460648}
 --- !u!1 &1877378984384086574
 GameObject:
