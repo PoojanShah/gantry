@@ -30,6 +30,7 @@ namespace ContourEditorTool
 			deselectBlackoutKey = KeyCode.LeftShift,
 			buildLassoKey = KeyCode.M,
 			centeredSelectionKey = KeyCode.LeftControl,
+			straightFormKey = KeyCode.LeftAlt,
 			addSelectKey = KeyCode.LeftShift,
 			coarseInchKey = KeyCode.LeftShift,
 			createLassoBlackoutKey = KeyCode.Return;
@@ -204,22 +205,16 @@ namespace ContourEditorTool
 						{
 							case Shape.rect:
 								if (dragging)
+								{
 									Graphics.DrawBox(
-										SRSUtilities.RectAround(
-											Input.GetKey(centeredSelectionKey)
-												? SRSUtilities.adjustedFlipped +
-												  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-												: downPoint.FlipY(), SRSUtilities.adjustedFlipped),
-										new Color(0, 0, 0, 1));
+										GetRectForDraw(),
+											new Color(0, 0, 0, 1));
+								}
 								break;
 							case Shape.ellipse:
 								if (dragging)
 									Graphics.DrawFilledEllipse(
-										SRSUtilities.RectAround(
-											Input.GetKey(centeredSelectionKey)
-												? SRSUtilities.adjustedFlipped +
-												  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-												: downPoint.FlipY(), SRSUtilities.adjustedFlipped),
+										GetRectForDraw(),
 										new Color(0, 0, 0, 1));
 								break;
 							case Shape.lasso:
@@ -257,11 +252,7 @@ namespace ContourEditorTool
 						//Wasn't moving a blackout,created a new one.
 						blackouts.Add(new Blackout
 						{
-							rect = SRSUtilities.RectAround(
-								Input.GetKey(centeredSelectionKey)
-									? SRSUtilities.adjustedFlipped +
-									  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-									: downPoint.FlipY(), SRSUtilities.adjustedFlipped),
+							rect = GetRectForDraw(),
 							elliptical = Blackout.shape == Shape.ellipse
 						}); //Adding a blackout
 						AddUndoStep(
@@ -332,20 +323,12 @@ namespace ContourEditorTool
 							case Shape.rect:
 								if (dragging)
 									Graphics.DrawBox(
-										SRSUtilities.RectAround(
-											Input.GetKey(centeredSelectionKey)
-												? SRSUtilities.adjustedFlipped +
-												  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-												: downPoint.FlipY(), SRSUtilities.adjustedFlipped), Color.white);
+										GetRectForDraw(), Color.white);
 								break;
 							case Shape.ellipse:
 								if (dragging)
 									Graphics.DrawFilledEllipse(
-										SRSUtilities.RectAround(
-											Input.GetKey(centeredSelectionKey)
-												? SRSUtilities.adjustedFlipped +
-												  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-												: downPoint.FlipY(), SRSUtilities.adjustedFlipped), Color.white);
+										GetRectForDraw(), Color.white);
 								break;
 							case Shape.lasso:
 								if (Input.GetKey(createLassoBlackoutKey) && lassoBlackout != null)
@@ -382,11 +365,7 @@ namespace ContourEditorTool
 						//Wasn't moving a blackout,created a new one.
 						blackouts.Add(new Blackout
 						{
-							rect = SRSUtilities.RectAround(
-								Input.GetKey(centeredSelectionKey)
-									? SRSUtilities.adjustedFlipped +
-									  (downPoint.FlipY() - SRSUtilities.adjustedFlipped) * 2
-									: downPoint.FlipY(), SRSUtilities.adjustedFlipped),
+							rect = GetRectForDraw(),
 							elliptical = Blackout.shape == Shape.ellipse, farbe = Color.white
 						}); //Adding a blackout
 						AddUndoStep(
@@ -2220,6 +2199,42 @@ namespace ContourEditorTool
 			undos.Clear();
 			undo = 0;
 			mode = Mode.normal;
+		}
+
+		private static Rect GetRectForDraw()
+		{
+			Vector2 pos;
+			Vector2 size;
+			Rect result = new Rect();
+			var downPointFlipped = ContourEditor.downPoint.FlipY();
+			var currentPointFlipped = SRSUtilities.adjustedFlipped;
+			
+			if (Input.GetKey(centeredSelectionKey))
+			{
+				if (Input.GetKey(straightFormKey))
+				{
+					var h = (downPointFlipped - currentPointFlipped).magnitude;
+					size = new Vector2(h, h);
+					pos = downPointFlipped - size/2f;
+					
+					result = new Rect(pos.x, pos.y, size.x, size.y);
+				}
+				else
+				{
+					pos = currentPointFlipped +
+					      (downPointFlipped - currentPointFlipped) * 2;
+					size = currentPointFlipped;
+					result = SRSUtilities.RectAround(pos, size);
+				}
+			}
+			else
+			{
+				pos = downPointFlipped;
+				size = currentPointFlipped;
+				result = SRSUtilities.RectAround(pos, size);
+			}
+
+			return result;
 		}
 	}
 }
