@@ -2137,7 +2137,7 @@ namespace ContourEditorTool
 
 			Debug.Log("Projection.LoadConfiguration(" + fileName + ")");
 			
-			var screenObj = screen > -1 ? _projection.Screens[screen].GetObject() : instance.gameObject;
+			var screenObj = screen > -1 ? _projection.OutputViews[screen].GetObject() : instance.gameObject;
 
 			BinaryReader br;
 			try
@@ -2202,8 +2202,6 @@ namespace ContourEditorTool
 						if (screen > -1) bo.lassoObject.transform.position += _projection.ScreenPosition(screen);
 					}
 
-					Debug.Log("Processing blackout " + i + ": " + r + ",screen: " + screenObj.name + ",equal: " +
-					          (screenObj == _projection.Screens[1].GetObject()) + ",numLassoPoints: " + numLassoPoints);
 					blackouts.Add(bo);
 				}
 

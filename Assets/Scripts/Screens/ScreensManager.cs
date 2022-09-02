@@ -34,9 +34,8 @@ namespace Screens
 			_contourEditorController = contourEditorController;
 			_mediaController = mediaController;
 			_optionsSettings = optionsSettings;
-			
-			OpenWindow(ScreenType.MainMenu);
 		}
+
 #elif UNITY_ANDROID
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform)
 		{
@@ -174,7 +173,7 @@ namespace Screens
 			}, CancelAction);
 		}
 
-		private void PlayVideo(MediaContent content)
+		public void PlayVideo(MediaContent content)
 		{
 			DestroyCurrentScreen();
 

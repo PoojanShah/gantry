@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Linq;
 using Configs;
 using ContourEditorTool;
 using Core;
@@ -48,6 +51,29 @@ namespace Common
 			//_mediaController.LoadMediaFromServer();
 
 			InitNetwork();
+
+			if(!WasCrashed(_screensManager.PlayVideo))
+				_screensManager.OpenWindow(ScreenType.MainMenu);
+		}
+
+		private bool WasCrashed(Action<MediaContent> playVideoAction)
+		{
+			if (!PlayerPrefs.HasKey(Constants.LastPlayedMediaHash))
+				return false;
+
+			var mediaName = Path.GetFileName(PlayerPrefs.GetString(Constants.LastPlayedMediaHash));
+
+			if (string.IsNullOrEmpty(mediaName))
+				return false;
+
+			var media = _mediaController.MediaFiles.FirstOrDefault(m => m.Name == mediaName);
+
+			if (media == null)
+				return false;
+
+			playVideoAction?.Invoke(media);
+
+			return true;
 		}
 
 		private void Update() => HandleRemoteMessages();

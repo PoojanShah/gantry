@@ -22,7 +22,7 @@ namespace Configs
 		public GameObject Prefab;
 	}
 
-	[CreateAssetMenu(fileName = "ScreensAndPopups", menuName = "Configs/Screens config")]
+	[CreateAssetMenu(fileName = "ScreensAndPopups", menuName = "Configs/OutputViews config")]
 	public class ScreensConfig : ScriptableObject
 	{
 		[SerializeField] private ScreenData[] Screens;

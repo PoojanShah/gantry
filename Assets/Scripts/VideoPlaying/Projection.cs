@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using System.IO;
 using System.Collections;
@@ -8,34 +7,25 @@ using ContourToolsAndUtilities;
 using Core;
 using Media;
 using Screens;
+using UnityEngine.Video;
 
 namespace VideoPlaying
 {
 	public class Projection : MonoBehaviour
 	{
-		public VideoPlayerScreen[] Screens => _screens;
-
-		[SerializeField] private VideoPlayerScreen[] _screens;
-		[SerializeField] private Renderer _renderer;
-
-		public bool IsEditing;
+		public ProjectionOutputView[] OutputViews { get; set; }
 
 		public static Vector3 originalExtents;
+		public bool IsEditing;
 
+		[SerializeField] private Renderer _renderer;
 		[SerializeField] private ContourEditor _contourEditor;
+
 		private OptionsSettings _settings;
 
-		public static int DisplaysAmount
-		{
-			get
-			{
-#if UNITY_EDITOR
-				return 1;
-#else
-				return Display.displays.Length;
-#endif
-			}
-		}
+		public static int DisplaysAmount => Display.displays.Length;
+		//public static int DisplaysAmount => 3;
+
 
 		public bool IsPlayMode
 		{
@@ -43,7 +33,7 @@ namespace VideoPlaying
 			set
 			{
 				for (var i = 0; i < DisplaysAmount; i++)
-					_screens[i].SetActive(value);
+					OutputViews[i].SetActive(value);
 
 				_renderer.enabled = !value;
 			}
@@ -68,10 +58,10 @@ namespace VideoPlaying
 
 			transform.localScale = scale;
 
-			for (var i = 0; i < _screens.Length; i++)
+			for (var i = 0; i < OutputViews.Length; i++)
 			{
-				_screens[i].Transform.localScale = scale;
-				_screens[i].Transform.position = ScreenPosition(i);
+				OutputViews[i].Transform.localScale = scale;
+				OutputViews[i].Transform.position = ScreenPosition(i);
 			}
 		}
 
@@ -79,7 +69,7 @@ namespace VideoPlaying
 		{
 			const float rotationSetting = 180.0f;
 
-			foreach (var videoPlayerScreen in _screens)
+			foreach (var videoPlayerScreen in OutputViews)
 			{
 				videoPlayerScreen.Transform.localRotation = !_settings.IsRotationOn
 					? Quaternion.Euler(0.0f, 0.0f, 0.0f)
@@ -94,14 +84,7 @@ namespace VideoPlaying
 			return new Vector3(originalExtents.x * transform.localScale.x * (-1 * ((float)(DisplaysAmount - 1)) + screenNum * 2), 0, 0);
 		}
 
-		public bool IsScreenPlayingById(int screenNum)
-		{
-			return screenNum < 0 || screenNum > _screens.Length - 1
-				? _screens.All(IsScreenPlaying)
-				: IsScreenPlaying(_screens[screenNum]);
-		}
-
-		public bool IsScreenPlaying(VideoPlayerScreen playerScreen) =>
+		public bool IsScreenPlaying(ProjectionOutputView playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
 		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
@@ -117,9 +100,6 @@ namespace VideoPlaying
 
 			IsEditing = false;
 
-			if (IsScreenPlayingById(screenNum)) 
-				StopMovie(screenNum);
-
 			const int cameraHeight = 10;
 			CameraHelper.SetCameraPosition(Vector3.zero + Vector3.up * cameraHeight);
 			gameObject.SetActive(true);
@@ -127,7 +107,12 @@ namespace VideoPlaying
 			StopCoroutine("LoadAndPlayExternalResource");
 			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, screenNum));
 			GetComponent<Toolbar>().enabled = false;
-			Debug.Log("_screens.Length: " + _screens.Length + ", screen 2 not null: " + (_screens[1] != null) + ", _screens[0].transform.width: " + _screens[0].Transform.localScale.x);
+		}
+
+		public void SetSoundSettings(bool enableAudio)
+		{
+			foreach (var screen in OutputViews)
+				screen.Player.SetDirectAudioMute(0, !enableAudio);
 		}
 
 		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0)
@@ -154,10 +139,8 @@ namespace VideoPlaying
 				if (i != screenNum && screenNum < DisplaysAmount) 
 					continue;
 
-				_screens[i].SetActive(true);
+				OutputViews[i].SetActive(true);
 
-				if (IsScreenPlayingById(i))
-					StopMovie(i);
 				if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
 				    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
 				{
@@ -171,18 +154,30 @@ namespace VideoPlaying
 						_contourEditor.Reset(i);
 				}
 
-				if (content.IsVideo)
+				void PlayVideo(VideoPlayer player)
 				{
-					var player = _screens[i].Player;
 					player.url = content.Path;
 					player.isLooping = true;
 					player.Play();
 				}
+
+				void ShowImage(Texture texture, ProjectionOutputView output) => output.SetTexture(texture);
+
+				if (content.IsVideo)
+				{
+					PlayVideo(OutputViews[i].Player);
+
+					for(var j = 1; j < DisplaysAmount; j++)
+						PlayVideo(OutputViews[j].Player);
+				}
 				else
 				{
-					var loadImageFromFile = MediaController.LoadImageFromFile(content.Path);
-					_screens[i].Player.Stop();
-					_screens[i].SetTexture(loadImageFromFile);
+					StopMovies();
+
+					var loadedImage = MediaController.LoadImageFromFile(content.Path);
+
+					for (var j = 1; j < DisplaysAmount; j++)
+						ShowImage(loadedImage, OutputViews[j]);
 				}
 
 				SaveCurrentVideoPlaying(true, content);
@@ -200,18 +195,10 @@ namespace VideoPlaying
 			PlayerPrefs.Save();
 		}
 
-		public void StopMovie(int screenNum = -1)
+		public void StopMovies()
 		{
-			if (screenNum < 0 || screenNum >= DisplaysAmount)
-			{
-				for (var i = 0; i < DisplaysAmount; i++)
-					StopMovie(i);
-
-				return;
-			}
-
-			var screen = _screens[screenNum];
-			screen.Stop();
+			foreach (var output in OutputViews)
+				output.Stop();
 
 			GetComponent<ContourEditor>().enabled = false;
 		}

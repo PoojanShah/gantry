@@ -1,37 +1,54 @@
 using System;
 using ContourEditorTool;
+using Core;
 using Media;
 using Screens;
 using UnityEngine;
-using UnityEngine.Video;
 
 namespace VideoPlaying
 {
 	public class ProjectionView : MonoBehaviour
 	{
-		[SerializeField] private VideoPlayer[] _players;
+		[SerializeField] private GameObject _outputPrefab;
 		[SerializeField] private Projection _projection;
 
 		private Action _stopAction;
+		private ICommonFactory _factory;
 
-		public void Init(Action stopAction, OptionsSettings optionsSettings)
+		public void Init(Action stopAction, OptionsSettings optionsSettings, ICommonFactory factory)
 		{
+			_factory = factory;
 			_stopAction = stopAction;
+
+			InitOutputPanels();
 
 			_projection.Init(optionsSettings);
 		}
-		
-		public void SetSoundSettings(bool enableAudio)
+
+		private void InitOutputPanels()
 		{
-			foreach (var p in _players)
-				p.SetDirectAudioMute(0, !enableAudio);
+			var screensAmount = Projection.DisplaysAmount;
+			var outputViews = new ProjectionOutputView[screensAmount];
+
+			for (var i = 0; i < screensAmount; i++)
+			{
+				outputViews[i] = _factory.InstantiateObject<ProjectionOutputView>(_outputPrefab, transform);
+				outputViews[i].Init(i);
+			}
+
+			_projection.OutputViews = outputViews;
 		}
+
+		public void SetSoundSettings(bool enableAudio) => _projection.SetSoundSettings(enableAudio);
 
 		public void Play(MediaContent content)
 		{
 			ContourEditor.HideGUI = false;
 
 			_projection.StartMovie(content);
+
+			for(var i = 1; i < Projection.DisplaysAmount; i++)
+				Display.displays[i].Activate();
 		}
 
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);
@@ -59,14 +76,9 @@ namespace VideoPlaying
 			ContourEditor.WipeBlackouts();
 			ContourEditor.ClearLassos();
 
+			_projection.StopMovies();
 			_projection.IsPlayMode = false;
 			_projection.Clear();
-
-			foreach (var videoPlayer in _players)
-			{
-				if (videoPlayer.isPlaying)
-					videoPlayer.Stop();
-			}
 
 			Settings.ShowCursor();
 
