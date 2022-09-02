@@ -1,11 +1,8 @@
 using UnityEngine;
 using System;
-using System.IO;
-using System.Linq;
+using Configs;
 using Core;
 using Media;
-using Network;
-using TMPro;
 using UnityEngine.UI;
 
 namespace Screens
@@ -32,6 +29,10 @@ namespace Screens
 			_contentController.Init(_mediaController, factory, mediaPrefab, playVideoAction);
 #endif
 			InitVersionTitle();
+
+			SetCurrentOutputType(settings.OutputsNumber == 0
+				? OutputTypesConfig.GetSprite(OutputType.Both)
+				: OutputTypesConfig.GetSprite(OutputType.Secondary));
 		}
 
 		private void SwitchSound() => _settings.SwitchSound();

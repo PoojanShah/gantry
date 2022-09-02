@@ -19,11 +19,11 @@ namespace Screens
 
 		public OptionsSettings() => Load();
 
-		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort, bool isCueCore)
+		public void Save(bool sound, bool rotation, int outputsType, string cuoCoreIp, int cuoCorePort, bool isCueCore)
 		{
 			IsSoundOn = sound;
 			IsRotationOn = rotation;
-			OutputsNumber = outputsNumber;
+			OutputsNumber = outputsType;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
 			IsCueCoreEnabled = isCueCore;
