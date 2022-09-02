@@ -10,21 +10,23 @@ namespace Screens
 		private const string OUTPUTS_NUMBER_KEY = "OutputsNumber";
 		private const string ROTATION_KEY = "Rotation";
 		private const string SOUND_KEY = "Sound";
+		private const string CUE_CORE_KEY = "CueCore";
 		
-		public bool IsSoundOn, IsRotationOn;
+		public bool IsSoundOn, IsRotationOn, IsCueCoreEnabled;
 		public int OutputsNumber;
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
 
 		public OptionsSettings() => Load();
 
-		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort)
+		public void Save(bool sound, bool rotation, int outputsNumber, string cuoCoreIp, int cuoCorePort, bool isCueCore)
 		{
 			IsSoundOn = sound;
 			IsRotationOn = rotation;
 			OutputsNumber = outputsNumber;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
+			IsCueCoreEnabled = isCueCore;
 
 			SaveToPlayerPrefs();
 		}
@@ -36,6 +38,7 @@ namespace Screens
 			OutputsNumber = PlayerPrefs.GetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
 			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
 			IsSoundOn = Convert.ToBoolean(PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn)));
+			IsCueCoreEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled)));
 		}
 
 		private void SaveToPlayerPrefs()
@@ -45,6 +48,7 @@ namespace Screens
 			PlayerPrefs.SetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
 			PlayerPrefs.SetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn));
 			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
+			PlayerPrefs.SetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled));
 		}
 
 		public void SwitchSound()

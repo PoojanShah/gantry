@@ -115,13 +115,14 @@ namespace VideoPlaying
 			_renderer.enabled = false;
 
 			IsPlayMode = true;
-			//if (Settings.useCueCore)
-			//	SRSUtilities.TCPMessage(
-			//		((Settings.videoColor.ContainsKey(content.Name) &&
-			//		  Constants.colorDefaults.Any(cd => cd.Key == Settings.videoColor[content.Name])
-			//			? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.videoColor[content.Name])
-			//			: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
-			//		Settings.cuecoreIP, Settings.cuecorePort);
+
+			if (_settings.IsCueCoreEnabled)
+				SRSUtilities.TCPMessage(
+					((Settings.VideoColors.ContainsKey(content.Name) &&
+					  Constants.colorDefaults.Any(cd => cd.Key == Settings.VideoColors[content.Name])
+						? Constants.colorDefaults.IndexOfFirstMatch(cd => cd.Key == Settings.VideoColors[content.Name])
+						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
+					_settings.CuoCoreIp, _settings.CuoCorePort);
 
 			Settings.ShowCursor(false);
 
@@ -160,7 +161,7 @@ namespace VideoPlaying
 				{
 					PlayVideo(OutputViews[i].Player);
 
-					for(var j = 1; j < DisplaysAmount; j++)
+					for (var j = 1; j < DisplaysAmount; j++)
 						PlayVideo(OutputViews[j].Player);
 				}
 				else
@@ -169,7 +170,9 @@ namespace VideoPlaying
 
 					var loadedImage = MediaController.LoadImageFromFile(content.Path);
 
-					for (var j = 1; j < DisplaysAmount; j++)
+					ShowImage(loadedImage, OutputViews[0]);
+
+					for (var j = 1; j < DisplaysAmount; j++) 
 						ShowImage(loadedImage, OutputViews[j]);
 				}
 
