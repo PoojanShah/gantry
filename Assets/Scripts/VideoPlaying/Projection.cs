@@ -23,8 +23,11 @@ namespace VideoPlaying
 
 		private OptionsSettings _settings;
 
+#if !UNITY_EDITOR
 		public static int DisplaysAmount => Display.displays.Length;
-		//public static int DisplaysAmount => 3;
+#elif UNITY_EDITOR
+		public static int DisplaysAmount => 3;
+#endif
 
 
 		public bool IsPlayMode
@@ -65,17 +68,7 @@ namespace VideoPlaying
 			}
 		}
 
-		public void ApplyRotation()
-		{
-			const float rotationSetting = 180.0f;
-
-			foreach (var videoPlayerScreen in OutputViews)
-			{
-				videoPlayerScreen.Transform.localRotation = !_settings.IsRotationOn
-					? Quaternion.Euler(0.0f, 0.0f, 0.0f)
-					: Quaternion.Euler(0.0f, rotationSetting, 0.0f);
-			}
-		}
+		public void ApplyRotation() => OutputViews[0].ApplyRotation(_settings.IsRotationOn);
 
 		public Vector3 ScreenPosition(int screenNum)
 		{

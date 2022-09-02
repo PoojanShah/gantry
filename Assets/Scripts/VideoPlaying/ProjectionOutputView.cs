@@ -1,3 +1,4 @@
+using Core;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -16,6 +17,11 @@ namespace VideoPlaying
 		{
 			_camera.targetDisplay = targetId;
 			_camera.backgroundColor = Color.black;
+
+			if (targetId > 0)
+				_camera.transform.localRotation =
+					Quaternion.Euler(_camera.transform.localRotation.eulerAngles +
+					                 Vector3.up * Constants.CameraRotationSecondaryOutputs);
 		}
 
 		public GameObject GetObject() => _gameObject;
@@ -23,11 +29,21 @@ namespace VideoPlaying
 		public void SetActive(bool isActive) => _gameObject.SetActive(isActive);
 		public void SetTexture(Texture texture) => _renderer.sharedMaterial.mainTexture = texture;
 
+		public void ApplyRotation(bool isRotationEnabled)
+		{
+			const float rotationSetting = 180.0f;
+
+			var rotation =!isRotationEnabled
+				? Quaternion.Euler(90.0f, 0.0f, 0.0f)
+				: Quaternion.Euler(90.0f, rotationSetting, 0.0f);
+
+			_camera.transform.localRotation = rotation;
+		}
+
 		public void Stop()
 		{
-			Player.url = null;
-			Player.clip = null;
 			Player.Stop();
+			Player.clip = null;
 
 			_renderer.sharedMaterial.mainTexture = null;
 		}
