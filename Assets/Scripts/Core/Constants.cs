@@ -22,7 +22,8 @@ namespace Core
 			ThumbnailsPrefix = "thumb-";
 
 		public const string DefaultConfigHash = "DefaultConfiguration";
-		public const string LastPlayedMediaHash = "CurrentVideo";
+		public const string LastPlayedPrimaryMediaHash = "CurrentPrimaryMedia";
+		public const string LastPlayedSecondaryMediaHash = "CurrentSecondaryMedia";
 		public const float ScrollbarDefaultValue = 1.0f;
 		public const float CameraRotationSecondaryOutputs = 180.0f;
 

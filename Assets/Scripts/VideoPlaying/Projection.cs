@@ -168,15 +168,21 @@ namespace VideoPlaying
 					PlayVideo(OutputViews[0]);
 
 					OutputViews[0].SetActive(true);
-				}
 
-				if (output != OutputType.Primary)
+					SaveCurrentVideoPlaying(true, true, content);
+
+				}
+				else if (output != OutputType.Primary)
+				{
 					for (var j = 1; j < DisplaysAmount; j++)
 					{
 						PlayVideo(OutputViews[j]);
 
 						OutputViews[j].SetActive(true);
 					}
+
+					SaveCurrentVideoPlaying(true, false, content);
+				}
 			}
 			else
 			{
@@ -187,18 +193,21 @@ namespace VideoPlaying
 					OutputViews[0].SetActive(true);
 
 					ShowImage(loadedImage, OutputViews[0]);
-				}
 
-				if (output != OutputType.Primary)
+					SaveCurrentVideoPlaying(true, true, content);
+				}
+				else if (output != OutputType.Primary)
+				{
 					for (var j = 1; j < DisplaysAmount; j++)
 					{
 						ShowImage(loadedImage, OutputViews[j]);
 
 						OutputViews[j].SetActive(true);
 					}
-			}
 
-			SaveCurrentVideoPlaying(true, content);
+					SaveCurrentVideoPlaying(true, false, content);
+				}
+			}
 
 			const float showBlackoutsDelay = 0.1f;
 
@@ -208,9 +217,11 @@ namespace VideoPlaying
 				GetComponent<ContourEditor>().enabled = true;
 		}
 
-		public void SaveCurrentVideoPlaying(bool isSave, MediaContent mediaContent = null)
+		public void SaveCurrentVideoPlaying(bool isSave, bool isPrimary, MediaContent mediaContent = null)
 		{
-			PlayerPrefs.SetString(Constants.LastPlayedMediaHash, isSave ? mediaContent.Path : string.Empty);
+			PlayerPrefs.SetString(
+				isPrimary ? Constants.LastPlayedPrimaryMediaHash : Constants.LastPlayedSecondaryMediaHash,
+				isSave ? mediaContent.Path : string.Empty);
 			PlayerPrefs.Save();
 		}
 
@@ -224,7 +235,8 @@ namespace VideoPlaying
 
 		public void Clear()
 		{
-			SaveCurrentVideoPlaying(false);
+			SaveCurrentVideoPlaying(false, false);
+			SaveCurrentVideoPlaying(false, true);
 
 			Destroy(_renderer.sharedMaterial.mainTexture);
 		}

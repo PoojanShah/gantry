@@ -58,20 +58,41 @@ namespace Common
 
 		private bool WasCrashed(Action<MediaContent> playVideoAction)
 		{
-			if (!PlayerPrefs.HasKey(Constants.LastPlayedMediaHash))
+			MediaContent FindAndRestoreMedia(string path)
+			{
+				var mediaNamePrimary = Path.GetFileName(path);
+
+				if (string.IsNullOrEmpty(mediaNamePrimary))
+					return null;
+
+				var media = _mediaController.MediaFiles.FirstOrDefault(m => m.Name == mediaNamePrimary);
+
+				return media;
+			}
+
+			if (!PlayerPrefs.HasKey(Constants.LastPlayedSecondaryMediaHash))
 				return false;
 
-			var mediaName = Path.GetFileName(PlayerPrefs.GetString(Constants.LastPlayedMediaHash));
+			var content = FindAndRestoreMedia(PlayerPrefs.GetString(Constants.LastPlayedSecondaryMediaHash));
 
-			if (string.IsNullOrEmpty(mediaName))
+			if(content != null)
+				playVideoAction?.Invoke(content);
+			else
+				_screensManager.OpenWindow(ScreenType.MainMenu);
+
+			if (!PlayerPrefs.HasKey(Constants.LastPlayedPrimaryMediaHash))
+			{
+				playVideoAction?.Invoke(content);
+
 				return false;
+			}
 
-			var media = _mediaController.MediaFiles.FirstOrDefault(m => m.Name == mediaName);
+			content = FindAndRestoreMedia(PlayerPrefs.GetString(Constants.LastPlayedPrimaryMediaHash));
 
-			if (media == null)
-				return false;
-
-			playVideoAction?.Invoke(media);
+			if (content != null)
+				playVideoAction?.Invoke(content);
+			else
+				_screensManager.OpenWindow(ScreenType.MainMenu);
 
 			return true;
 		}
