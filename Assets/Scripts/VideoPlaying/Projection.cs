@@ -105,8 +105,13 @@ namespace VideoPlaying
 
 		public void SetSoundSettings(bool enableAudio)
 		{
-			foreach (var screen in OutputViews)
-				screen.Player.SetDirectAudioMute(0, !enableAudio);
+			OutputViews[0].Player.SetDirectAudioMute(0, !enableAudio);
+			
+			for (var i = 1; i < OutputViews.Length; i++)
+			{
+				var screen = OutputViews[i];
+				screen.Player.SetDirectAudioMute(0, true);
+			}
 		}
 
 		private IEnumerator LoadAndPlayExternalResource(MediaContent content, OutputType output = OutputType.Both)

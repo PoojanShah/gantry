@@ -55,8 +55,6 @@ namespace VideoPlaying
 
 			_projectionView.ApplyRotation();
 
-			SetSoundSettings();
-
 			switch (OutputType)
 			{
 				case OutputType.Both:
@@ -75,6 +73,8 @@ namespace VideoPlaying
 					_projectionView.Play(content, OutputType.Primary);
 					break;
 			}
+
+			SetSoundSettings();
 		}
 
 		private void CreateProjectionView()
