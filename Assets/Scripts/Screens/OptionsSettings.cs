@@ -40,6 +40,9 @@ namespace Screens
 			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
 			IsSoundOn = Convert.ToBoolean(PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn)));
 			IsCueCoreEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled)));
+
+			if (Projection.DisplaysAmount == 1)
+				OutputsNumber = 0;
 		}
 
 		private void SaveToPlayerPrefs()

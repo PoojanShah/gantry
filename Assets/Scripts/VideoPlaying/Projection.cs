@@ -27,7 +27,7 @@ namespace VideoPlaying
 #if !UNITY_EDITOR
 		public static int DisplaysAmount => Display.displays.Length;
 #elif UNITY_EDITOR
-		public static int DisplaysAmount => 3;
+		public static int DisplaysAmount => 2;
 #endif
 
 
@@ -171,8 +171,6 @@ namespace VideoPlaying
 			}
 			else
 			{
-				StopMovies();
-
 				var loadedImage = MediaController.LoadImageFromFile(content.Path);
 
 				if (output < OutputType.Secondary)
@@ -197,7 +195,7 @@ namespace VideoPlaying
 
 			yield return new WaitForSeconds(showBlackoutsDelay);
 
-			if (output == OutputType.Primary)
+			if (output != OutputType.Secondary)
 				GetComponent<ContourEditor>().enabled = true;
 		}
 
@@ -210,7 +208,7 @@ namespace VideoPlaying
 		public void StopMovies()
 		{
 			foreach (var output in OutputViews)
-				output.Stop();
+				output.StopVideo();
 
 			GetComponent<ContourEditor>().enabled = false;
 		}
