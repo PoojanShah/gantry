@@ -40,7 +40,8 @@ namespace VideoPlaying
 			_projection.OutputViews = outputViews;
 		}
 
-		public void SetSoundSettings(bool enableAudio) => _projection.SetSoundSettings(enableAudio);
+		public void SetSoundSettings(bool enableAudio, OutputType outputType) =>
+			_projection.SetSoundSettings(enableAudio, outputType);
 
 		public void Play(MediaContent content, OutputType output = OutputType.Both)
 		{

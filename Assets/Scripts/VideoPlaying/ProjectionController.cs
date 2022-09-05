@@ -60,10 +60,14 @@ namespace VideoPlaying
 				case OutputType.Both:
 					CameraHelper.SetMainCameraActive(false);
 
-					_projectionView.Play(content, OutputType.Both);
+					_projectionView.Play(content);
+
+					SetSoundSettings(OutputType.Both);
 					break;
 				case OutputType.Secondary:
 					_projectionView.Play(content, OutputType.Secondary);
+
+					SetSoundSettings(OutputType.Secondary);
 
 					OutputType = OutputType.Primary;
 					break;
@@ -71,10 +75,10 @@ namespace VideoPlaying
 					CameraHelper.SetMainCameraActive(false);
 
 					_projectionView.Play(content, OutputType.Primary);
+
+					SetSoundSettings(OutputType.Primary);
 					break;
 			}
-
-			SetSoundSettings();
 		}
 
 		private void CreateProjectionView()
@@ -95,6 +99,7 @@ namespace VideoPlaying
 			InitOutputType();
 		}
 
-		private void SetSoundSettings() => _projectionView.SetSoundSettings(_optionsSettings.IsSoundOn);
+		private void SetSoundSettings(OutputType output) =>
+			_projectionView.SetSoundSettings(_optionsSettings.IsSoundOn, output);
 	}
 }

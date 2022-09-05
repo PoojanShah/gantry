@@ -103,9 +103,13 @@ namespace VideoPlaying
 			GetComponent<Toolbar>().enabled = false;
 		}
 
-		public void SetSoundSettings(bool enableAudio)
+		public void SetSoundSettings(bool enableAudio, OutputType outputType)
 		{
-			OutputViews[0].Player.SetDirectAudioMute(0, !enableAudio);
+			foreach (var screen in OutputViews)
+				screen.Player.SetDirectAudioMute(0, true);
+
+			if (outputType < OutputType.Secondary)
+				OutputViews[0].Player.SetDirectAudioMute(0, !enableAudio);
 			
 			for (var i = 1; i < OutputViews.Length; i++)
 			{
@@ -148,11 +152,11 @@ namespace VideoPlaying
 					_contourEditor.Reset(0);
 			}
 
-			void PlayVideo(VideoPlayer player)
+			void PlayVideo(ProjectionOutputView output)
 			{
-				player.url = content.Path;
-				player.isLooping = true;
-				player.Play();
+				output.Player.url = content.Path;
+				output.Player.isLooping = true;
+				output.Player.Play();
 			}
 
 			void ShowImage(Texture texture, ProjectionOutputView output) => output.SetTexture(texture);
@@ -161,7 +165,7 @@ namespace VideoPlaying
 			{
 				if (output < OutputType.Secondary)
 				{
-					PlayVideo(OutputViews[0].Player);
+					PlayVideo(OutputViews[0]);
 
 					OutputViews[0].SetActive(true);
 				}
@@ -169,7 +173,7 @@ namespace VideoPlaying
 				if (output != OutputType.Primary)
 					for (var j = 1; j < DisplaysAmount; j++)
 					{
-						PlayVideo(OutputViews[j].Player);
+						PlayVideo(OutputViews[j]);
 
 						OutputViews[j].SetActive(true);
 					}
