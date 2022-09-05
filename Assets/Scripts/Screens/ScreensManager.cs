@@ -6,6 +6,7 @@ using Core;
 using Library;
 using Media;
 using UnityEngine;
+using VideoPlaying;
 using Object = UnityEngine.Object;
 
 namespace Screens
@@ -20,12 +21,13 @@ namespace Screens
 		private readonly ICommonFactory _factory;
 		private readonly MediaController _mediaController;
 		private readonly OptionsSettings _optionsSettings;
+		private readonly ProjectionController _projectionController;
 		private GameObject _currentScreen;
 
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController,
-			MediaController mediaController, OptionsSettings optionsSettings)
+			MediaController mediaController, OptionsSettings optionsSettings, ProjectionController projectionController)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
@@ -34,6 +36,7 @@ namespace Screens
 			_contourEditorController = contourEditorController;
 			_mediaController = mediaController;
 			_optionsSettings = optionsSettings;
+			_projectionController = projectionController;
 		}
 
 #elif UNITY_ANDROID
@@ -175,7 +178,8 @@ namespace Screens
 
 		public void PlayVideo(MediaContent content)
 		{
-			DestroyCurrentScreen();
+			if(_projectionController.OutputType < OutputType.Secondary)
+				DestroyCurrentScreen();
 
 			_playAction?.Invoke(content);
 		}

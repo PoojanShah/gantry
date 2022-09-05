@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections;
 using System.Linq;
+using Configs;
 using ContourEditorTool;
 using ContourToolsAndUtilities;
 using Core;
@@ -80,7 +81,7 @@ namespace VideoPlaying
 		public bool IsScreenPlaying(ProjectionOutputView playerScreen) =>
 			playerScreen != null && playerScreen.IsActive() && playerScreen.Player.isPlaying;
 
-		public void StartMovie(MediaContent mediaToPlay, int screenNum = 0, bool testMovie = false)
+		public void StartMovie(MediaContent mediaToPlay, OutputType output = OutputType.Both)
 		{
 			var settingsKey = mediaToPlay.Name;
 			var selectedColor = Settings.VideoColors[settingsKey];
@@ -98,7 +99,7 @@ namespace VideoPlaying
 			gameObject.SetActive(true);
 
 			StopCoroutine("LoadAndPlayExternalResource");
-			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, screenNum));
+			StartCoroutine(LoadAndPlayExternalResource(mediaToPlay, output));
 			GetComponent<Toolbar>().enabled = false;
 		}
 
@@ -108,7 +109,7 @@ namespace VideoPlaying
 				screen.Player.SetDirectAudioMute(0, !enableAudio);
 		}
 
-		private IEnumerator LoadAndPlayExternalResource(MediaContent content, int screenNum = 0)
+		private IEnumerator LoadAndPlayExternalResource(MediaContent content, OutputType output = OutputType.Both)
 		{
 			gameObject.SetActive(true);
 			enabled = false;
@@ -124,65 +125,80 @@ namespace VideoPlaying
 						: UnityEngine.Random.Range(0, Constants.colorDefaults.Length)) + 1).ToString("D3") + "\n",
 					_settings.CuoCoreIp, _settings.CuoCorePort);
 
-			Settings.ShowCursor(false);
+			if (output == OutputType.Primary)
+				Settings.ShowCursor(false);
 
 			yield return new WaitForEndOfFrame();
 
-			for (var i = 0; i < DisplaysAmount; i++)
+			if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
+			    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
 			{
-				if (i != screenNum && screenNum < DisplaysAmount) 
-					continue;
+				_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), 0);
+			}
+			else
+			{
+				Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
 
-				OutputViews[i].SetActive(true);
-
-				if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
-				    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
-				{
-					_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), i);
-				}
-				else
-				{
-					Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
-
-					if (IsEditing)
-						_contourEditor.Reset(i);
-				}
-
-				void PlayVideo(VideoPlayer player)
-				{
-					player.url = content.Path;
-					player.isLooping = true;
-					player.Play();
-				}
-
-				void ShowImage(Texture texture, ProjectionOutputView output) => output.SetTexture(texture);
-
-				if (content.IsVideo)
-				{
-					PlayVideo(OutputViews[i].Player);
-
-					for (var j = 1; j < DisplaysAmount; j++)
-						PlayVideo(OutputViews[j].Player);
-				}
-				else
-				{
-					StopMovies();
-
-					var loadedImage = MediaController.LoadImageFromFile(content.Path);
-
-					ShowImage(loadedImage, OutputViews[0]);
-
-					for (var j = 1; j < DisplaysAmount; j++) 
-						ShowImage(loadedImage, OutputViews[j]);
-				}
-
-				SaveCurrentVideoPlaying(true, content);
+				if (IsEditing)
+					_contourEditor.Reset(0);
 			}
 
+			void PlayVideo(VideoPlayer player)
+			{
+				player.url = content.Path;
+				player.isLooping = true;
+				player.Play();
+			}
+
+			void ShowImage(Texture texture, ProjectionOutputView output) => output.SetTexture(texture);
+
+			if (content.IsVideo)
+			{
+				if (output < OutputType.Secondary)
+				{
+					PlayVideo(OutputViews[0].Player);
+
+					OutputViews[0].SetActive(true);
+				}
+
+				if (output != OutputType.Primary)
+					for (var j = 1; j < DisplaysAmount; j++)
+					{
+						PlayVideo(OutputViews[j].Player);
+
+						OutputViews[j].SetActive(true);
+					}
+			}
+			else
+			{
+				StopMovies();
+
+				var loadedImage = MediaController.LoadImageFromFile(content.Path);
+
+				if (output < OutputType.Secondary)
+				{
+					OutputViews[0].SetActive(true);
+
+					ShowImage(loadedImage, OutputViews[0]);
+				}
+
+				if (output != OutputType.Primary)
+					for (var j = 1; j < DisplaysAmount; j++)
+					{
+						ShowImage(loadedImage, OutputViews[j]);
+
+						OutputViews[j].SetActive(true);
+					}
+			}
+
+			SaveCurrentVideoPlaying(true, content);
+
 			const float showBlackoutsDelay = 0.1f;
+
 			yield return new WaitForSeconds(showBlackoutsDelay);
 
-			GetComponent<ContourEditor>().enabled = true;
+			if (output == OutputType.Primary)
+				GetComponent<ContourEditor>().enabled = true;
 		}
 
 		public void SaveCurrentVideoPlaying(bool isSave, MediaContent mediaContent = null)

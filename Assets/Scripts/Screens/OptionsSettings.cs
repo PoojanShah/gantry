@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using VideoPlaying;
 
 namespace Screens
 {
@@ -23,7 +24,7 @@ namespace Screens
 		{
 			IsSoundOn = sound;
 			IsRotationOn = rotation;
-			OutputsNumber = outputsType;
+			OutputsNumber = Projection.DisplaysAmount == 1 ? 0 : outputsType;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
 			IsCueCoreEnabled = isCueCore;

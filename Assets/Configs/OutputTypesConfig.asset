@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OutputTypes:
   - OutputType: 1
-    TypeLogo: {fileID: 21300000, guid: 8645d3db422ebf244bdbc876b4bea641, type: 3}
+    TypeLogo: {fileID: 21300000, guid: 45bce0a6e527b0045b16b7bc4a46cae9, type: 3}
   - OutputType: 2
-    TypeLogo: {fileID: 21300000, guid: f3528084920ba6141bfe811a96d6367e, type: 3}
+    TypeLogo: {fileID: 21300000, guid: 1583c916688ecb14b87aacfa380c5dd0, type: 3}
   - OutputType: 3
-    TypeLogo: {fileID: 21300000, guid: 99c4a15e87c74044c91d15fb9f408fc8, type: 3}
+    TypeLogo: {fileID: 21300000, guid: 6fd83c86d355ee94e96ddec13bda7b13, type: 3}

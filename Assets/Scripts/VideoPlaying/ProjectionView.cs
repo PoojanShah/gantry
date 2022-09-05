@@ -1,4 +1,5 @@
 using System;
+using Configs;
 using ContourEditorTool;
 using Core;
 using Media;
@@ -41,14 +42,16 @@ namespace VideoPlaying
 
 		public void SetSoundSettings(bool enableAudio) => _projection.SetSoundSettings(enableAudio);
 
-		public void Play(MediaContent content)
+		public void Play(MediaContent content, OutputType output = OutputType.Both)
 		{
 			ContourEditor.HideGUI = false;
 
-			_projection.StartMovie(content);
+			_projection.StartMovie(content, output);
 
+#if !UNITY_EDITOR
 			for(var i = 1; i < Projection.DisplaysAmount; i++)
 				Display.displays[i].Activate();
+#endif
 		}
 
 		public void SetActive(bool isActive) => gameObject.SetActive(isActive);

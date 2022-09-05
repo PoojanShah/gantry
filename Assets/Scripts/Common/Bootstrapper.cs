@@ -42,7 +42,7 @@ namespace Common
 				_mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController, _mediaController, _settings);
+				_contourEditorController, _mediaController, _settings, _projectionController);
 #endif
 
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
