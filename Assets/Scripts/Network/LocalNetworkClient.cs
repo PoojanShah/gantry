@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Core;
 using UnityEngine;
 
@@ -12,14 +15,86 @@ namespace Network
 	{
 		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
 
+		private static readonly ConcurrentQueue<byte[]> ImagesQueue = new();
+
+		private static Thread _networkThread;
+		private static bool _isNetworkRunning;
+
 		private static int _ipLastNumber = -1;
 
 		public static void Connect(int ipLastNumber)
 		{
 			_ipLastNumber = ipLastNumber;
 
-			SendPlayMessage(-1); //init connection
+			_isNetworkRunning = true;
+			_networkThread = new Thread(NetworkThread);
+			_networkThread.Start();
+
+			//SendPlayMessage(-1); //init connection
 		}
+
+		public void Clear()
+		{
+			_isNetworkRunning = false;
+
+			if (_networkThread == null)
+				return;
+
+			const int millisecondsTimeout = 100;
+
+			if (!_networkThread.Join(millisecondsTimeout))
+				_networkThread.Abort();
+		}
+
+		private static void NetworkThread()
+		{
+			var client = new TcpClient();
+			var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
+			var ipAddressParsed = IPAddress.Parse(ipFirstPart + _ipLastNumber);
+
+			client.Connect(ipAddressParsed, NetworkHelper.PORT);
+
+			using var stream = client.GetStream();
+
+			var reader = new BinaryReader(stream);
+
+			try
+			{
+				while (_isNetworkRunning && client.Connected && stream.CanRead)
+				{
+					var length = reader.ReadInt32();
+					var data = reader.ReadBytes(length);
+
+					ImagesQueue.Enqueue(data);
+
+					Debug.Log($"Received {ImagesQueue.Count} thumbs");
+
+				}
+			}
+			catch
+			{
+				// ignored
+			}
+		}
+
+		//private void Update()
+		//{
+		//	return;
+		//	if (_imagesQueue.Count > 0 && _imagesQueue.TryDequeue(out var data))
+		//	{
+		//		if (_texture == null)
+		//		{
+		//			const int defaultTextureSize = 1;
+
+		//			_texture = new Texture2D(defaultTextureSize, defaultTextureSize);
+		//		}
+
+		//		_texture.LoadImage(data);
+		//		_texture.Apply();
+
+		//		_material.mainTexture = _texture;
+		//	}
+		//}
 
 		public static void SendPlayMessage(int videoId) =>
 			SendMessage(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
@@ -28,8 +103,7 @@ namespace Network
 
 		public static void SendMessage(string message)
 		{
-			Debug.Log("start client");
-
+			return;
 			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];
 
 			try

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Core;
 using Media;
 using Screens;
@@ -17,6 +20,12 @@ namespace Network
 		public Socket socket;
 	}
 
+	public class FileItem
+	{
+		public string name;
+		public byte[] data;
+	}
+
 	public class LocalNetworkServer
 	{
 		private static readonly Socket _serverSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -29,6 +38,13 @@ namespace Network
 
 		public static int ReceivedId = -1;
 
+		//new
+		private static TcpListener _server;
+		private static bool _isServerRunning;
+		private static Thread _listenerThread, _sendingThread;
+		private static bool _isSending;
+		private static readonly List<ConnectedClient> _clients = new();
+
 		public LocalNetworkServer(MediaController mediaController, OptionsSettings settings)
 		{
 			_mediaController = mediaController;
@@ -37,7 +53,12 @@ namespace Network
 			SetupServer();
 		}
 
-		public void Clear() => CloseAllSockets();
+		public void Clear()
+		{
+			CloseAllSockets();
+
+			_server.Stop();
+		}
 
 		private static void SetupServer()
 		{
@@ -48,13 +69,123 @@ namespace Network
 			if(myIpAddress == null)
 				return;
 
-			var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
+			_listenerThread = new Thread(ListenThread);
+			_listenerThread.Start();
 
-			_serverSocket.Bind(endPoint);
-			_serverSocket.Listen(0);
-			_serverSocket.BeginAccept(AcceptCallback, null);
+			_sendingThread = new Thread(SendThread);
+			_sendingThread.Start();
 
-			Debug.Log("Server setup complete on address: " + _serverSocket.LocalEndPoint);
+			_isSending = false;
+			_isServerRunning = false;
+			_server?.Stop();
+
+			//_listenerThread.Join();
+			//_sendingThread.Join();
+
+			//var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
+
+			//_serverSocket.Bind(endPoint);
+			//_serverSocket.Listen(0);
+			//_serverSocket.BeginAccept(AcceptCallback, null);
+
+			//Debug.Log("Server setup complete on address: " + _serverSocket.LocalEndPoint);
+		}
+
+		private static void ListenThread()
+		{
+			_server = new TcpListener(NetworkHelper.GetMyIp(), NetworkHelper.PORT);
+			_server.Start();
+			_isServerRunning = true;
+
+			while (_isServerRunning)
+			{
+				try
+				{
+					var newClient = _server.AcceptTcpClient();
+
+					lock (_clients)
+					{
+						_clients.Add(new ConnectedClient(newClient));
+					}
+				}
+				catch (Exception e)
+				{
+					Console.Write(e.Message);
+				}
+			}
+
+			lock (_clients)
+			{
+				foreach (var c in _clients)
+				{
+					try
+					{
+						c.client.Close();
+					}
+					catch
+					{
+						// ignored
+					}
+				}
+
+				_clients.Clear();
+			}
+		}
+
+		private static void SendThread()
+		{
+			var folder = new DirectoryInfo(Settings.ThumbnailsPath);
+			var fileNames = folder.GetFiles("*.png");
+			var files = fileNames
+				.Select(fn => new FileItem { data = File.ReadAllBytes(fn.FullName), name = fn.FullName }).ToList();
+
+			_isSending = true;
+
+			var fileId = 0;
+
+			const int millisecondsTimeout = 500;
+
+			while (_isSending && fileId < files.Count)
+			{
+				Thread.Sleep(millisecondsTimeout);
+
+				var file = files[fileId];
+
+				ConnectedClient[] clients;
+
+				lock (_clients)
+					clients = _clients.ToArray();
+
+				foreach (var client in clients)
+				{
+					var success = false;
+
+					try
+					{
+						Debug.Log("Sending File: " + file.name);
+
+						success = client.SendImageData(file.data);
+
+						fileId++;
+					}
+					catch
+					{
+						success = false;
+
+						client.client.Close();
+					}
+					finally
+					{
+						if (!success)
+						{
+							lock (_clients)
+							{
+								_clients.Remove(client);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		private static void CloseAllSockets()
