@@ -13,36 +13,54 @@ using UnityEngine;
 
 namespace Network
 {
-	[Serializable]
-	public struct SocketStruct
-	{
-		public string id;
-		public Socket socket;
-	}
-
 	public class FileItem
 	{
 		public string name;
 		public byte[] data;
 	}
 
+	public class ConnectedClient
+	{
+		public TcpClient client;
+		public BinaryWriter writer;
+
+		public ConnectedClient(TcpClient aClient)
+		{
+			client = aClient;
+			writer = new BinaryWriter(client.GetStream());
+		}
+
+		public bool SendImageData(byte[] aData)
+		{
+			if (!client.Connected)
+				return false;
+
+			writer.Write(aData.Length);
+			writer.Write(aData);
+			return true;
+		}
+
+		public bool SendMediaData(byte[] mediaData)
+		{
+			if (!client.Connected)
+				return false;
+
+			writer.Write(mediaData.Length);
+			writer.Write(mediaData);
+			return true;
+		}
+	}
+
 	public class LocalNetworkServer
 	{
-		private static readonly Socket _serverSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		private static readonly List<Socket> _clientSockets = new();
-		private static readonly List<SocketStruct> _clientSocketStructList = new();
-
-		private static readonly byte[] _buffer = new byte[NetworkHelper.BUFFER_SIZE];
 		private static MediaController _mediaController;
 		private static OptionsSettings _settings;
 
 		public static int ReceivedId = -1;
 
-		//new
 		private static TcpListener _server;
-		private static bool _isServerRunning;
+		private static bool _isServerRunning, _isSending, _isMediaDataSent;
 		private static Thread _listenerThread, _sendingThread;
-		private static bool _isSending;
 		private static readonly List<ConnectedClient> _clients = new();
 
 		public LocalNetworkServer(MediaController mediaController, OptionsSettings settings)
@@ -55,9 +73,9 @@ namespace Network
 
 		public void Clear()
 		{
-			CloseAllSockets();
-
-			_server.Stop();
+			_isSending = false;
+			_isServerRunning = false;
+			_server?.Stop();
 		}
 
 		private static void SetupServer()
@@ -74,21 +92,6 @@ namespace Network
 
 			_sendingThread = new Thread(SendThread);
 			_sendingThread.Start();
-
-			_isSending = false;
-			_isServerRunning = false;
-			_server?.Stop();
-
-			//_listenerThread.Join();
-			//_sendingThread.Join();
-
-			//var endPoint = new IPEndPoint(myIpAddress, NetworkHelper.PORT);
-
-			//_serverSocket.Bind(endPoint);
-			//_serverSocket.Listen(0);
-			//_serverSocket.BeginAccept(AcceptCallback, null);
-
-			//Debug.Log("Server setup complete on address: " + _serverSocket.LocalEndPoint);
 		}
 
 		private static void ListenThread()
@@ -141,17 +144,24 @@ namespace Network
 
 			_isSending = true;
 
+			SendMediaData();
+			
+			SendThumbnails(files);
+		}
+
+		private static void SendThumbnails(List<FileItem> files)
+		{
 			var fileId = 0;
 
 			const int millisecondsTimeout = 500;
+
+			ConnectedClient[] clients;
 
 			while (_isSending && fileId < files.Count)
 			{
 				Thread.Sleep(millisecondsTimeout);
 
 				var file = files[fileId];
-
-				ConnectedClient[] clients;
 
 				lock (_clients)
 					clients = _clients.ToArray();
@@ -188,80 +198,52 @@ namespace Network
 			}
 		}
 
-		private static void CloseAllSockets()
+		private static void SendMediaData()
 		{
-			foreach (var socket in _clientSockets)
+			ConnectedClient[] clients;
+
+			while (_isSending && !_isMediaDataSent)
 			{
-				socket.Shutdown(SocketShutdown.Both);
-				socket.Close();
+				lock (_clients)
+					clients = _clients.ToArray();
+
+				foreach (var client in clients)
+				{
+					var success = false;
+
+					try
+					{
+						Debug.Log("Preparing media data");
+
+						var message = _mediaController.MediaFiles.Length.ToString();
+						message = AddMediaInfo(
+							message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
+
+						var data = Encoding.ASCII.GetBytes(message);
+						Debug.Log("Sending media data");
+
+						success = client.SendMediaData(data);
+					}
+					catch
+					{
+						success = false;
+
+						client.client.Close();
+					}
+					finally
+					{
+						if (!success)
+						{
+							lock (_clients)
+							{
+								_clients.Remove(client);
+							}
+						}
+						else
+							_isMediaDataSent = true;
+					}
+				}
 			}
-
-			_serverSocket.Close();
-		}
-
-		private static void AcceptCallback(IAsyncResult AR)
-		{
-			Socket socket;
-
-			try {
-				socket = _serverSocket.EndAccept(AR);
-			}
-			catch (ObjectDisposedException)
-			{
-				return;
-			}
-
-			_clientSockets.Add(socket);
-
-			socket.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
-
-			Debug.Log("Client connected, waiting for request...");
-
-			var message = _mediaController.MediaFiles.Length.ToString();
-			message = AddMediaInfo(message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
-
-			var data = Encoding.ASCII.GetBytes(message);
-			socket.Send(data);
-
-			_serverSocket.BeginAccept(AcceptCallback, null);
-		}
-
-		private static void ReceiveCallback(IAsyncResult AR)
-		{
-			Socket current = (Socket)AR.AsyncState;
-			int received;
-
-			try {
-				received = current.EndReceive(AR);
-			}
-			catch (SocketException)
-			{
-				Debug.Log("Client forcefully disconnected: ");
-				SetUnRegister(current);
-				current.Close();
-				_clientSockets.Remove(current);
-				return;
-			}
-
-			if (received <= 0)
-			{
-				Debug.Log("Client forcefully disconnected: ");
-				SetUnRegister(current);
-				current.Close();
-				_clientSockets.Remove(current);
-				return;
-			}
-
-			byte[] recBuf = new byte[received];
-			Array.Copy(_buffer, recBuf, received);
-			string text = Encoding.ASCII.GetString(recBuf);
-			Debug.Log("Server Received Text: " + text);
-
-			SetRegister(current, text);
-
-			current.BeginReceive(_buffer, 0, NetworkHelper.BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-
-			HandleReceivedMessage(text);
 		}
 
 		private static void HandleReceivedMessage(string text)
@@ -287,32 +269,6 @@ namespace Network
 			}
 
 			return message;
-		}
-
-		private static void SetRegister(Socket socket, string text)
-		{
-			string[] subStrings = text.Split(Constants.Coma);
-			if (subStrings[0].Contains("register"))
-			{
-				SocketStruct cs = new SocketStruct();
-				cs.socket = socket;
-				cs.id = subStrings[1];
-				_clientSocketStructList.Add(cs);
-			}
-
-			if (text.Contains("exit"))
-			{
-				socket.Shutdown(SocketShutdown.Both);
-				socket.Close();
-				_clientSockets.Remove(socket);
-				Debug.Log("Client forcefully disconnected: ");
-			}
-		}
-
-		private static void SetUnRegister(Socket socket)
-		{
-			SocketStruct cl = _clientSocketStructList.Find(c => c.socket == socket);
-			_clientSocketStructList.Remove(cl);
 		}
 	}
 }

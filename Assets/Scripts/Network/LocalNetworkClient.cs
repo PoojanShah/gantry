@@ -18,7 +18,7 @@ namespace Network
 		private static readonly ConcurrentQueue<byte[]> ImagesQueue = new();
 
 		private static Thread _networkThread;
-		private static bool _isNetworkRunning;
+		private static bool _isNetworkRunning, _isMediaDataReceived;
 
 		private static int _ipLastNumber = -1;
 
@@ -58,22 +58,51 @@ namespace Network
 
 			var reader = new BinaryReader(stream);
 
-			try
+			while (_isNetworkRunning && client.Connected && stream.CanRead)
 			{
-				while (_isNetworkRunning && client.Connected && stream.CanRead)
+				var length = reader.ReadInt32();
+				var data = reader.ReadBytes(length);
+
+				try
 				{
-					var length = reader.ReadInt32();
-					var data = reader.ReadBytes(length);
+					if (!_isMediaDataReceived)
+					{
+						var message = Encoding.ASCII.GetString(data);
+						Debug.Log(message);
 
-					ImagesQueue.Enqueue(data);
+						_isMediaDataReceived = true;
 
-					Debug.Log($"Received {ImagesQueue.Count} thumbs");
+						var parsedData = message.Split(Constants.Underscore);
+						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 
+						int.TryParse(parsedData[0], out var mediaAmount);
+
+						var mediaDictionary = new Dictionary<int, string>(mediaAmount);
+
+						for (var i = 1; i < parsedData.Length; i++)
+						{
+							var videoData = parsedData[i].Split(Constants.DoubleDot);
+
+							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
+						}
+
+						//OnMediaInfoReceived?.Invoke(mediaDictionary);
+					}
+					else
+					{
+						ImagesQueue.Enqueue(data);
+
+						Debug.Log($"Received {ImagesQueue.Count} thumbs");
+					}
 				}
-			}
-			catch
-			{
-				// ignored
+				catch (Exception e)
+				{
+					Debug.Log(e);
+				}
+				finally
+				{
+					//SaveIp();
+				}
 			}
 		}
 
@@ -126,29 +155,7 @@ namespace Network
 
 					var receivedBytes = socket.Receive(bytesBuffer);
 
-					void HandleReceivedMessage()
-					{
-						var receivedData = Encoding.ASCII.GetString(bytesBuffer, 0, receivedBytes);
-						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
-						var parsedData = receivedData.Split(Constants.Underscore);
-
-						int.TryParse(parsedData[0], out var mediaAmount);
-
-						var mediaDictionary = new Dictionary<int, string>(mediaAmount);
-
-						for (var i = 1; i < parsedData.Length; i++)
-						{
-							var videoData = parsedData[i].Split(Constants.DoubleDot);
-
-							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
-						}
-
-						OnMediaInfoReceived?.Invoke(mediaDictionary);
-					}
-
-					HandleReceivedMessage();
 					
-					NetworkHelper.SaveIP(ipFirstPart, _ipLastNumber);
 					
 					socket.Shutdown(SocketShutdown.Both);
 					socket.Close();
@@ -171,6 +178,13 @@ namespace Network
 			{
 				Console.WriteLine(e.ToString());
 			}
+		}
+
+		private static void SaveIp()
+		{
+			var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
+
+			NetworkHelper.SaveIP(ipFirstPart, _ipLastNumber);
 		}
 	}
 }
