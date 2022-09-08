@@ -22,7 +22,7 @@ namespace Network
 		private static bool _isNetworkRunning, _isMediaDataReceived, _isThumbnailsReceived;
 		private static readonly object _lock = new();
 
-		private static int _ipLastNumber = -1;
+		private static int _ipLastNumber = -1, _mediaLength = -1;
 
 		public static void Connect(int ipLastNumber)
 		{
@@ -70,7 +70,6 @@ namespace Network
 					if (!_isMediaDataReceived)
 					{
 						var message = Encoding.ASCII.GetString(receivedBytes);
-						Debug.Log(message);
 
 						var parsedData = message.Split(Constants.Underscore);
 						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
@@ -96,8 +95,6 @@ namespace Network
 					else if (!_isThumbnailsReceived)
 					{
 						ImagesQueue.Enqueue(receivedBytes);
-
-						Debug.Log($"Received {ImagesQueue.Count} thumbs");
 
 						UnityMainThreadDispatcher.Instance().Enqueue(() =>
 						{

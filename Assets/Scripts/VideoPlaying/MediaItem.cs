@@ -18,7 +18,7 @@ namespace VideoPlaying
 		private Action<int> _onClick;
 		private bool _isThumbnailReplaced;
 
-		public void Init(MediaContent content, Action<int> onClickAction, Texture2D thumbnail)
+		public void Init(MediaContent content, Action<int> onClickAction, Texture thumbnail)
 		{
 			_content = content;
 			_onClick = onClickAction;

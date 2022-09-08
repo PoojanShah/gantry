@@ -33,7 +33,7 @@ namespace Screens
 #if UNITY_ANDROID
 				_contentController.SetThumbnail(texture);
 #endif
-				LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
+				//LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
 			}
 
 			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;

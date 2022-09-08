@@ -29,6 +29,7 @@ namespace Screens
 		private Action<int> _playVideoAction;
 		private MediaContent[] _media;
 		private int _thumbnailId = 0;
+		private Texture[] _cachedThumbnails;
 #endif
 
 #if UNITY_STANDALONE
@@ -60,6 +61,7 @@ namespace Screens
 			var mediaAmount = mediaDictionary.Count;
 
 			_media = new MediaContent[mediaAmount];
+			_cachedThumbnails = new Texture[mediaAmount];
 
 			var keys = mediaDictionary.Keys.ToArray();
 
@@ -85,7 +87,10 @@ namespace Screens
 
 		public void SetThumbnail(Texture2D texture)
 		{
-			_mediaItems[_thumbnailId].SetThumbnail(texture);
+			_cachedThumbnails[_thumbnailId] = texture;
+
+			if (_thumbnailId < MEDIA_PER_PAGE)
+				_mediaItems[_thumbnailId].SetThumbnail(texture);
 
 			_thumbnailId++;
 		}
@@ -116,7 +121,7 @@ namespace Screens
 					continue;
 				}
 
-				var thumbnail = MediaController.LoadThumbnail(itemsToShow[i].Name);
+				var thumbnail = _cachedThumbnails[_currentPage + i];
 
 				_mediaItems[i].Init(itemsToShow[i], PlayById, thumbnail);
 				_mediaItems[i].SetInteractable(true);
