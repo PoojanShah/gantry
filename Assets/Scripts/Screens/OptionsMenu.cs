@@ -27,7 +27,7 @@ namespace Screens
 
 		public void SaveAndExit()
 		{
-			_optionsSettings.Save(_sound.isOn, _rotation.isOn, _outputsNumber.value, 
+			_optionsSettings.Save(_sound.isOn, _rotation.isOn, _outputsNumber.value == 1, 
 				_cuoCoreIp.text, Convert.ToInt32(_cuoCorePort.text), _queCore.isOn);
 		}
 
@@ -36,7 +36,7 @@ namespace Screens
 			_sound.isOn = optionsSettings.IsSoundOn;
 			_rotation.isOn = optionsSettings.IsRotationOn;
 			_queCore.isOn = optionsSettings.IsCueCoreEnabled;
-			_outputsNumber.value = optionsSettings.OutputsNumber;
+			_outputsNumber.value = optionsSettings.IsDuoOutput ? 1 : 0;
 			_cuoCoreIp.text = optionsSettings.CuoCoreIp;
 			_cuoCorePort.text = optionsSettings.CuoCorePort.ToString();
 		}

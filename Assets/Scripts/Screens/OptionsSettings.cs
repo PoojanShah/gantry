@@ -8,23 +8,23 @@ namespace Screens
 	{
 		private const string CUO_CORE_IP_KEY = "CueCoreIP";
 		private const string CUE_CORE_PORT_KEY = "CueCorePort";
-		private const string OUTPUTS_NUMBER_KEY = "OutputsNumber";
+		private const string OUTPUTS_NUMBER_KEY = "IsDuoOutput";
 		private const string ROTATION_KEY = "Rotation";
 		private const string SOUND_KEY = "Sound";
 		private const string CUE_CORE_KEY = "CueCore";
 		
 		public bool IsSoundOn, IsRotationOn, IsCueCoreEnabled;
-		public int OutputsNumber;
+		public bool IsDuoOutput;
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
 
 		public OptionsSettings() => Load();
 
-		public void Save(bool sound, bool rotation, int outputsType, string cuoCoreIp, int cuoCorePort, bool isCueCore)
+		public void Save(bool sound, bool rotation, bool isDuo, string cuoCoreIp, int cuoCorePort, bool isCueCore)
 		{
 			IsSoundOn = sound;
 			IsRotationOn = rotation;
-			OutputsNumber = Projection.DisplaysAmount == 1 ? 0 : outputsType;
+			IsDuoOutput = Projection.DisplaysAmount == 1 ? false : isDuo;
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
 			IsCueCoreEnabled = isCueCore;
@@ -36,20 +36,20 @@ namespace Screens
 		{
 			CuoCoreIp = PlayerPrefs.GetString(CUO_CORE_IP_KEY, CuoCoreIp);
 			CuoCorePort = PlayerPrefs.GetInt(CUE_CORE_PORT_KEY, CuoCorePort);
-			OutputsNumber = PlayerPrefs.GetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
+			IsDuoOutput = Convert.ToBoolean(PlayerPrefs.GetInt(OUTPUTS_NUMBER_KEY, Convert.ToInt32(IsDuoOutput)));
 			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
 			IsSoundOn = Convert.ToBoolean(PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn)));
 			IsCueCoreEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled)));
 
 			if (Projection.DisplaysAmount == 1)
-				OutputsNumber = 0;
+				IsDuoOutput = false;
 		}
 
 		private void SaveToPlayerPrefs()
 		{
 			PlayerPrefs.SetString(CUO_CORE_IP_KEY, CuoCoreIp);
 			PlayerPrefs.SetInt(CUE_CORE_PORT_KEY, CuoCorePort);
-			PlayerPrefs.SetInt(OUTPUTS_NUMBER_KEY, OutputsNumber);
+			PlayerPrefs.SetInt(OUTPUTS_NUMBER_KEY, Convert.ToInt32(IsDuoOutput));
 			PlayerPrefs.SetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn));
 			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 			PlayerPrefs.SetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled));

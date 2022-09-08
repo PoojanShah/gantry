@@ -28,12 +28,12 @@ namespace VideoPlaying
 			InitOutputType();
 		}
 
-		private void InitOutputType()
+		public void InitOutputType()
 		{
 			if (Projection.DisplaysAmount == 1)
 				OutputType = OutputType.Both;
 			else
-				OutputType = _optionsSettings.OutputsNumber > 0 ? OutputType.Secondary : OutputType.Both;
+				OutputType = _optionsSettings.IsDuoOutput ? OutputType.Secondary : OutputType.Both;
 		}
 
 		public Projection GetProjection()
@@ -95,8 +95,6 @@ namespace VideoPlaying
 			_stopAction?.Invoke();
 
 			CameraHelper.SetMainCameraActive(true);
-
-			InitOutputType();
 		}
 
 		private void SetSoundSettings(OutputType output) =>

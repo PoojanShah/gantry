@@ -4,6 +4,7 @@ using Configs;
 using Core;
 using Media;
 using UnityEngine.UI;
+using VideoPlaying;
 
 namespace Screens
 {
@@ -32,16 +33,10 @@ namespace Screens
 #endif
 			InitVersionTitle();
 
-			SetCurrentOutputType(settings.OutputsNumber == 0
-				? OutputTypesConfig.GetSprite(OutputType.Both)
-				: OutputTypesConfig.GetSprite(OutputType.Secondary));
+			SetCurrentOutputType(settings.IsDuoOutput);
 		}
 
-		private void PlayMedia(MediaContent content)
-		{
-			_playVideo?.Invoke(content);
-		}
-
+		private void PlayMedia(MediaContent content) => _playVideo?.Invoke(content);
 		private void SwitchSound() => _settings.SwitchSound();
 		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
 	}

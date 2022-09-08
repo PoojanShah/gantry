@@ -12,6 +12,14 @@ using UnityEngine.Video;
 
 namespace VideoPlaying
 {
+	public enum OutputType : byte
+	{
+		None,
+		Both,
+		Primary,
+		Secondary
+	}
+
 	public class Projection : MonoBehaviour
 	{
 		public ProjectionOutputView[] OutputViews { get; set; }
@@ -172,7 +180,8 @@ namespace VideoPlaying
 					SaveCurrentVideoPlaying(true, true, content);
 
 				}
-				else if (output != OutputType.Primary)
+				
+				if (output != OutputType.Primary)
 				{
 					for (var j = 1; j < DisplaysAmount; j++)
 					{
@@ -196,7 +205,8 @@ namespace VideoPlaying
 
 					SaveCurrentVideoPlaying(true, true, content);
 				}
-				else if (output != OutputType.Primary)
+				
+				if (output != OutputType.Primary)
 				{
 					for (var j = 1; j < DisplaysAmount; j++)
 					{
