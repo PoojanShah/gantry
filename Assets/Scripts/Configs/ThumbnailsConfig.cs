@@ -10,6 +10,7 @@ namespace Configs
 
 		public Sprite GetThumbnail(string mediaName)
 		{
+			return null;
 			foreach (var t in Thumbnails)
 			{
 				var thumbSplitName = t.name.Split(Constants.Hyphen)[1];

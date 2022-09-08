@@ -28,6 +28,7 @@ namespace Screens
 #elif UNITY_ANDROID
 		private Action<int> _playVideoAction;
 		private MediaContent[] _media;
+		private int _thumbnailId = 0;
 #endif
 
 #if UNITY_STANDALONE
@@ -80,6 +81,13 @@ namespace Screens
 			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
 			
 			_swipeDetection.Init(DoSwipe);
+		}
+
+		public void SetThumbnail(Texture2D texture)
+		{
+			_mediaItems[_thumbnailId].SetThumbnail(texture);
+
+			_thumbnailId++;
 		}
 #endif
 

@@ -14,11 +14,13 @@ namespace Network
 	public class LocalNetworkClient
 	{
 		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
+		public static event Action<Texture2D> OnThumbnailReceived;
 
 		private static readonly ConcurrentQueue<byte[]> ImagesQueue = new();
 
 		private static Thread _networkThread;
-		private static bool _isNetworkRunning, _isMediaDataReceived;
+		private static bool _isNetworkRunning, _isMediaDataReceived, _isThumbnailsReceived;
+		private static readonly object _lock = new();
 
 		private static int _ipLastNumber = -1;
 
@@ -61,16 +63,14 @@ namespace Network
 			while (_isNetworkRunning && client.Connected && stream.CanRead)
 			{
 				var length = reader.ReadInt32();
-				var data = reader.ReadBytes(length);
+				var receivedBytes = reader.ReadBytes(length);
 
 				try
 				{
 					if (!_isMediaDataReceived)
 					{
-						var message = Encoding.ASCII.GetString(data);
+						var message = Encoding.ASCII.GetString(receivedBytes);
 						Debug.Log(message);
-
-						_isMediaDataReceived = true;
 
 						var parsedData = message.Split(Constants.Underscore);
 						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
@@ -86,13 +86,32 @@ namespace Network
 							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
 						}
 
-						//OnMediaInfoReceived?.Invoke(mediaDictionary);
+						_isMediaDataReceived = true;
+
+						UnityMainThreadDispatcher.Instance().Enqueue(() =>
+						{
+							OnMediaInfoReceived?.Invoke(mediaDictionary);
+						});
 					}
-					else
+					else if (!_isThumbnailsReceived)
 					{
-						ImagesQueue.Enqueue(data);
+						ImagesQueue.Enqueue(receivedBytes);
 
 						Debug.Log($"Received {ImagesQueue.Count} thumbs");
+
+						UnityMainThreadDispatcher.Instance().Enqueue(() =>
+						{
+							const int defaultTextureSize = 1;
+							var texture = new Texture2D(defaultTextureSize, defaultTextureSize);
+
+							if (ImagesQueue.Count > 0 && ImagesQueue.TryDequeue(out var data))
+							{
+								texture.LoadImage(data);
+								texture.Apply();
+							}
+
+							OnThumbnailReceived?.Invoke(texture);
+						});
 					}
 				}
 				catch (Exception e)
@@ -101,7 +120,11 @@ namespace Network
 				}
 				finally
 				{
-					//SaveIp();
+					//UnityMainThreadDispatcher.Instance().Enqueue(() =>
+					//{
+					//	Debug.Log("ip saved");
+					//	SaveIp();
+					//});
 				}
 			}
 		}

@@ -28,7 +28,16 @@ namespace Screens
 				LocalNetworkClient.OnMediaInfoReceived -= OnMediaInfoReceived;
 			}
 
+			void OnThumbnailReceived(Texture2D texture)
+			{
+#if UNITY_ANDROID
+				_contentController.SetThumbnail(texture);
+#endif
+				LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
+			}
+
 			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;
+			LocalNetworkClient.OnThumbnailReceived += OnThumbnailReceived;
 		}
 
 		private void OnDestroy()

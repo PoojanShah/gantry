@@ -153,7 +153,7 @@ namespace Network
 		{
 			var fileId = 0;
 
-			const int millisecondsTimeout = 500;
+			const int millisecondsTimeout = 300;
 
 			ConnectedClient[] clients;
 
