@@ -87,7 +87,7 @@ namespace Network
 
 						UnityMainThreadDispatcher.Instance().Enqueue(() =>
 						{
-							SaveIp();
+							//SaveIp();
 
 							OnMediaInfoReceived?.Invoke(mediaDictionary);
 						});
