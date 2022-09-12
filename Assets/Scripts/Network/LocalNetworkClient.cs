@@ -20,7 +20,6 @@ namespace Network
 
 		private static Thread _networkThread;
 		private static bool _isNetworkRunning, _isMediaDataReceived, _isThumbnailsReceived;
-		private static readonly object _lock = new();
 
 		private static int _ipLastNumber = -1, _mediaLength = -1;
 
@@ -31,8 +30,6 @@ namespace Network
 			_isNetworkRunning = true;
 			_networkThread = new Thread(NetworkThread);
 			_networkThread.Start();
-
-			//SendPlayMessage(-1); //init connection
 		}
 
 		public void Clear()

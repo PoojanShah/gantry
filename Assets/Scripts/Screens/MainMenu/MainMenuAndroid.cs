@@ -12,10 +12,17 @@ namespace Screens
 	{
 		[SerializeField] private MediaContentController _contentController;
 		[SerializeField] private Button _settingsButton, _muteButton;
+		[SerializeField] private GameObject _loadingBlocker;
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory, Action showServerPopup)
 		{
-			_settingsButton.onClick.AddListener(() => showServerPopup?.Invoke());
+			_settingsButton.onClick.AddListener(() =>
+			{
+				_loadingBlocker.SetActive(true);
+
+				showServerPopup?.Invoke();
+			});
+
 			_muteButton.onClick.AddListener(LocalNetworkClient.SendMuteMessage);
 
 			InitVersionTitle();
@@ -28,16 +35,27 @@ namespace Screens
 				LocalNetworkClient.OnMediaInfoReceived -= OnMediaInfoReceived;
 			}
 
-			void OnThumbnailReceived(Texture2D texture)
-			{
-#if UNITY_ANDROID
-				_contentController.SetThumbnail(texture);
-#endif
-				//LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
-			}
-
 			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;
 			LocalNetworkClient.OnThumbnailReceived += OnThumbnailReceived;
+
+			_contentController.OnThumbnailsLoaded += AllThumbnailsLoaded;
+		}
+
+		private void OnThumbnailReceived(Texture2D texture)
+		{
+#if UNITY_ANDROID
+			_contentController.SetThumbnail(texture);
+#endif
+		}
+
+		private void AllThumbnailsLoaded()
+		{
+			LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
+			_contentController.OnThumbnailsLoaded -= AllThumbnailsLoaded;
+
+			_loadingBlocker.SetActive(false);
+
+			Debug.Log("completed");
 		}
 
 		private void OnDestroy()
