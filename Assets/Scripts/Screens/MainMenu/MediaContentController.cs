@@ -121,7 +121,11 @@ namespace Screens
 					continue;
 				}
 
+#if UNITY_ANDROID
 				var thumbnail = _cachedThumbnails[_currentPage + i];
+#elif UNITY_STANDALONE
+				var thumbnail = MediaController.LoadThumbnail(itemsToShow[i].Name);
+#endif
 
 				_mediaItems[i].Init(itemsToShow[i], PlayById, thumbnail);
 				_mediaItems[i].SetInteractable(true);

@@ -21,15 +21,12 @@ namespace Media
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
 		
 		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
-		private static ThumbnailsConfig _thumbnailsConfig;
 
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
-		public MediaController(ThumbnailsConfig thumbnailsConfig)
+		public MediaController()
 		{
-			_thumbnailsConfig = thumbnailsConfig;
-
 			LoadMediaFromLocalStorage();
 		}
 
@@ -61,10 +58,6 @@ namespace Media
 
 		public static Texture2D LoadThumbnail(string mediaName)
 		{
-			var thumbnail = _thumbnailsConfig.GetThumbnail(Path.GetFileNameWithoutExtension(mediaName));
-
-			return thumbnail == null ? null : thumbnail.texture;
-
 			var noExtensionName = Path.GetFileNameWithoutExtension(mediaName);
 			var realPath = Path.Combine(Settings.ThumbnailsPath,
 				Constants.ThumbnailsPrefix + noExtensionName + Constants.ExtensionPng);
