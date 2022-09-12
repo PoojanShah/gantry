@@ -9,13 +9,14 @@ using Core;
 using Network;
 using UnityEngine;
 using UnityEngine.Networking;
+using VideoPlaying;
 
 namespace Media
 {
 	public class MediaController
 	{
 		public event Action OnMediaFileDownloaded, OnDownloadCompleted;
-		private const string QTS_URL = "http://192.168.1.114/GantryMedia/";
+		private const string QTS_URL = "https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
 		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
 		private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
@@ -90,22 +91,18 @@ namespace Media
 			try
 			{
 				var response = request.GetResponse();
-				var regex = new Regex(QTS_REGEX_PATTERN);
-				const string regexHash = "name";
 
 				using var reader = new StreamReader(response.GetResponseStream()!);
 
 				var result = reader.ReadToEnd();
-				var matches = regex.Matches(result);
-				var mediaUrls = new List<string>(matches.Count);
 
-				foreach (Match match in matches)
-				{
-					var path = match.ToString();
+				var mediaFilesHelper = new MediaFilesHelper();
+				var mediaFiles = mediaFilesHelper.GetList(result).MediaFiles;
+				var mediaUrls = new List<string>();
 
-					if (IsExtensionMatched(path))
-						mediaUrls.Add(QTS_URL + match.Groups[regexHash].ToString().Trim());
-				}
+				foreach (var f in mediaFiles)
+					if (IsExtensionMatched(f.media))
+						mediaUrls.Add(f.media);
 
 				CheckFilesForDownload(mediaUrls);
 			}
