@@ -73,6 +73,23 @@ namespace Network
 
 		public void Clear()
 		{
+			lock (_clients)
+			{
+				foreach (var c in _clients)
+				{
+					try
+					{
+						c.client.Close();
+					}
+					catch
+					{
+						// ignored
+					}
+				}
+
+				_clients.Clear();
+			}
+
 			_isSending = false;
 			_isServerRunning = false;
 			_server?.Stop();
@@ -113,25 +130,35 @@ namespace Network
 				}
 				catch (Exception e)
 				{
-					Console.Write(e.Message);
+					Debug.Log(e.Message);
 				}
-			}
 
-			lock (_clients)
-			{
-				foreach (var c in _clients)
+				try
 				{
-					try
+					foreach (var connectedClient in _clients)
 					{
-						c.client.Close();
-					}
-					catch
-					{
-						// ignored
+						var stream = connectedClient.client.GetStream();
+						var reader = new StreamReader(stream);
+
+						byte[] bytes = new byte[connectedClient.client.SendBufferSize];
+						int recv = 0;
+
+						while (true)
+						{
+							recv = stream.Read(bytes, 0, connectedClient.client.SendBufferSize);
+							var received = Encoding.ASCII.GetString(bytes, 0, recv);
+							Debug.Log("received " + received);
+							if (received.EndsWith("\n\n"))
+							{
+								break;
+							}
+						}
 					}
 				}
-
-				_clients.Clear();
+				catch (Exception e)
+				{
+					Debug.Log(e.Message);
+				}
 			}
 		}
 

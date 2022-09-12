@@ -18,6 +18,7 @@ namespace Network
 
 		private static readonly ConcurrentQueue<byte[]> ImagesQueue = new();
 
+		private static TcpClient _tcpClient;
 		private static Thread _networkThread;
 		private static bool _isNetworkRunning, _isMediaDataReceived, _isThumbnailsReceived;
 
@@ -47,17 +48,17 @@ namespace Network
 
 		private static void NetworkThread()
 		{
-			var client = new TcpClient();
+			_tcpClient = new TcpClient();
 			var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
 			var ipAddressParsed = IPAddress.Parse(ipFirstPart + _ipLastNumber);
 
-			client.Connect(ipAddressParsed, NetworkHelper.PORT);
+			_tcpClient.Connect(ipAddressParsed, NetworkHelper.PORT);
 
-			using var stream = client.GetStream();
+			using var stream = _tcpClient.GetStream();
 
 			var reader = new BinaryReader(stream);
 
-			while (_isNetworkRunning && client.Connected && stream.CanRead)
+			while (_isNetworkRunning && _tcpClient.Connected && stream.CanRead)
 			{
 				var length = reader.ReadInt32();
 				var receivedBytes = reader.ReadBytes(length);
@@ -149,6 +150,13 @@ namespace Network
 
 		public static void SendMessage(string message)
 		{
+			var bytes = Encoding.ASCII.GetBytes(message);
+			var writer = new BinaryWriter(_tcpClient.GetStream());
+			if (!_tcpClient.Connected)
+				return;
+
+			writer.Write(bytes.Length);
+			writer.Write(bytes);
 			return;
 			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];
 
