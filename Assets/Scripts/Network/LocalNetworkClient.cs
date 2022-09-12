@@ -87,6 +87,8 @@ namespace Network
 
 						UnityMainThreadDispatcher.Instance().Enqueue(() =>
 						{
+							SaveIp();
+
 							OnMediaInfoReceived?.Invoke(mediaDictionary);
 						});
 					}
@@ -149,13 +151,14 @@ namespace Network
 		public static void SendMuteMessage() => SendMessage(NetworkHelper.NETWORK_MESSAGE_MUTE);
 
 		public static void SendMessage(string message)
-		{
+		{ 
+			Debug.Log("sending message: " + message);
 			var bytes = Encoding.ASCII.GetBytes(message);
 			var writer = new BinaryWriter(_tcpClient.GetStream());
 			if (!_tcpClient.Connected)
 				return;
 
-			writer.Write(bytes.Length);
+			//writer.Write(bytes.Length);
 			writer.Write(bytes);
 			return;
 			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];

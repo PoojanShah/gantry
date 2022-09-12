@@ -28,6 +28,7 @@ namespace Network
 		{
 			client = aClient;
 			writer = new BinaryWriter(client.GetStream());
+			new BinaryReader(client.GetStream());
 		}
 
 		public bool SendImageData(byte[] aData)
@@ -138,20 +139,23 @@ namespace Network
 					foreach (var connectedClient in _clients)
 					{
 						var stream = connectedClient.client.GetStream();
-						var reader = new StreamReader(stream);
 
-						byte[] bytes = new byte[connectedClient.client.SendBufferSize];
+						byte[] bytes = new byte[NetworkHelper.BUFFER_SIZE];
 						int recv = 0;
 
 						while (true)
 						{
-							recv = stream.Read(bytes, 0, connectedClient.client.SendBufferSize);
+							recv = stream.Read(bytes, 0, NetworkHelper.BUFFER_SIZE);
 							var received = Encoding.ASCII.GetString(bytes, 0, recv);
-							Debug.Log("received " + received);
-							if (received.EndsWith("\n\n"))
+							Debug.Log("received message: " + received);
+
+							if (string.IsNullOrEmpty(received) || !received.Contains(Constants.Underscore))
+								continue;
+
+							UnityMainThreadDispatcher.Instance().Enqueue(() =>
 							{
-								break;
-							}
+								HandleReceivedMessage(received);
+							});
 						}
 					}
 				}
@@ -199,8 +203,6 @@ namespace Network
 
 					try
 					{
-						Debug.Log("Sending File: " + file.name);
-
 						success = client.SendImageData(file.data);
 
 						fileId++;
@@ -240,14 +242,11 @@ namespace Network
 
 					try
 					{
-						Debug.Log("Preparing media data");
-
 						var message = _mediaController.MediaFiles.Length.ToString();
 						message = AddMediaInfo(
 							message); //{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 
 						var data = Encoding.ASCII.GetBytes(message);
-						Debug.Log("Sending media data");
 
 						success = client.SendMediaData(data);
 					}
