@@ -48,7 +48,7 @@ namespace Common
 			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
 			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
 
-			//_mediaController.LoadMediaFromServer();
+			_mediaController.LoadMediaFromServer();
 
 			InitNetwork();
 
@@ -113,7 +113,7 @@ namespace Common
 
 		private void InitNetwork()
 		{
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN // not working on MAC
 			_networkController = new NetworkController(_mediaController, _settings);
 #endif
 		}
