@@ -126,7 +126,7 @@ namespace Screens
 
 		public void SetMediaInteractable()
 		{
-			var mainMenu = _currentScreen.GetComponent<MainMenu>();
+			//var mainMenu = _currentScreen.GetComponent<MainMenu>();
 		}
 
 		private void InitAdminMenu(GameObject screen)
