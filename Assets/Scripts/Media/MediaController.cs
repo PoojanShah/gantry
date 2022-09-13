@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Configs;
 using Core;
@@ -101,12 +100,17 @@ namespace Media
 				var mediaFilesHelper = new MediaFilesHelper();
 				var mediaFiles = mediaFilesHelper.GetList(result).MediaFiles;
 				var mediaUrls = new List<string>();
+				var thumbnailUrls = new List<string>();
 
 				foreach (var f in mediaFiles)
 					if (IsExtensionMatched(f.media))
+					{
 						mediaUrls.Add(f.media);
+						thumbnailUrls.Add(f.thumbnail);
+					}
 
-				CheckFilesForDownloadAndDelete(mediaUrls);
+				CheckFilesForDownloadAndDelete(mediaUrls, Settings.MediaPath);
+				CheckFilesForDownloadAndDelete(thumbnailUrls, Settings.ThumbnailsPath);
 			}
 			catch (Exception e)
 			{
@@ -125,25 +129,25 @@ namespace Media
 			IsDownloading = false;
 		}
 
-		private void CheckFilesForDownloadAndDelete(IReadOnlyCollection<string> urls)
+		private void CheckFilesForDownloadAndDelete(IReadOnlyCollection<string> urls, string path)
 		{
-			if (!Directory.Exists(Settings.MediaPath))
-				Directory.CreateDirectory(Settings.MediaPath);
+			if (!Directory.Exists(path))
+				Directory.CreateDirectory(path);
 
-			var mediaToDownload = GetFilesForDownload(urls);
-			CheckFilesForDelete(urls);
+			var mediaToDownload = GetFilesForDownload(urls, path);
+			CheckFilesForDelete(urls, path);
 
-			DownloadAndSaveFiles(mediaToDownload);
+			DownloadAndSaveFiles(mediaToDownload, path);
 		}
 
-		private List<string> GetFilesForDownload(IReadOnlyCollection<string> urls)
+		private List<string> GetFilesForDownload(IReadOnlyCollection<string> urls, string path)
 		{
 			var mediaToDownload = new List<string>(urls.Count);
 
 			foreach (var url in urls)
 			{
 				var fileName = Path.GetFileName(url).Trim();
-				var downloadPath = Path.Combine(Settings.MediaPath, fileName);
+				var downloadPath = Path.Combine(path, fileName);
 				
 				if(File.Exists(downloadPath))
 					continue;
@@ -154,9 +158,9 @@ namespace Media
 			return mediaToDownload;
 		}
 
-		private void CheckFilesForDelete(IReadOnlyCollection<string> urls)
+		private void CheckFilesForDelete(IReadOnlyCollection<string> urls, string path)
 		{
-			var files = Directory.GetFiles(Settings.MediaPath);
+			var files = Directory.GetFiles(path);
 
 			foreach (var file in files)
 			{
@@ -165,7 +169,7 @@ namespace Media
 				foreach (var url in urls)
 				{
 					var fileName = Path.GetFileName(url).Trim();
-					var downloadPath = Path.Combine(Settings.MediaPath, fileName);
+					var downloadPath = Path.Combine(path, fileName);
 
 					if (downloadPath == file)
 					{
@@ -179,7 +183,7 @@ namespace Media
 			}
 		}
 
-		private async void DownloadAndSaveFiles(IEnumerable<string> urls)
+		private async void DownloadAndSaveFiles(IEnumerable<string> urls, string path)
 		{
 			foreach (var url in urls)
 			{
@@ -193,7 +197,7 @@ namespace Media
 					Debug.Log(www.error);
 				else
 				{
-					var savePath = Path.Combine(Settings.MediaPath, Path.GetFileName(url));
+					var savePath = Path.Combine(path, Path.GetFileName(url));
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 
