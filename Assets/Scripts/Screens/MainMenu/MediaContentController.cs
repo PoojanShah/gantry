@@ -94,6 +94,8 @@ namespace Screens
 			DisplayMedia();
 			
 			RefreshPagesButtons();
+			
+			Debug.Log("Files is updated");
 		}
 
 		private void InitMediaItems()
