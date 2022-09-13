@@ -126,25 +126,6 @@ namespace Network
 			}
 		}
 
-		//private void Update()
-		//{
-		//	return;
-		//	if (_imagesQueue.Count > 0 && _imagesQueue.TryDequeue(out var data))
-		//	{
-		//		if (_texture == null)
-		//		{
-		//			const int defaultTextureSize = 1;
-
-		//			_texture = new Texture2D(defaultTextureSize, defaultTextureSize);
-		//		}
-
-		//		_texture.LoadImage(data);
-		//		_texture.Apply();
-
-		//		_material.mainTexture = _texture;
-		//	}
-		//}
-
 		public static void SendPlayMessage(int videoId) =>
 			SendMessage(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
 
@@ -158,54 +139,7 @@ namespace Network
 			if (!_tcpClient.Connected)
 				return;
 
-			//writer.Write(bytes.Length);
 			writer.Write(bytes);
-			return;
-			var bytesBuffer = new byte[NetworkHelper.BUFFER_SIZE];
-
-			try
-			{
-				var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
-				var ipAddress = IPAddress.Parse(ipFirstPart + _ipLastNumber);
-				var remoteEP = new IPEndPoint(ipAddress, NetworkHelper.PORT);
-
-				Debug.Log("Connecting to + " + remoteEP);
-
-				var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-				try
-				{
-					socket.Connect(remoteEP);
-
-					var messageToSend = Encoding.ASCII.GetBytes(message);
-
-					socket.Send(messageToSend);
-
-					var receivedBytes = socket.Receive(bytesBuffer);
-
-					
-					
-					socket.Shutdown(SocketShutdown.Both);
-					socket.Close();
-				}
-				catch (ArgumentNullException ane)
-				{
-					Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-				}
-				catch (SocketException se)
-				{
-					Console.WriteLine("SocketException : {0}", se.ToString());
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine("Unexpected exception : {0}", e.ToString());
-				}
-
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-			}
 		}
 
 		private static void SaveIp()
