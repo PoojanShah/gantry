@@ -115,6 +115,8 @@ namespace Common
 		{
 #if UNITY_STANDALONE_WIN // not working on MAC
 			_networkController = new NetworkController(_mediaController, _settings);
+
+			NetworkHelper.GetUpdateMessage();
 #endif
 		}
 

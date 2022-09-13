@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using UnityEngine;
+using VideoPlaying;
 using Ping = System.Net.NetworkInformation.Ping;
 
 namespace Network
@@ -15,6 +19,10 @@ namespace Network
 		public const string NETWORK_MESSAGE_MUTE = "Mute";
 		public const string NETWORK_MESSAGE_INFO_FORMAT = "_{0}:{1}"; //0 - name, 1 - id
 		public const string PING_HOST = "api.comfort-health.net";
+
+		public const string URL_MESSAGING =
+			"https://api.comfort-health.net/api/messages?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
+
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
 		public const int PING_TIMEOUT = 500;
@@ -131,6 +139,30 @@ namespace Network
 			LastIpNumber = savedLastPartOfIP;
 
 			return true;
+		}
+
+		public static void GetUpdateMessage()
+		{
+			var request = WebRequest.Create(URL_MESSAGING);
+
+			try
+			{
+				var response = request.GetResponse();
+
+				using var reader = new StreamReader(response.GetResponseStream()!);
+
+				var result = reader.ReadToEnd();
+
+				Debug.Log(result);
+			}
+			catch (Exception e)
+			{
+				Debug.Log(e);
+			}
+			finally
+			{
+				Debug.Log("received message");
+			}
 		}
 	}
 }
