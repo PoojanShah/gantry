@@ -23,7 +23,7 @@ namespace Common
 
 			_factory = new CommonFactory();
 #if UNITY_ANDROID
-			_mediaController = new MediaController(_mainConfig.ThumbnailsConfig);
+			_mediaController = new MediaController();
 
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform);
 

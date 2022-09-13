@@ -12,6 +12,7 @@ namespace Core
 			CorrectAdminPassword = "Ch$2001_+",
 			ExtensionMeta = ".meta",
 			ExtensionPng = ".png",
+			ExtensionPngNoDot = "png",
 			GantryExtension = ".gantry",
 			GantrySearchPattern = "*.gantry",
 			AllFilesPattern = "*.*",

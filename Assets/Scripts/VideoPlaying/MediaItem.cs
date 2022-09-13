@@ -18,11 +18,21 @@ namespace VideoPlaying
 		private Action<int> _onClick;
 		private bool _isThumbnailReplaced;
 
-		public void Init(MediaContent content, Action<int> onClickAction, Texture2D thumbnail)
+		public void Init(MediaContent content, Action<int> onClickAction, Texture thumbnail)
 		{
 			_content = content;
 			_onClick = onClickAction;
 
+			SetThumbnail(thumbnail);
+
+			_title.text = content.Name.Split(Constants.Dot)[0];
+
+			_button.onClick.RemoveAllListeners();
+			_button.onClick.AddListener(ItemClicked);
+		}
+
+		public void SetThumbnail(Texture thumbnail)
+		{
 			if (thumbnail != null)
 			{
 				_thumbnail.texture = thumbnail;
@@ -40,11 +50,6 @@ namespace VideoPlaying
 					_thumbnail.texture = _defaultThumbnail.texture;
 				}
 			}
-
-			_title.text = content.Name.Split(Constants.Dot)[0];
-
-			_button.onClick.RemoveAllListeners();
-			_button.onClick.AddListener(ItemClicked);
 		}
 
 		public void ItemClicked() => _onClick?.Invoke(_content.Id);

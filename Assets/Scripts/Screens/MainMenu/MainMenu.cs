@@ -1,8 +1,10 @@
 using UnityEngine;
 using System;
+using Configs;
 using Core;
 using Media;
 using UnityEngine.UI;
+using VideoPlaying;
 
 namespace Screens
 {
@@ -11,6 +13,7 @@ namespace Screens
 		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private MediaContentController _contentController;
+		[SerializeField] private GameObject _duoOutput, _singleOutput;
 
 		private MediaController _mediaController;
 		private OptionsSettings _settings;
@@ -34,6 +37,12 @@ namespace Screens
 			InitVersionTitle();
 
 			SetCurrentOutputType(settings.IsDuoOutput);
+		}
+
+		private void SetCurrentOutputType(bool isDuo)
+		{
+			_duoOutput.SetActive(isDuo);
+			_singleOutput.SetActive(!isDuo);
 		}
 
 		public void RefreshMedia() => _contentController.UpdateMediaItems();

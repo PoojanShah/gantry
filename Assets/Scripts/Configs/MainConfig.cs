@@ -9,6 +9,5 @@ namespace Configs
 		public GameObject MediaItemPrefab;
 		public GameObject ContourEditorUiPrefab;
 		public ScreensConfig ScreensConfig;
-		public ThumbnailsConfig ThumbnailsConfig;
 	}
 }

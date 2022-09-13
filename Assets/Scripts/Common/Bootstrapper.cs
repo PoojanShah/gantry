@@ -32,7 +32,7 @@ namespace Common
 			InitSettings();
 
 			_factory = new CommonFactory();
-			_mediaController = new MediaController(_mainConfig.ThumbnailsConfig);
+			_mediaController = new MediaController();
 			
 			_settings = new OptionsSettings();
 
