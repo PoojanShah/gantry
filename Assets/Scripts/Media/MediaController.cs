@@ -148,7 +148,7 @@ namespace Media
 			foreach (var url in urls)
 			{
 				var fileNameInWeb = Path.GetFileName(url).Trim();
-				var fileName = fileNameInWeb.Split('_').Last();
+				var fileName = fileNameInWeb.Split(Constants.Underscore).Last();
 				var downloadPath = Path.Combine(path, fileName);
 				
 				if(File.Exists(downloadPath))
@@ -171,7 +171,7 @@ namespace Media
 				foreach (var url in urls)
 				{
 					var fileNameInWeb = Path.GetFileName(url).Trim();
-					fileNameInWeb = fileNameInWeb.Split('_').Last();
+					fileNameInWeb = fileNameInWeb.Split(Constants.Underscore).Last();
 					var downloadPath = Path.Combine(path, fileNameInWeb);
 					
 					if (downloadPath == file)
@@ -201,7 +201,7 @@ namespace Media
 				else
 				{
 					var fileNameInWeb = Path.GetFileName(url);
-					var fileName = fileNameInWeb.Split('_').Last();
+					var fileName = fileNameInWeb.Split(Constants.Underscore).Last();
 					var savePath = Path.Combine(path, fileName);
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
