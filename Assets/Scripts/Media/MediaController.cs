@@ -146,7 +146,8 @@ namespace Media
 
 			foreach (var url in urls)
 			{
-				var fileName = Path.GetFileName(url).Trim();
+				var fileNameInWeb = Path.GetFileName(url).Trim();
+				var fileName = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
 				var downloadPath = Path.Combine(path, fileName);
 				
 				if(File.Exists(downloadPath))
@@ -168,9 +169,10 @@ namespace Media
 				
 				foreach (var url in urls)
 				{
-					var fileName = Path.GetFileName(url).Trim();
-					var downloadPath = Path.Combine(path, fileName);
-
+					var fileNameInWeb = Path.GetFileName(url).Trim();
+					fileNameInWeb = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
+					var downloadPath = Path.Combine(path, fileNameInWeb);
+					
 					if (downloadPath == file)
 					{
 						isNeedDeleteFile = false;
@@ -197,7 +199,9 @@ namespace Media
 					Debug.Log(www.error);
 				else
 				{
-					var savePath = Path.Combine(path, Path.GetFileName(url));
+					var fileNameInWeb = Path.GetFileName(url);
+					var fileName = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
+					var savePath = Path.Combine(path, fileName);
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 
