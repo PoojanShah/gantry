@@ -107,7 +107,7 @@ namespace Media
 						mediaUrls.Add(QTS_URL + match.Groups[regexHash].ToString().Trim());
 				}
 
-				CheckFilesForDownload(mediaUrls);
+				CheckFilesForDownloadAndDelete(mediaUrls);
 			}
 			catch (Exception e)
 			{
@@ -126,11 +126,19 @@ namespace Media
 			IsDownloading = false;
 		}
 
-		private void CheckFilesForDownload(IReadOnlyCollection<string> urls)
+		private void CheckFilesForDownloadAndDelete(IReadOnlyCollection<string> urls)
 		{
 			if (!Directory.Exists(Settings.MediaPath))
 				Directory.CreateDirectory(Settings.MediaPath);
 
+			var mediaToDownload = GetFilesForDownload(urls);
+			CheckFilesForDelete(urls);
+
+			DownloadAndSaveFiles(mediaToDownload);
+		}
+
+		private List<string> GetFilesForDownload(IReadOnlyCollection<string> urls)
+		{
 			var mediaToDownload = new List<string>(urls.Count);
 
 			foreach (var url in urls)
@@ -144,7 +152,32 @@ namespace Media
 				mediaToDownload.Add(url);
 			}
 
-			DownloadAndSaveFiles(mediaToDownload);
+			return mediaToDownload;
+		}
+
+		private void CheckFilesForDelete(IReadOnlyCollection<string> urls)
+		{
+			var files = Directory.GetFiles(Settings.MediaPath);
+
+			foreach (var file in files)
+			{
+				var isNeedDeleteFile = true;
+				
+				foreach (var url in urls)
+				{
+					var fileName = Path.GetFileName(url).Trim();
+					var downloadPath = Path.Combine(Settings.MediaPath, fileName);
+
+					if (downloadPath == file)
+					{
+						isNeedDeleteFile = false;
+						break;
+					}
+				}
+				
+				if (isNeedDeleteFile)
+					File.Delete(file);
+			}
 		}
 
 		private async void DownloadAndSaveFiles(IEnumerable<string> urls)
