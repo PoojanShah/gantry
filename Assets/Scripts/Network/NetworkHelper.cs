@@ -14,7 +14,7 @@ namespace Network
 		public const string NETWORK_MESSAGE_PLAY_PREFIX = "Play_";
 		public const string NETWORK_MESSAGE_MUTE = "Command_Mute";
 		public const string NETWORK_MESSAGE_INFO_FORMAT = "_{0}:{1}"; //0 - name, 1 - id
-		public const string PING_HOST = "google.com";
+		public const string PING_HOST = "api.comfort-health.net";
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
 		public const int PING_TIMEOUT = 500;
