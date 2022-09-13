@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Configs;
@@ -109,8 +110,8 @@ namespace Media
 						thumbnailUrls.Add(f.thumbnail);
 					}
 
-				CheckFilesForDownloadAndDelete(mediaUrls, Settings.MediaPath);
-				CheckFilesForDownloadAndDelete(thumbnailUrls, Settings.ThumbnailsPath);
+				ValidateContent(mediaUrls, Settings.MediaPath);
+				ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
 			}
 			catch (Exception e)
 			{
@@ -129,7 +130,7 @@ namespace Media
 			IsDownloading = false;
 		}
 
-		private void CheckFilesForDownloadAndDelete(IReadOnlyCollection<string> urls, string path)
+		private void ValidateContent(IReadOnlyCollection<string> urls, string path)
 		{
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
@@ -147,7 +148,7 @@ namespace Media
 			foreach (var url in urls)
 			{
 				var fileNameInWeb = Path.GetFileName(url).Trim();
-				var fileName = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
+				var fileName = fileNameInWeb.Split('_').Last();
 				var downloadPath = Path.Combine(path, fileName);
 				
 				if(File.Exists(downloadPath))
@@ -170,7 +171,7 @@ namespace Media
 				foreach (var url in urls)
 				{
 					var fileNameInWeb = Path.GetFileName(url).Trim();
-					fileNameInWeb = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
+					fileNameInWeb = fileNameInWeb.Split('_').Last();
 					var downloadPath = Path.Combine(path, fileNameInWeb);
 					
 					if (downloadPath == file)
@@ -200,7 +201,7 @@ namespace Media
 				else
 				{
 					var fileNameInWeb = Path.GetFileName(url);
-					var fileName = fileNameInWeb.Substring(fileNameInWeb.IndexOf('_') + 1);
+					var fileName = fileNameInWeb.Split('_').Last();
 					var savePath = Path.Combine(path, fileName);
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
