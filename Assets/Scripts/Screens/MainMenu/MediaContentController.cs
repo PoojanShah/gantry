@@ -6,6 +6,7 @@ using Media;
 using UnityEngine;
 using UnityEngine.UI;
 using VideoPlaying;
+using Object = System.Object;
 
 namespace Screens
 {
@@ -82,6 +83,18 @@ namespace Screens
 			_swipeDetection.Init(DoSwipe);
 		}
 #endif
+		
+		public void UpdateMediaItems()
+		{
+			foreach (var item in _mediaItems)
+				Destroy(item.gameObject);
+
+			InitMediaItems();
+			
+			DisplayMedia();
+			
+			RefreshPagesButtons();
+		}
 
 		private void InitMediaItems()
 		{

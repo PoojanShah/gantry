@@ -45,15 +45,12 @@ namespace Common
 				_contourEditorController, _mediaController, _settings, _projectionController);
 #endif
 
-			_mediaController.OnMediaFileDownloaded += ReloadMediaFile;
-			_mediaController.OnDownloadCompleted += ActivateLoadingItems;
-
-			_mediaController.LoadMediaFromServer();
-
 			InitNetwork();
 
 			if(!WasCrashed(_screensManager.PlayVideo))
 				_screensManager.OpenWindow(ScreenType.MainMenu);
+			
+			_mediaController.LoadMediaFromServer();
 		}
 
 		private bool WasCrashed(Action<MediaContent> playVideoAction)
@@ -118,23 +115,7 @@ namespace Common
 #endif
 		}
 
-		private void OnDestroy()
-		{
-			_mediaController.OnMediaFileDownloaded -= ReloadMediaFile;
-			_mediaController.OnDownloadCompleted -= ActivateLoadingItems;
-
-			_networkController.Clear();
-		}
-
-		private void ActivateLoadingItems() => _screensManager.SetMediaInteractable();
-
-		private void ReloadMediaFile()
-		{
-			Settings.LoadLibrary();
-
-			_screensManager.ReloadMediaItems(_mediaController.MediaFiles, _factory, _mainConfig.MediaItemPrefab,
-				_projectionController.Play);
-		}
+		private void OnDestroy() => _networkController.Clear();
 
 		private static void InitSettings()
 		{

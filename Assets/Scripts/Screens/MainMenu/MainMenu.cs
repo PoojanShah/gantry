@@ -1,10 +1,8 @@
 using UnityEngine;
 using System;
-using Configs;
 using Core;
 using Media;
 using UnityEngine.UI;
-using VideoPlaying;
 
 namespace Screens
 {
@@ -25,6 +23,8 @@ namespace Screens
 			_mediaController = mediaController;
 			_playVideo = playVideoAction;
 
+			_mediaController.OnDownloadCompleted += RefreshMedia;
+
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_muteButton.onClick.AddListener(SwitchSound);
 
@@ -36,8 +36,14 @@ namespace Screens
 			SetCurrentOutputType(settings.IsDuoOutput);
 		}
 
+		public void RefreshMedia() => _contentController.UpdateMediaItems();
 		private void PlayMedia(MediaContent content) => _playVideo?.Invoke(content);
 		private void SwitchSound() => _settings.SwitchSound();
-		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
+		
+		private void OnDestroy()
+		{ 
+			_settingButton?.onClick.RemoveAllListeners();
+			_mediaController.OnDownloadCompleted -= RefreshMedia;
+		}
 	}
 }

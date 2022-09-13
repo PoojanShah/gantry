@@ -15,7 +15,7 @@ namespace Media
 {
 	public class MediaController
 	{
-		public event Action OnMediaFileDownloaded, OnDownloadCompleted;
+		public event Action OnDownloadCompleted;
 
 		private const string QTS_URL =
 			"https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
@@ -85,7 +85,7 @@ namespace Media
 			InitMediaContent(files);
 		}
 
-		public void LoadMediaFromServer()
+		public async void LoadMediaFromServer()
 		{
 			Debug.Log("Connection status: " + NetworkHelper.IsConnectionAvailable());
 			
@@ -110,8 +110,7 @@ namespace Media
 						thumbnailUrls.Add(f.thumbnail);
 					}
 
-				ValidateContent(mediaUrls, Settings.MediaPath);
-				ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
+				await ValidateContentAsync(mediaUrls, thumbnailUrls);
 			}
 			catch (Exception e)
 			{
@@ -119,18 +118,26 @@ namespace Media
 			}
 			finally
 			{
-				CompleteDownloading();
 			}
+		}
+
+		private async Task ValidateContentAsync(IReadOnlyCollection<string> mediaUrls,
+			IReadOnlyCollection<string> thumbnailUrls)
+		{
+			await ValidateContent(mediaUrls, Settings.MediaPath);
+			await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
+			
+			CompleteDownloading();
 		}
 
 		private void CompleteDownloading()
 		{
 			OnDownloadCompleted?.Invoke();
-
+			
 			IsDownloading = false;
 		}
 
-		private void ValidateContent(IReadOnlyCollection<string> urls, string path)
+		private async Task ValidateContent(IReadOnlyCollection<string> urls, string path)
 		{
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
@@ -138,7 +145,7 @@ namespace Media
 			var mediaToDownload = GetFilesForDownload(urls, path);
 			CheckFilesForDelete(urls, path);
 
-			DownloadAndSaveFiles(mediaToDownload, path);
+			await DownloadAndSaveFiles(mediaToDownload, path);
 		}
 
 		private List<string> GetFilesForDownload(IReadOnlyCollection<string> urls, string path)
@@ -186,7 +193,7 @@ namespace Media
 			}
 		}
 
-		private async void DownloadAndSaveFiles(IEnumerable<string> urls, string path)
+		private async Task DownloadAndSaveFiles(IEnumerable<string> urls, string path)
 		{
 			foreach (var url in urls)
 			{
@@ -207,12 +214,8 @@ namespace Media
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 
 					LoadMediaFromLocalStorage();
-
-					OnMediaFileDownloaded?.Invoke();
 				}
 			}
-
-			CompleteDownloading();
 		}
 		
 		private static bool IsExtensionMatched(string path) =>
