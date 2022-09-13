@@ -8,17 +8,16 @@ using UnityEngine.UI;
 
 namespace Screens
 {
-	public class MainMenuAndroid : MainMenuBase
+	public sealed class MainMenuAndroid : MainMenuBase
 	{
 		[SerializeField] private MediaContentController _contentController;
 		[SerializeField] private Button _settingsButton, _muteButton;
-		[SerializeField] private GameObject _loadingBlocker;
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory, Action showServerPopup)
 		{
 			_settingsButton.onClick.AddListener(() =>
 			{
-				_loadingBlocker.SetActive(true);
+				SetUiBlocker(true);
 
 				showServerPopup?.Invoke();
 			});
@@ -53,9 +52,9 @@ namespace Screens
 			LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
 			_contentController.OnThumbnailsLoaded -= AllThumbnailsLoaded;
 
-			_loadingBlocker.SetActive(false);
+			SetUiBlocker(false);
 
-			Debug.Log("completed");
+			Debug.Log("all thumbnails loaded");
 		}
 
 		private void OnDestroy()

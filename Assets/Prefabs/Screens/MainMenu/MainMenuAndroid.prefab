@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7387979895274451610}
   - component: {fileID: 3606433803529119035}
   m_Layer: 5
-  m_Name: LoadingLocker
+  m_Name: UIBlocker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -668,13 +668,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _versionTitle: {fileID: 1903276963809653225}
-  _outputType: {fileID: 0}
-  _duoOutput: {fileID: 0}
-  _singleOutput: {fileID: 0}
+  _uiInputBlocker: {fileID: 331643588397119913}
   _contentController: {fileID: 3550984181349651098}
   _settingsButton: {fileID: 2710333622384106790}
   _muteButton: {fileID: 7318555896875576152}
-  _loadingBlocker: {fileID: 331643588397119913}
 --- !u!1 &2306932430067347819
 GameObject:
   m_ObjectHideFlags: 0

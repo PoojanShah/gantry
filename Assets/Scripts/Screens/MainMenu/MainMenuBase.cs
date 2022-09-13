@@ -1,7 +1,5 @@
-using Configs;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Screens
 {
@@ -10,15 +8,9 @@ namespace Screens
 		private const string QTS_VERSION_PREFIX = "v";
 
 		[SerializeField] private TMP_Text _versionTitle;
-		[SerializeField] private Image _outputType;
-		[SerializeField] private GameObject _duoOutput, _singleOutput;
+		[SerializeField] private GameObject _uiInputBlocker;
 
 		protected void InitVersionTitle() => _versionTitle.text = QTS_VERSION_PREFIX + Application.version;
-
-		protected void SetCurrentOutputType(bool isDuo)
-		{
-			_duoOutput.SetActive(isDuo);
-			_singleOutput.SetActive(!isDuo);
-		}
+		protected void SetUiBlocker(bool isBlocked) => _uiInputBlocker.SetActive(isBlocked);
 	}
 }

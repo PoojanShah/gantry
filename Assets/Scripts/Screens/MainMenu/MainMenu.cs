@@ -8,11 +8,12 @@ using VideoPlaying;
 
 namespace Screens
 {
-	public class MainMenu : MainMenuBase
+	public sealed class MainMenu : MainMenuBase
 	{
 		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
 		[SerializeField] private MediaContentController _contentController;
+		[SerializeField] private GameObject _duoOutput, _singleOutput;
 
 		private MediaController _mediaController;
 		private OptionsSettings _settings;
@@ -34,6 +35,12 @@ namespace Screens
 			InitVersionTitle();
 
 			SetCurrentOutputType(settings.IsDuoOutput);
+		}
+
+		private void SetCurrentOutputType(bool isDuo)
+		{
+			_duoOutput.SetActive(isDuo);
+			_singleOutput.SetActive(!isDuo);
 		}
 
 		private void PlayMedia(MediaContent content) => _playVideo?.Invoke(content);
