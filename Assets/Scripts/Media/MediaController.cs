@@ -16,8 +16,10 @@ namespace Media
 	public class MediaController
 	{
 		public event Action OnMediaFileDownloaded, OnDownloadCompleted;
-		private const string QTS_URL = "https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
-		private const string QTS_REGEX_PATTERN = "<a href=\".*\">(?<name>.*)</a>";
+
+		private const string QTS_URL =
+			"https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
+
 		private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
 		
