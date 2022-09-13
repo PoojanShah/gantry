@@ -27,7 +27,7 @@ public static class Settings
 #elif UNITY_ANDROID
 	public static readonly string MediaPath = string.Empty;
 	public static string GantryPatternsPath = string.Empty;
-	public static readonly string ThumbnailsPath = string.Empty;
+	public static readonly string ThumbnailsPath =  Application.persistentDataPath + "/Thumbs/";
 	public static string ColorsConfigPath = string.Empty;
 #endif
 

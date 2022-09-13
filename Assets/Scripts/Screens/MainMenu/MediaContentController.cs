@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Core;
 using Media;
@@ -12,6 +13,8 @@ namespace Screens
 	public class MediaContentController : MonoBehaviour
 	{
 		private const int MEDIA_PER_PAGE = 6;
+
+		public event Action OnThumbnailsLoaded;
 
 		[SerializeField] private Button _back, _forward;
 		[SerializeField] private Transform _mediaParent;
@@ -28,6 +31,8 @@ namespace Screens
 #elif UNITY_ANDROID
 		private Action<int> _playVideoAction;
 		private MediaContent[] _media;
+		private int _thumbnailId = 0;
+		private Texture[] _cachedThumbnails;
 #endif
 
 #if UNITY_STANDALONE
@@ -59,6 +64,7 @@ namespace Screens
 			var mediaAmount = mediaDictionary.Count;
 
 			_media = new MediaContent[mediaAmount];
+			_cachedThumbnails = new Texture[mediaAmount];
 
 			var keys = mediaDictionary.Keys.ToArray();
 
@@ -80,6 +86,28 @@ namespace Screens
 			SetButtonInteractable(false, _media.Length > MEDIA_PER_PAGE);
 			
 			_swipeDetection.Init(DoSwipe);
+		}
+
+		public void SetThumbnail(Texture2D texture)
+		{
+			_cachedThumbnails[_thumbnailId] = texture;
+
+			Debug.Log("received thumb for " + _media[_thumbnailId].Name);
+
+			if (_thumbnailId < MEDIA_PER_PAGE)
+				_mediaItems[_thumbnailId].SetThumbnail(texture);
+
+			_thumbnailId++;
+
+			if(_thumbnailId >= _media.Length)
+				OnThumbnailsLoaded?.Invoke();
+		}
+
+		private void SaveThumbnail(Texture2D texture)
+		{
+			var fileName = Path.Combine(Settings.ThumbnailsPath, _media[_thumbnailId].Name + Constants.ExtensionPng);
+
+			File.WriteAllBytes(fileName, texture.EncodeToPNG());
 		}
 #endif
 
@@ -108,7 +136,11 @@ namespace Screens
 					continue;
 				}
 
+#if UNITY_ANDROID
+				var thumbnail = _cachedThumbnails[(_currentPage * MEDIA_PER_PAGE) + i];
+#elif UNITY_STANDALONE
 				var thumbnail = MediaController.LoadThumbnail(itemsToShow[i].Name);
+#endif
 
 				_mediaItems[i].Init(itemsToShow[i], PlayById, thumbnail);
 				_mediaItems[i].SetInteractable(true);

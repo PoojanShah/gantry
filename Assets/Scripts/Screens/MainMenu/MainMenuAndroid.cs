@@ -8,14 +8,20 @@ using UnityEngine.UI;
 
 namespace Screens
 {
-	public class MainMenuAndroid : MainMenuBase
+	public sealed class MainMenuAndroid : MainMenuBase
 	{
 		[SerializeField] private MediaContentController _contentController;
 		[SerializeField] private Button _settingsButton, _muteButton;
 
 		public void Init(GameObject mediaPrefab, ICommonFactory factory, Action showServerPopup)
 		{
-			_settingsButton.onClick.AddListener(() => showServerPopup?.Invoke());
+			_settingsButton.onClick.AddListener(() =>
+			{
+				SetUiBlocker(true);
+
+				showServerPopup?.Invoke();
+			});
+
 			_muteButton.onClick.AddListener(LocalNetworkClient.SendMuteMessage);
 
 			InitVersionTitle();
@@ -29,6 +35,26 @@ namespace Screens
 			}
 
 			LocalNetworkClient.OnMediaInfoReceived += OnMediaInfoReceived;
+			LocalNetworkClient.OnThumbnailReceived += OnThumbnailReceived;
+
+			_contentController.OnThumbnailsLoaded += AllThumbnailsLoaded;
+		}
+
+		private void OnThumbnailReceived(Texture2D texture)
+		{
+#if UNITY_ANDROID
+			_contentController.SetThumbnail(texture);
+#endif
+		}
+
+		private void AllThumbnailsLoaded()
+		{
+			LocalNetworkClient.OnThumbnailReceived -= OnThumbnailReceived;
+			_contentController.OnThumbnailsLoaded -= AllThumbnailsLoaded;
+
+			SetUiBlocker(false);
+
+			Debug.Log("all thumbnails loaded");
 		}
 
 		private void OnDestroy()

@@ -25,6 +25,8 @@ namespace Network
 		{
 #if UNITY_STANDALONE_WIN
 			_server.Clear();
+#elif UNITY_ANDROID
+			_client.Clear();
 #endif
 		}
 	}
