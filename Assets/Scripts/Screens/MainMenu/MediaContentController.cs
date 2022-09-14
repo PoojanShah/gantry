@@ -7,6 +7,7 @@ using Media;
 using UnityEngine;
 using UnityEngine.UI;
 using VideoPlaying;
+using Object = System.Object;
 
 namespace Screens
 {
@@ -110,6 +111,20 @@ namespace Screens
 			File.WriteAllBytes(fileName, texture.EncodeToPNG());
 		}
 #endif
+		
+		public void UpdateMediaItems()
+		{
+			foreach (var item in _mediaItems)
+				Destroy(item.gameObject);
+
+			InitMediaItems();
+			
+			DisplayMedia();
+			
+			RefreshPagesButtons();
+			
+			Debug.Log("Files are updated");
+		}
 
 		private void InitMediaItems()
 		{

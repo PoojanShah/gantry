@@ -8,7 +8,7 @@ using VideoPlaying;
 
 namespace Screens
 {
-	public sealed class MainMenu : MainMenuBase
+	public class MainMenu : MainMenuBase
 	{
 		[SerializeField] private Button _settingButton, _muteButton;
 		[SerializeField] private Transform _parent;
@@ -25,6 +25,8 @@ namespace Screens
 			_settings = settings;
 			_mediaController = mediaController;
 			_playVideo = playVideoAction;
+
+			_mediaController.OnDownloadCompleted += RefreshMedia;
 
 			_settingButton?.onClick.AddListener(() => { onSettingAction?.Invoke(); });
 			_muteButton.onClick.AddListener(SwitchSound);
@@ -43,8 +45,14 @@ namespace Screens
 			_singleOutput.SetActive(!isDuo);
 		}
 
+		public void RefreshMedia() => _contentController.UpdateMediaItems();
 		private void PlayMedia(MediaContent content) => _playVideo?.Invoke(content);
 		private void SwitchSound() => _settings.SwitchSound();
-		private void OnDestroy() => _settingButton?.onClick.RemoveAllListeners();
+		
+		private void OnDestroy()
+		{ 
+			_settingButton?.onClick.RemoveAllListeners();
+			_mediaController.OnDownloadCompleted -= RefreshMedia;
+		}
 	}
 }

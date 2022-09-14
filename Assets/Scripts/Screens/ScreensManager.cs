@@ -116,19 +116,6 @@ namespace Screens
 #endif
 		}
 
-		public void ReloadMediaItems(MediaContent[] media, ICommonFactory factory, GameObject mediaPrefab, Action<MediaContent> playVideoAction)
-		{
-			return;
-			//var mainMenu = _currentScreen.GetComponent<MainMenu>();
-			//mainMenu.ClearMediaItems();
-			//mainMenu.InitMediaItems(media, factory, mediaPrefab, PlayVideo);
-		}
-
-		public void SetMediaInteractable()
-		{
-			//var mainMenu = _currentScreen.GetComponent<MainMenu>();
-		}
-
 		private void InitAdminMenu(GameObject screen)
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
