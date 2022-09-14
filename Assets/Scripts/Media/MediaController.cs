@@ -120,6 +120,7 @@ namespace Media
 			await ValidateContent(mediaUrls, Settings.MediaPath);
 			await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
 			
+			LoadMediaFromLocalStorage();
 			CompleteDownloading();
 		}
 
@@ -205,8 +206,6 @@ namespace Media
 					var savePath = Path.Combine(path, fileName);
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
-
-					LoadMediaFromLocalStorage();
 				}
 			}
 		}
