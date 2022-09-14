@@ -87,9 +87,9 @@ namespace Network
 
 						UnityMainThreadDispatcher.Instance().Enqueue(() =>
 						{
-							//SaveIp();
-
 							OnMediaInfoReceived?.Invoke(mediaDictionary);
+
+							SaveIp();
 						});
 					}
 					else if (!_isThumbnailsReceived)
@@ -115,14 +115,6 @@ namespace Network
 				{
 					Debug.Log(e);
 				}
-				finally
-				{
-					//UnityMainThreadDispatcher.Instance().Enqueue(() =>
-					//{
-					//	Debug.Log("ip saved");
-					//	SaveIp();
-					//});
-				}
 			}
 		}
 
@@ -142,11 +134,6 @@ namespace Network
 			writer.Write(bytes);
 		}
 
-		private static void SaveIp()
-		{
-			var ipFirstPart = NetworkHelper.GetMyIpWithoutLastNumberString();
-
-			NetworkHelper.SaveIP(ipFirstPart, _ipLastNumber);
-		}
+		private static void SaveIp() => NetworkHelper.SaveIP(_ipLastNumber);
 	}
 }
