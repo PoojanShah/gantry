@@ -190,6 +190,8 @@ namespace Media
 				await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
 				await ValidateContent(mediaUrls, Settings.MediaPath);
 
+				Settings.LoadLibrary();
+
 				LoadMediaFromLocalStorage();
 
 				DownloadingCallback();
