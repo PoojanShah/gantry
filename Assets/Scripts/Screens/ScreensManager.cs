@@ -89,6 +89,9 @@ namespace Screens
 				case ScreenType.LoginToServerPopup:
 					InitServerPopUp(screen);
 					break;
+				case ScreenType.MediaRemovedPopup:
+					InitMediaRemovedPopUp(screen);
+					break;
 				case ScreenType.SettingsScreen:
 					InitSettingsScreen(screen);
 					break;
@@ -139,6 +142,12 @@ namespace Screens
 		private void InitServerPopUp(GameObject screen)
 		{
 			var serverPopup = screen.GetComponent<ServerLoginPopup>();
+			serverPopup.Init();
+		}
+
+		private void InitMediaRemovedPopUp(GameObject screen)
+		{
+			var serverPopup = screen.GetComponent<MediaRemovedPopup>();
 			serverPopup.Init();
 		}
 

@@ -32,12 +32,11 @@ namespace Common
 			InitSettings();
 
 			_factory = new CommonFactory();
-			_mediaController = new MediaController();
-			
 			_settings = new OptionsSettings();
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu), _settings);
+			_mediaController = new MediaController(_projectionController, ShowMediaRemovedPopup);
 			_contourEditorController = new ContourEditorController(_projectionController, _factory,
 				_mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
@@ -128,5 +127,7 @@ namespace Common
 			Settings.LoadLibrary();
 			Settings.InitialScreenWidth = Screen.currentResolution.width;
 		}
+
+		private void ShowMediaRemovedPopup() => _screensManager.OpenWindow(ScreenType.MediaRemovedPopup);
 	}
 }

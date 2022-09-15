@@ -14,6 +14,7 @@ namespace VideoPlaying
 		private readonly Action _stopAction;
 		private readonly OptionsSettings _optionsSettings;
 		public OutputType OutputType { private set; get; }
+		public string CurrentPlayingMediaName { get; private set; } = string.Empty;
 
 		private ProjectionView _projectionView;
 
@@ -79,6 +80,9 @@ namespace VideoPlaying
 					SetSoundSettings(OutputType.Primary);
 					break;
 			}
+
+			CurrentPlayingMediaName = content.Name;
+			Debug.Log(CurrentPlayingMediaName);
 		}
 
 		private void CreateProjectionView()
@@ -88,7 +92,7 @@ namespace VideoPlaying
 			_projectionView.ApplyRotation();
 		}
 
-		private void StopAndHidePlayer()
+		public void StopAndHidePlayer()
 		{
 			_projectionView.SetActive(false);
 

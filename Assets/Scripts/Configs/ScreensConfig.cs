@@ -12,7 +12,8 @@ namespace Configs
 		SettingsScreen,
 		MainMenuAndroid,
 		LoginToServerPopup,
-		OverwritePopup
+		OverwritePopup,
+		MediaRemovedPopup
 	}
 
 	[System.Serializable]

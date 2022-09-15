@@ -24,15 +24,19 @@ namespace Media
 
 		private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
-		
 		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
+		private readonly ProjectionController _projectionController;
+		private readonly Action _showMediaRemovedPopup;
 		private bool _isMediaCheckRunning;
 
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
-		public MediaController()
+		public MediaController(ProjectionController projectionController, Action showMediaRemovedPopup)
 		{
+			_projectionController = projectionController;
+			_showMediaRemovedPopup = showMediaRemovedPopup;
+
 			LoadMediaFromLocalStorage();
 		}
 
@@ -146,7 +150,9 @@ namespace Media
 		{
 			await ValidateContent(mediaUrls, Settings.MediaPath);
 			await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
-			
+
+			Settings.LoadLibrary();
+
 			LoadMediaFromLocalStorage();
 			CompleteDownloading();
 		}
@@ -193,6 +199,16 @@ namespace Media
 				Settings.LoadLibrary();
 
 				LoadMediaFromLocalStorage();
+
+				var mediaWasRemoved = 
+					MediaFiles.All(t => t.Name != _projectionController.CurrentPlayingMediaName);
+
+				if (mediaWasRemoved)
+				{
+					_projectionController.StopAndHidePlayer();
+
+					_showMediaRemovedPopup?.Invoke();
+				}
 
 				DownloadingCallback();
 			}
