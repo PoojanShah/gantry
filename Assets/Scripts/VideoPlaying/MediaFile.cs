@@ -21,7 +21,7 @@ namespace VideoPlaying
 		public MediaFilesList GetList(string content)
 		{
 			var result = JsonUtility.FromJson<MediaFilesList>("{\"MediaFiles\":" + content + "}");
-			Debug.Log(result);
+
 			return result;
 		}
 	}

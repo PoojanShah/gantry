@@ -123,7 +123,7 @@ namespace Screens
 			
 			RefreshPagesButtons();
 			
-			Debug.Log("Files are updated");
+			Debug.Log("refresh media completed");
 		}
 
 		private void InitMediaItems()

@@ -117,7 +117,11 @@ namespace Common
 #endif
 		}
 
-		private void OnDestroy() => _networkController.Clear();
+		private void OnDestroy()
+		{
+			_networkController.Clear();
+			_mediaController.Clear();
+		}
 
 		private static void InitSettings()
 		{

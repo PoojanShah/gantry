@@ -15,6 +15,8 @@ namespace Media
 {
 	public class MediaController
 	{
+		private const int CheckMediaDelayMs = 8000;
+
 		public event Action OnDownloadCompleted;
 
 		private const string QTS_URL =
@@ -24,6 +26,7 @@ namespace Media
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
 		
 		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
+		private bool _isMediaCheckRunning;
 
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
@@ -80,19 +83,16 @@ namespace Media
 
 		public async void LoadMediaFromServer()
 		{
-			Debug.Log("Connection status: " + NetworkHelper.IsConnectionAvailable());
-			
-			var request = WebRequest.Create(QTS_URL);
+			var isConnectionAvailable = NetworkHelper.IsConnectionAvailable();
+
+			Debug.Log("Connection status: " + isConnectionAvailable);
+
+			if(!isConnectionAvailable)
+				return;
+
 			try
 			{
-				var response = request.GetResponse();
-
-				using var reader = new StreamReader(response.GetResponseStream()!);
-
-				var result = reader.ReadToEnd();
-
-				var mediaFilesHelper = new MediaFilesHelper();
-				var mediaFiles = mediaFilesHelper.GetList(result).MediaFiles;
+				var mediaFiles = GetMediaListFromServer();
 				var mediaUrls = new List<string>();
 				var thumbnailUrls = new List<string>();
 
@@ -104,6 +104,8 @@ namespace Media
 					}
 
 				await ValidateContentAsync(mediaUrls, thumbnailUrls);
+
+				OnDownloadCompleted?.Invoke();
 			}
 			catch (Exception e)
 			{
@@ -111,6 +113,31 @@ namespace Media
 			}
 			finally
 			{
+			}
+		}
+
+		private static MediaFile[] GetMediaListFromServer()
+		{
+			MediaFile[] media = null;
+
+			var request = WebRequest.Create(QTS_URL);
+
+			try
+			{
+				var response = request.GetResponse();
+
+				using var reader = new StreamReader(response.GetResponseStream()!);
+
+				var result = reader.ReadToEnd();
+				var mediaFilesHelper = new MediaFilesHelper();
+
+				return mediaFilesHelper.GetList(result).MediaFiles;
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+
+				return null;
 			}
 		}
 
@@ -126,8 +153,53 @@ namespace Media
 
 		private void CompleteDownloading()
 		{
+			DownloadingCallback();
+
+			_isMediaCheckRunning = true;
+
+			CheckMediaUpdates();
+		}
+
+		private async void CheckMediaUpdates()
+		{
+			while (_isMediaCheckRunning)
+			{
+				await Task.Delay(CheckMediaDelayMs);
+
+				Debug.Log("validation");
+
+				var mediaListFromServer = GetMediaListFromServer();
+				var mediaUrls = new List<string>();
+				var thumbnailUrls = new List<string>();
+
+				foreach (var f in mediaListFromServer)
+					if (IsExtensionMatched(f.media))
+					{
+						mediaUrls.Add(f.media);
+						thumbnailUrls.Add(f.thumbnail);
+					}
+
+				if (mediaListFromServer.Length == MediaFiles.Length)
+				{
+					Debug.Log("nothing changed");
+					continue;
+				}
+
+				IsDownloading = true;
+
+				await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
+				await ValidateContent(mediaUrls, Settings.MediaPath);
+
+				LoadMediaFromLocalStorage();
+
+				DownloadingCallback();
+			}
+		}
+
+		private void DownloadingCallback()
+		{
 			OnDownloadCompleted?.Invoke();
-			
+
 			IsDownloading = false;
 		}
 
@@ -212,5 +284,10 @@ namespace Media
 		
 		private static bool IsExtensionMatched(string path) =>
 			path.Contains(AllowedExtensions[0]) || path.Contains(AllowedExtensions[1]);
+
+		public void Clear()
+		{
+			_isMediaCheckRunning = false;
+		}
 	}
 }
