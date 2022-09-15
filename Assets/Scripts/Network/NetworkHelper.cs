@@ -1,8 +1,12 @@
+using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 using Ping = System.Net.NetworkInformation.Ping;
 
 namespace Network
@@ -15,6 +19,14 @@ namespace Network
 		public const string NETWORK_MESSAGE_MUTE = "Command_Mute";
 		public const string NETWORK_MESSAGE_INFO_FORMAT = "_{0}:{1}"; //0 - name, 1 - id
 		public const string PING_HOST = "api.comfort-health.net";
+
+		public const string URL_MESSAGING =
+			"https://api.comfort-health.net/api/messages?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
+
+		public const string URL_SUBSCRIPTION = "";
+		public const string URL_CLIENT_ID = "";
+		public const string URL_STATUS = "";
+
 		public const string FILE_EXIST_REQUEST_METHOD = "HEAD";
 		public const int FILE_EXIST_TIMEOUT = 1200;
 		public const int PING_TIMEOUT = 500;
@@ -129,6 +141,45 @@ namespace Network
 			LastIpNumber = savedLastPartOfIP;
 
 			return true;
+		}
+
+		public static async void UpdateMyStatus()
+		{
+			var form = new WWWForm();
+			form.AddField("status", "online");
+
+			using var www = UnityWebRequest.Post(URL_STATUS, form);
+
+			if (!www.isDone)
+				await Task.Delay(10);
+
+			Debug.Log(www.result != UnityWebRequest.Result.Success ? www.error : "status updated");
+		}
+
+		public static string GetSubscriptionById() => GetMessage(URL_SUBSCRIPTION);
+		public static string GetClientId() => GetMessage(URL_CLIENT_ID);
+
+		private static string GetMessage(string url)
+		{
+			var request = WebRequest.Create(url);
+			var result = string.Empty;
+
+			try
+			{
+				var response = request.GetResponse();
+
+				using var reader = new StreamReader(response.GetResponseStream()!);
+
+				result = reader.ReadToEnd();
+
+				Debug.Log(result);
+			}
+			catch (Exception e)
+			{
+				Debug.Log(e);
+			}
+
+			return result;
 		}
 	}
 }
