@@ -82,7 +82,6 @@ namespace VideoPlaying
 			}
 
 			CurrentPlayingMediaName = content.Name;
-			Debug.Log(CurrentPlayingMediaName);
 		}
 
 		private void CreateProjectionView()

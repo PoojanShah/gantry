@@ -32,6 +32,11 @@ namespace Media
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
+
+		public MediaController()
+		{
+		}
+
 		public MediaController(ProjectionController projectionController, Action showMediaRemovedPopup)
 		{
 			_projectionController = projectionController;
@@ -172,8 +177,6 @@ namespace Media
 			{
 				await Task.Delay(CheckMediaDelayMs);
 
-				Debug.Log("validation");
-
 				var mediaListFromServer = GetMediaListFromServer();
 				var mediaUrls = new List<string>();
 				var thumbnailUrls = new List<string>();
@@ -187,7 +190,6 @@ namespace Media
 
 				if (mediaListFromServer.Length == MediaFiles.Length)
 				{
-					Debug.Log("nothing changed");
 					continue;
 				}
 
