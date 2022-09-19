@@ -218,6 +218,9 @@ namespace Network
 
 		private static void SendThumbnails()
 		{
+			if (_clients?.Count == 0)
+				return;
+
 			var folder = new DirectoryInfo(Settings.ThumbnailsPath);
 			var fileNames = folder.GetFiles("*.png");
 			var files = fileNames
@@ -271,6 +274,9 @@ namespace Network
 		private static void SendMediaData()
 		{
 			ConnectedClient[] clients;
+
+			if(_clients?.Count == 0)
+				return;
 
 			while (_isSending && !_isMediaDataSent)
 			{
