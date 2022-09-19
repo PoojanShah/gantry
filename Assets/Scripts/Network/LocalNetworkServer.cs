@@ -74,13 +74,14 @@ namespace Network
 			SetupServer();
 		}
 
-		private void UpdateMedia()
+		private static void UpdateMedia()
 		{
 			Debug.Log("media updated, need to update clients");
 
 			_isMediaDataSent = false;
 
 			SendMediaData();
+			SendThumbnails();
 		}
 
 		public void Clear()

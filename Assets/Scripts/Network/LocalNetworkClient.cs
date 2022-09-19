@@ -90,7 +90,6 @@ namespace Network
 				try
 				{
 					var message = Encoding.ASCII.GetString(receivedBytes);
-					Debug.Log(message);
 					
 					if (!message.StartsWith(PNG_MESSAGE))
 					{

@@ -103,19 +103,11 @@ namespace Screens
 			if(_thumbnailId >= _media.Length)
 				OnThumbnailsLoaded?.Invoke();
 		}
-
-		private void SaveThumbnail(Texture2D texture)
-		{
-			var fileName = Path.Combine(Settings.ThumbnailsPath, _media[_thumbnailId].Name + Constants.ExtensionPng);
-
-			File.WriteAllBytes(fileName, texture.EncodeToPNG());
-		}
 #endif
 		
 		public void UpdateMediaItems()
 		{
-			foreach (var item in _mediaItems)
-				Destroy(item.gameObject);
+			ClearMediaItems();
 
 			InitMediaItems();
 			
@@ -124,6 +116,15 @@ namespace Screens
 			RefreshPagesButtons();
 			
 			Debug.Log("refresh media completed");
+		}
+
+		public void ClearMediaItems()
+		{
+			if(_mediaItems == null || _mediaItems.Length == 0)
+				return;
+
+			foreach (var item in _mediaItems)
+				Destroy(item.gameObject);
 		}
 
 		private void InitMediaItems()

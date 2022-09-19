@@ -98,6 +98,8 @@ namespace VideoPlaying
 			_stopAction?.Invoke();
 
 			CameraHelper.SetMainCameraActive(true);
+
+			CurrentPlayingMediaName = string.Empty;
 		}
 
 		private void SetSoundSettings(OutputType output) =>
