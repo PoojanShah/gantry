@@ -120,6 +120,17 @@ namespace Screens
 
 		public void ClearMediaItems()
 		{
+#if UNITY_ANDROID
+			_thumbnailId = 0;
+
+			if (_cachedThumbnails != null && _cachedThumbnails.Length != 0)
+			{
+				foreach (var cachedThumbnail in _cachedThumbnails)
+					Destroy(cachedThumbnail);
+
+				_cachedThumbnails = null;
+			}
+#endif
 			if(_mediaItems == null || _mediaItems.Length == 0)
 				return;
 
