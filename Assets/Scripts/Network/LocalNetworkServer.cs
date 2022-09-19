@@ -69,7 +69,18 @@ namespace Network
 			_mediaController = mediaController;
 			_settings = settings;
 
+			_mediaController.OnMediaChanged += UpdateMedia;
+
 			SetupServer();
+		}
+
+		private void UpdateMedia()
+		{
+			Debug.Log("media updated, need to update clients");
+
+			_isMediaDataSent = false;
+
+			SendMediaData();
 		}
 
 		public void Clear()
@@ -90,6 +101,8 @@ namespace Network
 
 				_clients.Clear();
 			}
+
+			_mediaController.OnMediaChanged -= UpdateMedia;
 
 			_isSending = false;
 			_isServerRunning = false;
@@ -127,6 +140,12 @@ namespace Network
 					lock (_clients)
 					{
 						_clients.Add(new ConnectedClient(newClient));
+
+						_isMediaDataSent = false; //need to refresh
+
+						SendMediaData();
+
+						SendThumbnails();
 					}
 				}
 				catch (Exception e)
@@ -147,6 +166,31 @@ namespace Network
 						{
 							recv = stream.Read(bytes, 0, NetworkHelper.BUFFER_SIZE);
 							var received = Encoding.ASCII.GetString(bytes, 0, recv);
+
+							if (string.IsNullOrEmpty(received))
+							{
+								Debug.Log("received empty message. closing client...");
+
+								lock (_clients)
+								{
+									foreach (var c in _clients)
+									{
+										try
+										{
+											c.client.Close();
+											Debug.Log("close");
+										}
+										catch
+										{
+										}
+									}
+
+									_clients.Clear();
+								}
+
+								break;
+							}
+
 							Debug.Log("received message: " + received);
 
 							if (string.IsNullOrEmpty(received) || !received.Contains(Constants.Underscore))
@@ -168,20 +212,16 @@ namespace Network
 
 		private static void SendThread()
 		{
+			_isSending = true;
+		}
+
+		private static void SendThumbnails()
+		{
 			var folder = new DirectoryInfo(Settings.ThumbnailsPath);
 			var fileNames = folder.GetFiles("*.png");
 			var files = fileNames
 				.Select(fn => new FileItem { data = File.ReadAllBytes(fn.FullName), name = fn.FullName }).ToList();
 
-			_isSending = true;
-
-			SendMediaData();
-			
-			SendThumbnails(files);
-		}
-
-		private static void SendThumbnails(List<FileItem> files)
-		{
 			var fileId = 0;
 
 			const int millisecondsTimeout = 300;

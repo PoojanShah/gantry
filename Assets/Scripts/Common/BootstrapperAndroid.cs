@@ -19,6 +19,8 @@ namespace Common
 
 		private void Awake()
 		{
+			Application.targetFrameRate = 30;
+
 			CameraHelper.Init();
 
 			_factory = new CommonFactory();
@@ -34,6 +36,14 @@ namespace Common
 		{
 			_networkController = new NetworkController();
 #endif
+		}
+
+		private void OnApplicationQuit() => CleanUp();
+
+		private void CleanUp()
+		{
+			_networkController.Clear();
+			_mediaController.Clear();
 		}
 	}
 }

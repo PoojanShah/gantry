@@ -13,6 +13,8 @@ namespace Network
 {
 	public class LocalNetworkClient
 	{
+		private const string PNG_MESSAGE = "?PNG";
+
 		public static event Action<Dictionary<int, string>> OnMediaInfoReceived;
 		public static event Action<Texture2D> OnThumbnailReceived;
 
@@ -20,7 +22,7 @@ namespace Network
 
 		private static TcpClient _tcpClient;
 		private static Thread _networkThread;
-		private static bool _isNetworkRunning, _isMediaDataReceived, _isThumbnailsReceived;
+		private static bool _isNetworkRunning;
 
 		private static int _ipLastNumber = -1, _mediaLength = -1;
 
@@ -44,6 +46,8 @@ namespace Network
 
 			if (!_networkThread.Join(millisecondsTimeout))
 				_networkThread.Abort();
+
+			_tcpClient?.Close();
 		}
 
 		private static void NetworkThread()
@@ -60,15 +64,36 @@ namespace Network
 
 			while (_isNetworkRunning && _tcpClient.Connected && stream.CanRead)
 			{
-				var length = reader.ReadInt32();
-				var receivedBytes = reader.ReadBytes(length);
+				byte[] receivedBytes = null;
 
 				try
 				{
-					if (!_isMediaDataReceived)
-					{
-						var message = Encoding.ASCII.GetString(receivedBytes);
+					var length = reader.ReadInt32();
+					receivedBytes = reader.ReadBytes(length);
+				}
+				catch (EndOfStreamException)
+				{
+					Debug.Log("end of stream");
 
+					_tcpClient.Close();
+				}
+				catch (ThreadAbortException)
+				{
+					Debug.Log("thread abort");
+
+					_tcpClient.Close();
+				}
+
+				if (receivedBytes == null)
+					continue;
+
+				try
+				{
+					var message = Encoding.ASCII.GetString(receivedBytes);
+					Debug.Log(message);
+					
+					if (!message.StartsWith(PNG_MESSAGE))
+					{
 						var parsedData = message.Split(Constants.Underscore);
 						//{amount of media}_{media title}:{media id}_..._{media title}:{media id}
 
@@ -83,8 +108,6 @@ namespace Network
 							mediaDictionary.Add(int.Parse(videoData[1]), videoData[0]);
 						}
 
-						_isMediaDataReceived = true;
-
 						UnityMainThreadDispatcher.Instance().Enqueue(() =>
 						{
 							OnMediaInfoReceived?.Invoke(mediaDictionary);
@@ -92,7 +115,7 @@ namespace Network
 							SaveIp();
 						});
 					}
-					else if (!_isThumbnailsReceived)
+					else
 					{
 						ImagesQueue.Enqueue(receivedBytes);
 

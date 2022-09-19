@@ -27,6 +27,8 @@ namespace Common
 
 		private void Awake()
 		{
+			Application.targetFrameRate = 60;
+
 			CameraHelper.Init();
 
 			InitSettings();
@@ -36,7 +38,9 @@ namespace Common
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu), _settings);
+#if UNITY_STANDALONE
 			_mediaController = new MediaController(_projectionController, ShowMediaRemovedPopup);
+#endif
 			_contourEditorController = new ContourEditorController(_projectionController, _factory,
 				_mainConfig.ContourEditorUiPrefab);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
@@ -116,7 +120,9 @@ namespace Common
 #endif
 		}
 
-		private void OnDestroy()
+		private void OnApplicationQuit() => CleanUp();
+
+		private void CleanUp()
 		{
 			_networkController.Clear();
 			_mediaController.Clear();

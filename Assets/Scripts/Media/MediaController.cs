@@ -17,7 +17,7 @@ namespace Media
 	{
 		private const int CheckMediaDelayMs = 8000;
 
-		public event Action OnDownloadCompleted;
+		public event Action OnDownloadCompleted, OnMediaChanged;
 
 		private const string QTS_URL =
 			"https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
@@ -32,11 +32,11 @@ namespace Media
 		public bool IsDownloading { get; private set; } = true;
 		public MediaContent[] MediaFiles { get; private set; }
 
-
+#if UNITY_ANDROID
 		public MediaController()
 		{
 		}
-
+#elif UNITY_STANDALONE
 		public MediaController(ProjectionController projectionController, Action showMediaRemovedPopup)
 		{
 			_projectionController = projectionController;
@@ -44,6 +44,7 @@ namespace Media
 
 			LoadMediaFromLocalStorage();
 		}
+#endif
 
 		public void InitMediaContent(string[] paths)
 		{
@@ -176,7 +177,7 @@ namespace Media
 			while (_isMediaCheckRunning)
 			{
 				await Task.Delay(CheckMediaDelayMs);
-
+				Debug.Log("updates check");
 				var mediaListFromServer = GetMediaListFromServer();
 				var mediaUrls = new List<string>();
 				var thumbnailUrls = new List<string>();
@@ -188,10 +189,17 @@ namespace Media
 						thumbnailUrls.Add(f.thumbnail);
 					}
 
+				var mediaWasRemoved = false;
+
 				if (mediaListFromServer.Length == MediaFiles.Length)
 				{
+					Debug.Log("no updates");
+
 					continue;
 				}
+
+				if(mediaListFromServer.Length < MediaFiles.Length)
+					mediaWasRemoved = true;
 
 				IsDownloading = true;
 
@@ -202,15 +210,20 @@ namespace Media
 
 				LoadMediaFromLocalStorage();
 
-				var mediaWasRemoved = 
-					MediaFiles.All(t => t.Name != _projectionController.CurrentPlayingMediaName);
-
-				if (mediaWasRemoved)
+				if (mediaWasRemoved && !string.IsNullOrEmpty(_projectionController?.CurrentPlayingMediaName))
 				{
-					_projectionController.StopAndHidePlayer();
+					var isRemovedMediaPlayed =
+						MediaFiles.All(t => t.Name != _projectionController.CurrentPlayingMediaName);
 
-					_showMediaRemovedPopup?.Invoke();
+					if (isRemovedMediaPlayed)
+					{
+						_projectionController?.StopAndHidePlayer();
+
+						_showMediaRemovedPopup?.Invoke();
+					}
 				}
+
+				OnMediaChanged?.Invoke();
 
 				DownloadingCallback();
 			}

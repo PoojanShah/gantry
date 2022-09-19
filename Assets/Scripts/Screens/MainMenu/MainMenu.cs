@@ -4,7 +4,6 @@ using Configs;
 using Core;
 using Media;
 using UnityEngine.UI;
-using VideoPlaying;
 
 namespace Screens
 {
