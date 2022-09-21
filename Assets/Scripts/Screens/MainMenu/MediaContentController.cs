@@ -203,6 +203,9 @@ namespace Screens
 			var finishIndex = startIndex + MEDIA_PER_PAGE;
 			var result = new List<MediaContent>();
 
+			if (_mediaController?.MediaFiles == null || _mediaController?.MediaFiles.Length == 0)
+				return result.ToArray();
+
 #if UNITY_STANDALONE
 			if(finishIndex > _mediaController.MediaFiles.Length)
 				finishIndex = _mediaController.MediaFiles.Length;
@@ -237,6 +240,9 @@ namespace Screens
 
 		private int GetMaxPageNumber()
 		{
+			if (_mediaController?.MediaFiles == null || _mediaController?.MediaFiles.Length == 0)
+				return 1;
+
 #if UNITY_STANDALONE
 			var maxPageNumber = _mediaController.MediaFiles.Length / MEDIA_PER_PAGE;
 #elif UNITY_ANDROID
