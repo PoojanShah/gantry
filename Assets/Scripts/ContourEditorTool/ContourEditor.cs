@@ -666,12 +666,15 @@ namespace ContourEditorTool
 
 			instance = this;
 
+			foreach (var outputView in _projection.OutputViews)
+				outputView.SetActive(!_projection.IsEditing);
+
 			GetComponent<MeshFilter>().mesh.Clear();
 			scaling = false;
 			icons = Resources.LoadAll<Texture2D>("UI Icons");
+
 			Reset();
-			//originalVerts=GetComponent<MeshFilter>().mesh.vertices;
-			//originalTriangles=GetComponent<MeshFilter>().mesh.triangles;
+
 			instance.transform.localScale = new Vector3(Settings.originalScaleX, 1, 1);
 			foreach (GameObject o in new GameObject[] { lassoPoint, lassoLine.gameObject })
 				Graphics.SetAlpha(o.GetComponent<Renderer>().material, editingLassoAlpha);
@@ -1673,13 +1676,11 @@ namespace ContourEditorTool
 
 		public static void SelectVertex(int v)
 		{
-			//		Debug.Log("Screen.SelectVertex("+v+"); locus: "+locus/*+",vertexDot: "+vertexDot*/);
-			if (selectedVertices.Contains(v)) return;
-			if (vertexDots.Count < v + 1)
-			{
-				Debug.LogError("v (" + v + ") out of vertexDot range (" + vertexDots.Count + ")");
+			if (selectedVertices.Contains(v)) 
 				return;
-			}
+
+			if (vertexDots.Count < v + 1)
+				return;
 
 			Vector3[] verts = instance.GetComponent<MeshFilter>().mesh.vertices;
 			verts[v][1] = /*Vector3.up**/selectedZMargin;

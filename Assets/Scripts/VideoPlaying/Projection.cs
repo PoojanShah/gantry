@@ -2,13 +2,11 @@ using UnityEngine;
 using System.IO;
 using System.Collections;
 using System.Linq;
-using Configs;
 using ContourEditorTool;
 using ContourToolsAndUtilities;
 using Core;
 using Media;
 using Screens;
-using UnityEngine.Video;
 
 namespace VideoPlaying
 {
@@ -35,7 +33,7 @@ namespace VideoPlaying
 #if !UNITY_EDITOR
 		public static int DisplaysAmount => Display.displays.Length;
 #elif UNITY_EDITOR
-		public static int DisplaysAmount => 2;
+		public static int DisplaysAmount => 3;
 #endif
 
 
