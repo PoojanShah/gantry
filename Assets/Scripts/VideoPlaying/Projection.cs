@@ -162,6 +162,9 @@ namespace VideoPlaying
 						_contourEditor.Reset(0);
 				}
 
+				if(!_settings.IsDuoOutput)
+					return;
+
 				if (PlayerPrefs.HasKey(Constants.WallConfigHash) &&
 				    File.Exists(PlayerPrefs.GetString(Constants.WallConfigHash)))
 				{

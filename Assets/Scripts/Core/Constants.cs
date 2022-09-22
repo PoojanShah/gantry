@@ -27,6 +27,7 @@ namespace Core
 		public const string LastPlayedPrimaryMediaHash = "CurrentPrimaryMedia";
 		public const string LastPlayedSecondaryMediaHash = "CurrentSecondaryMedia";
 		public const float ScrollbarDefaultValue = 1.0f;
+		public const float CameraRotationSecondaryOutputs = 180.0f;
 
 		public static KeyValuePair<string, Color32>[] colorDefaults = {
 			new("white",new Color32(255,255,255,255)),

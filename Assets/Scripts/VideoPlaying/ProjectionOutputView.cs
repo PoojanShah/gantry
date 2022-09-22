@@ -18,16 +18,17 @@ namespace VideoPlaying
 
 		private Material _tempMaterial;
 
-		public void Init(int targetId)
+		public void Init(int targetId, bool isCameraRotated)
 		{
 			_camera.targetDisplay = targetId;
 			_camera.backgroundColor = Color.black;
 
 			if (targetId > 0)
 			{
-				//_camera.transform.localRotation =
-				//	Quaternion.Euler(_camera.transform.localRotation.eulerAngles +
-				//	                 Vector3.up * Constants.CameraRotationSecondaryOutputs);
+				if (isCameraRotated)
+					_camera.transform.localRotation =
+						Quaternion.Euler(_camera.transform.localRotation.eulerAngles +
+						                 Vector3.up * Constants.CameraRotationSecondaryOutputs);
 
 				transform.name = string.Format(SecondaryNameFormat, targetId);
 			}

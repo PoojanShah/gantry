@@ -21,12 +21,12 @@ namespace VideoPlaying
 			_factory = factory;
 			_stopAction = stopAction;
 
-			InitOutputPanels();
+			InitOutputPanels(optionsSettings);
 
 			_projection.Init(optionsSettings);
 		}
 
-		private void InitOutputPanels()
+		private void InitOutputPanels(OptionsSettings optionsSettings)
 		{
 			var screensAmount = Projection.DisplaysAmount;
 			var outputViews = new ProjectionOutputView[screensAmount];
@@ -34,7 +34,7 @@ namespace VideoPlaying
 			for (var i = 0; i < screensAmount; i++)
 			{
 				outputViews[i] = _factory.InstantiateObject<ProjectionOutputView>(_outputPrefab, transform);
-				outputViews[i].Init(i);
+				outputViews[i].Init(i, !optionsSettings.IsDuoOutput);
 			}
 
 			_projection.OutputViews = outputViews;
