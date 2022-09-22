@@ -123,7 +123,7 @@ namespace Screens
 		{
 			var adminMenu = screen.GetComponent<AdminMenu>();
 			adminMenu.Init(OpenPatternsEditor,
-				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.SettingsScreen)),
+				() => OpenWindow(ScreenType.SettingsScreen),
 				() => OpenWindow(ScreenType.MainMenu));
 		}
 

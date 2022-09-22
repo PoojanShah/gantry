@@ -33,7 +33,7 @@ namespace VideoPlaying
 #if !UNITY_EDITOR
 		public static int DisplaysAmount => Display.displays.Length;
 #elif UNITY_EDITOR
-		public static int DisplaysAmount => 3;
+		public static int DisplaysAmount => 2;
 #endif
 
 
