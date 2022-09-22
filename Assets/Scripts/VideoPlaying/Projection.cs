@@ -147,17 +147,31 @@ namespace VideoPlaying
 
 			yield return new WaitForEndOfFrame();
 
-			if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
-			    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
-			{
-				_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), 0);
-			}
-			else
-			{
-				Debug.Log("No saved configuration found for " + Constants.DefaultConfigHash);
+			LoadConfigurations();
 
-				if (IsEditing)
-					_contourEditor.Reset(0);
+			void LoadConfigurations()
+			{
+				if (PlayerPrefs.HasKey(Constants.DefaultConfigHash) &&
+				    File.Exists(PlayerPrefs.GetString(Constants.DefaultConfigHash)))
+				{
+					_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.DefaultConfigHash), 0);
+				}
+				else
+				{
+					if (IsEditing)
+						_contourEditor.Reset(0);
+				}
+
+				if (PlayerPrefs.HasKey(Constants.WallConfigHash) &&
+				    File.Exists(PlayerPrefs.GetString(Constants.WallConfigHash)))
+				{
+					_contourEditor.LoadConfiguration(PlayerPrefs.GetString(Constants.WallConfigHash), 1);
+				}
+				else
+				{
+					if (IsEditing)
+						_contourEditor.Reset(1);
+				}
 			}
 
 			void PlayVideo(ProjectionOutputView output)
