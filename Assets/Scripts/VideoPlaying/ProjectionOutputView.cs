@@ -25,9 +25,9 @@ namespace VideoPlaying
 
 			if (targetId > 0)
 			{
-				_camera.transform.localRotation =
-					Quaternion.Euler(_camera.transform.localRotation.eulerAngles +
-					                 Vector3.up * Constants.CameraRotationSecondaryOutputs);
+				//_camera.transform.localRotation =
+				//	Quaternion.Euler(_camera.transform.localRotation.eulerAngles +
+				//	                 Vector3.up * Constants.CameraRotationSecondaryOutputs);
 
 				transform.name = string.Format(SecondaryNameFormat, targetId);
 			}
