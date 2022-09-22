@@ -2049,16 +2049,10 @@ namespace ContourEditorTool
 		public static void LoadConfigurationByName(string name)
 		{
 			instance.LoadConfiguration(name);
-			
-			SaveDefaultConfiguration(name);
 		}
 		
-		public static void SaveConfiguration(string fileName, bool isDefault)
+		public static void SaveConfiguration(string fileName, bool isDefault, bool isDefaultWall)
 		{
-			/*#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-				return;
-			#endif*/
-			
 			if (!fileName.EndsWith(Constants.GantryExtension)) 
 				fileName += Constants.GantryExtension;
 
@@ -2119,16 +2113,21 @@ namespace ContourEditorTool
 
 			bw.Close();
 
-			if(isDefault) 
-				SaveDefaultConfiguration(path);
+			SaveDefaultConfiguration(path, isDefault, isDefaultWall);
 
 			mode = Mode.normal;
 		}
 
-		private static void SaveDefaultConfiguration(string fileName)
+		private static void SaveDefaultConfiguration(string fileName, bool isDefault, bool isDefaultWall)
 		{
-			PlayerPrefs.SetString(Constants.DefaultConfigHash, fileName);
-			PlayerPrefs.Save();
+			if(isDefault)
+				PlayerPrefs.SetString(Constants.DefaultConfigHash, fileName);
+
+			if(isDefaultWall)
+				PlayerPrefs.SetString(Constants.WallConfigHash, fileName);
+
+			if(isDefault || isDefaultWall)
+				PlayerPrefs.Save();
 		}
 
 		public void LoadConfiguration(string fileName, int screen = -1)

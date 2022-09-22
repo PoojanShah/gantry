@@ -1,6 +1,7 @@
 using System;
 using ContourToolsAndUtilities;
 using Core;
+using Screens;
 using Screens.ContourEditorScreen;
 using UnityEngine;
 using VideoPlaying;
@@ -13,14 +14,16 @@ namespace ContourEditorTool
 		private readonly ICommonFactory _factory;
 		private readonly GameObject _editorUiPrefab;
 		private readonly ProjectionController _projectionController;
-		
+		private readonly OptionsSettings _settings;
+
 		private Projection _projection;
 		private ContourEditor _contourEditor;
 		private ContourEditorUI _editorUi;
 
 		public ContourEditorController(ProjectionController projectionController, ICommonFactory factory,
-			GameObject editorUiPrefab)
+			GameObject editorUiPrefab, OptionsSettings settings)
 		{
+			_settings = settings;
 			_factory = factory;
 			_editorUiPrefab = editorUiPrefab;
 			_projectionController = projectionController;
@@ -31,7 +34,7 @@ namespace ContourEditorTool
 			if (isShow)
 			{
 				_editorUi = _factory.InstantiateObject<ContourEditorUI>(_editorUiPrefab, _projection.transform);
-				_editorUi.Init(_factory);
+				_editorUi.Init(_factory, _settings);
 			}
 			else
 				Object.Destroy(_editorUi.gameObject);

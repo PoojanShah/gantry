@@ -42,7 +42,7 @@ namespace Common
 			_mediaController = new MediaController(_projectionController, ShowMediaRemovedPopup);
 #endif
 			_contourEditorController = new ContourEditorController(_projectionController, _factory,
-				_mainConfig.ContourEditorUiPrefab);
+				_mainConfig.ContourEditorUiPrefab, _settings);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
 				_contourEditorController, _mediaController, _settings, _projectionController);

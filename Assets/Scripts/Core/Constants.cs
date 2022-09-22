@@ -23,6 +23,7 @@ namespace Core
 			ThumbnailsPrefix = "thumb-";
 
 		public const string DefaultConfigHash = "DefaultConfiguration";
+		public const string WallConfigHash = "DefaultWallConfiguration";
 		public const string LastPlayedPrimaryMediaHash = "CurrentPrimaryMedia";
 		public const string LastPlayedSecondaryMediaHash = "CurrentSecondaryMedia";
 		public const float ScrollbarDefaultValue = 1.0f;

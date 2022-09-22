@@ -12,16 +12,20 @@ namespace Screens.ContourEditorScreen.PopUps
 	public class SavePopUp : MonoBehaviour
 	{
 		[SerializeField] private TMP_InputField _inputField;
-		[SerializeField] private Toggle _saveAsDefaultToggle;
+		[SerializeField] private Toggle _saveAsDefaultToggle, _saveAsDefaultWallToggle;
 		[SerializeField] private Button _saveButton, _cancelButton;
 
 		private Action _onClose;
 		private Action _showOverwritePopup;
+		private bool _isDuoMode;
 
-		public void Init(Action onClose, Action showOverwritePopup)
+		public void Init(Action onClose, Action showOverwritePopup, bool isDuoMode)
 		{
 			_onClose = onClose;
 			_showOverwritePopup = showOverwritePopup;
+			_isDuoMode = isDuoMode;
+
+			_saveAsDefaultWallToggle.gameObject.SetActive(_isDuoMode);
 
 			_saveButton.onClick.AddListener(SaveButtonAction);
 			_cancelButton.onClick.AddListener(Clear);
@@ -41,7 +45,8 @@ namespace Screens.ContourEditorScreen.PopUps
 
 		public void Save()
 		{
-			ContourEditor.SaveConfiguration(_inputField.text, _saveAsDefaultToggle.isOn);
+			ContourEditor.SaveConfiguration(_inputField.text, _saveAsDefaultToggle.isOn,
+				!_isDuoMode || _saveAsDefaultWallToggle.isOn);
 
 			Clear();
 		}

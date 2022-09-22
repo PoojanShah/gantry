@@ -34,10 +34,12 @@ namespace Screens.ContourEditorScreen
 		[SerializeField] private AdditionalButton[] _additionalButtons;
 
 		private ICommonFactory _commonFactory;
+		private OptionsSettings _settings;
 
-		public void Init(ICommonFactory commonFactory)
+		public void Init(ICommonFactory commonFactory, OptionsSettings settings)
 		{
 			_commonFactory = commonFactory;
+			_settings = settings;
 
 			foreach (var block in _toolBar)
 				block.Init(CloseToolbarSections, SetToolTipByID, OnPointerExit, _currentInstrument);
@@ -97,7 +99,10 @@ namespace Screens.ContourEditorScreen
 			ShowToolbar(false);
 
 			var savePopup = _commonFactory.InstantiateObject<SavePopUp>(_savePopUp.gameObject, _canvas);
-			savePopup.Init(() => ShowToolbar(true), () => ShowOverwritePopUp(savePopup.Save));
+			savePopup.Init(
+				() => ShowToolbar(true), 
+				() => ShowOverwritePopUp(savePopup.Save), 
+				_settings.IsDuoOutput);
 		}
 
 		private void ShowOverwritePopUp(Action saveAction)
