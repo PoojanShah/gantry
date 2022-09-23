@@ -11,7 +11,7 @@ namespace Screens
 		[SerializeField] private TMP_Text _serverIpTitle;
 		[SerializeField] private Toggle _sound,_rotation, _queCore;
 		[SerializeField] private TMP_Dropdown _outputsNumber;
-		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort;
+		[SerializeField] private TMP_InputField _cuoCoreIp, _cuoCorePort, _deviceId;
 
 		private OptionsSettings _optionsSettings;
 
@@ -22,7 +22,11 @@ namespace Screens
 			LoadValues(_optionsSettings);
 
 			InitIpTitle();
+
+			InitDeviceId();
 		}
+
+		private void InitDeviceId() => _deviceId.text = SystemInfo.deviceUniqueIdentifier;
 		private void InitIpTitle() => _serverIpTitle.text = NetworkHelper.GetMyIp().ToString();
 
 		public void SaveAndExit()
