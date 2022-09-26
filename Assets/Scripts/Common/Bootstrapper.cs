@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using Configs;
@@ -7,7 +8,9 @@ using Core;
 using Media;
 using Network;
 using Screens;
+using Subscription;
 using UnityEngine;
+using UnityEngine.Networking;
 using VideoPlaying;
 
 namespace Common
@@ -24,6 +27,7 @@ namespace Common
 		private MediaController _mediaController;
 		private NetworkController _networkController;
 		private OptionsSettings _settings;
+		private SubscriptionController _subscriptionController;
 
 		private void Awake()
 		{
@@ -35,6 +39,7 @@ namespace Common
 
 			_factory = new CommonFactory();
 			_settings = new OptionsSettings();
+			_subscriptionController = new SubscriptionController();
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu), _settings);
@@ -115,8 +120,6 @@ namespace Common
 		{
 #if UNITY_STANDALONE_WIN // not working on MAC
 			_networkController = new NetworkController(_mediaController, _settings);
-
-			//NetworkHelper.GetMessage();
 #endif
 		}
 
@@ -126,6 +129,7 @@ namespace Common
 		{
 			_networkController.Clear();
 			_mediaController.Clear();
+			_subscriptionController.CleanUp();
 		}
 
 		private static void InitSettings()
