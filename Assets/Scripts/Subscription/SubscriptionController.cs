@@ -1,6 +1,8 @@
 
 using System;
+using System.Collections;
 using System.Threading.Tasks;
+using Core;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -21,37 +23,35 @@ namespace Subscription
 		{
 			_isSubscriptionChecking = true;
 
-			GetSubscription();
+			SubscriptionHandler();
+		}
+
+		private async void SubscriptionHandler()
+		{
+			CoroutineRunner.Instance.LaunchCoroutine(GetSubscription());
+
+			await Task.Delay(QTS_CHECK_DELAY);
+
+			SubscriptionHandler();
 		}
 
 		public void CleanUp() => _isSubscriptionChecking = false;
 
-		public async void GetSubscription()
+		public IEnumerator GetSubscription()
 		{
-			while (_isSubscriptionChecking)
-			{
-				var form = new WWWForm();
-				form.AddField(HASH_ID, "632de9097e640");
+			var form = new WWWForm();
+			form.AddField(HASH_ID, "632de9097e640");
 
-				using var www = UnityWebRequest.Post(URL_SUBSCRIPTION, form);
-				www.SendWebRequest();
+			using var www = UnityWebRequest.Post(URL_SUBSCRIPTION, form);
 
-				if (!www.isDone)
-					await Task.Delay(QTS_RESPONSE_DELAY);
+			yield return www.SendWebRequest();
 
-				try
-				{
-					var received = JsonUtility.FromJson<SubscriptionData>(www.downloadHandler.text);
+			SubscriptionData data = null;
 
-					Debug.Log(received.subscription_status);
-				}
-				catch (Exception e)
-				{
-					Debug.Log("cant get subscription " + e.Message);
-				}
+			data = JsonUtility.FromJson<SubscriptionData>(www.downloadHandler.text);
 
-				await Task.Delay(QTS_CHECK_DELAY);
-			}
+			Debug.Log(data.subscription_status);
+			www.Dispose();
 		}
 	}
 }
