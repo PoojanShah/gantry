@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using Configs;
 using Core;
 using Media;
 using UnityEngine.UI;

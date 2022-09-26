@@ -52,7 +52,6 @@ namespace Common
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
 				_contourEditorController, _mediaController, _settings, _projectionController);
 #endif
-
 			InitNetwork();
 
 			if(!WasCrashed(_screensManager.PlayVideo))
@@ -129,7 +128,6 @@ namespace Common
 		{
 			_networkController.Clear();
 			_mediaController.Clear();
-			_subscriptionController.CleanUp();
 		}
 
 		private static void InitSettings()
