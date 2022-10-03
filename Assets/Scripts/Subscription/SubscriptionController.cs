@@ -10,6 +10,8 @@ namespace Subscription
 {
 	public class SubscriptionController
 	{
+		public static bool IsSubscriptionActive = false;
+
 		public const string URL_SUBSCRIPTION =
 			"https://9838-37-73-81-3.eu.ngrok.io/api/installations/subscription?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
 
@@ -47,7 +49,9 @@ namespace Subscription
 
 				var isActive = data.subscription_status == SUBSCRIPTION_ACTIVE_MESSAGE;
 
-				if(isActive)
+				IsSubscriptionActive = isActive;
+
+				if (isActive)
 					InputBlocker.Unblock();
 				else
 					InputBlocker.Block(SUBSCRIPTION_INACTIVE_MESSAGE);

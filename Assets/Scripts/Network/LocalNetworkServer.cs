@@ -9,6 +9,7 @@ using System.Threading;
 using Core;
 using Media;
 using Screens;
+using Subscription;
 using UnityEngine;
 
 namespace Network
@@ -158,6 +159,9 @@ namespace Network
 				{
 					foreach (var connectedClient in _clients)
 					{
+						if (!SubscriptionController.IsSubscriptionActive)
+							return;
+
 						var stream = connectedClient.client.GetStream();
 
 						byte[] bytes = new byte[NetworkHelper.BUFFER_SIZE];

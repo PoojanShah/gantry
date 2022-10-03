@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Core;
+using Subscription;
 using UnityEngine;
 
 namespace Network
@@ -140,13 +141,13 @@ namespace Network
 			}
 		}
 
-		public static void SendPlayMessage(int videoId) =>
-			SendMessage(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
-
 		public static void SendMuteMessage() => SendMessage(NetworkHelper.NETWORK_MESSAGE_MUTE);
 
 		public static void SendMessage(string message)
 		{ 
+			if(!SubscriptionController.IsSubscriptionActive)
+				return;
+
 			Debug.Log("sending message: " + message);
 			var bytes = Encoding.ASCII.GetBytes(message);
 			var writer = new BinaryWriter(_tcpClient.GetStream());
