@@ -19,6 +19,7 @@ namespace Common
 	{
 		[SerializeField] private MainConfig _mainConfig;
 		[SerializeField] private Transform _canvasTransform;
+		[SerializeField] private CoroutineRunner _coroutineRunner;
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
@@ -37,6 +38,7 @@ namespace Common
 
 			InitSettings();
 
+			_coroutineRunner.Init();
 			_factory = new CommonFactory();
 			_settings = new OptionsSettings();
 			_subscriptionController = new SubscriptionController();

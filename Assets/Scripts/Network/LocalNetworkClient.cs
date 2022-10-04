@@ -141,6 +141,11 @@ namespace Network
 			}
 		}
 
+#if UNITY_ANDROID
+		public static void SendPlayMessage(int videoId) =>
+			SendMessage(NetworkHelper.NETWORK_MESSAGE_PLAY_PREFIX + videoId);
+#endif
+
 		public static void SendMuteMessage() => SendMessage(NetworkHelper.NETWORK_MESSAGE_MUTE);
 
 		public static void SendMessage(string message)

@@ -10,7 +10,7 @@ namespace Core
 
 		private List<IEnumerator> _coroutines;
 
-		private void Awake()
+		public void Init()
 		{
 			Instance = this;
 

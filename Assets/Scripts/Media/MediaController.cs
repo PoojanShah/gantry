@@ -20,7 +20,7 @@ namespace Media
 		public event Action OnDownloadCompleted, OnMediaChanged;
 
 		private const string QTS_URL =
-			"https://api.comfort-health.net/api/videos?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
+			"https://8eba-37-73-91-76.eu.ngrok.io/api/media?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
 
 		private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
@@ -131,7 +131,7 @@ namespace Media
 			MediaFile[] media = null;
 
 			var request = WebRequest.Create(QTS_URL);
-			//request.Headers.Add("InstallationId", "AndrewTest");
+			request.Headers.Add("InstallationId", "AndrewTest");
 
 			try
 			{
