@@ -2201,6 +2201,16 @@ namespace ContourEditorTool
 						Debug.Log("Farbe: " + c);
 						if (screen > -1) bo.lassoObject.transform.position += _projection.ScreenPosition(screen);
 					}
+					else if (screen != -1)
+					{
+						if (ellip)
+							BuildEllipseMesh(bo);
+						else
+							BuildRectMesh(bo);
+						
+						if (screen > -1)
+							bo.lassoObject.transform.position += _projection.ScreenPosition(screen);
+					}
 
 					blackouts.Add(bo);
 				}
@@ -2218,6 +2228,164 @@ namespace ContourEditorTool
 			undos.Clear();
 			undo = 0;
 			mode = Mode.normal;
+		}
+
+		private void BuildRectMesh(Blackout bo)
+		{
+			const string rectObjectName = "Blackout Rect";
+
+			var rectObject = CreateMesh(rectObjectName, bo.farbe);
+			
+			_lassoObjects.Add(rectObject);
+
+			MeshFilter filter = rectObject.GetComponent<MeshFilter>();
+			Mesh mesh = filter.mesh;
+			
+			mesh.Clear();
+
+			var rect = bo.rect;
+			
+			Vector3[] vertices = {
+				new(rect.xMin, Screen.height - rect.yMin, 0),
+				new(rect.xMax, Screen.height - rect.yMin, 0),
+				new(rect.xMin, Screen.height - rect.yMax, 0),
+				new(rect.xMax, Screen.height - rect.yMax, 0)
+			};
+			
+			for (var i = 0; i < vertices.Length; i++)
+				vertices[i] = CameraHelper.Camera.ScreenToWorldPoint(vertices[i]) + CameraHelper.Camera.transform.forward;
+
+			mesh.vertices = vertices;
+			
+			Vector3[] normals = new Vector3[mesh.vertices.Length];
+			
+			for (int n = 0; n < normals.Length; n++)
+				normals[n] = Vector3.back;
+			
+			Vector2[] uvs = new Vector2[mesh.vertices.Length];
+			
+			for (int u = 0; u < uvs.Length; u++) 
+				uvs[u] = Vector2.zero;
+			
+			int[] triangles = new int[mesh.vertices.Length * 3];
+			
+			for (int v = 2, t = 0; v <= mesh.vertices.Length; v++)
+			{
+				triangles[t++] = 0;
+				triangles[t++] = v - 1;
+				triangles[t++] = v % mesh.vertices.Length > 0 ? v % mesh.vertices.Length : 1;
+			}
+
+			mesh.normals = normals;
+			mesh.uv = uvs;
+			mesh.triangles = triangles;
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			
+			rectObject.GetComponent<MeshCollider>().sharedMesh = mesh;
+			rectObject.GetComponent<MeshRenderer>().material.color = bo.farbe;
+
+			bo.lassoObject = rectObject;
+		}
+
+		private void BuildEllipseMesh(Blackout bo)
+		{
+			const string rectObjectName = "Blackout Ellipse";
+			const int triangleCount = 30;
+			
+			var rect = bo.rect.FlipY();
+			var pos = CameraHelper.Camera.ScreenToWorldPoint(rect.position) + CameraHelper.Camera.transform.forward;
+
+			var topLeftPoint = new Vector3(rect.xMin, Screen.height - rect.yMin, 0);
+			var topRightPoint = new Vector3(rect.xMax, Screen.height - rect.yMin, 0);
+			var botLeftPoint = new Vector3(rect.xMin, Screen.height - rect.yMax, 0);
+			
+			topLeftPoint = CameraHelper.Camera.ScreenToWorldPoint(topLeftPoint) + CameraHelper.Camera.transform.forward;
+			topRightPoint = CameraHelper.Camera.ScreenToWorldPoint(topRightPoint) + CameraHelper.Camera.transform.forward;
+			botLeftPoint = CameraHelper.Camera.ScreenToWorldPoint(botLeftPoint) + CameraHelper.Camera.transform.forward;
+			
+			var height = (botLeftPoint - topLeftPoint).magnitude/2; //magic number, IDK why ...
+			var width = (topRightPoint - topLeftPoint).magnitude/2;
+			
+			var semiMajor = width;
+			var semiMinor = height;
+
+			var x = pos.x + width;
+			var y = pos.y;
+			var z = pos.z + height;
+
+			var ellipseObject = CreateMesh(rectObjectName, bo.farbe);
+			
+			_lassoObjects.Add(ellipseObject);
+
+			MeshFilter filter = ellipseObject.GetComponent<MeshFilter>();
+			Mesh mesh = filter.mesh;
+			
+			mesh.Clear();
+
+			Vector3 center = new Vector3 (x, y, z);
+			ellipseObject.transform.position = center;
+
+			float dTh = (2 * Mathf.PI / triangleCount);
+
+			Vector3[] vertices = new Vector3[triangleCount * 3];
+
+			for (int index = 0; index < triangleCount; index++) 
+			{
+				vertices [index * 3] = new Vector3 (0, 0, 0);
+
+				float th1 = dTh * (index + 1);
+				vertices [index * 3 + 1] = new Vector3 (semiMajor * Mathf.Cos (th1), 0, semiMinor * Mathf.Sin (th1));
+
+				float th2 = dTh * (index);
+				vertices [index * 3 + 2] = new Vector3 (semiMajor * Mathf.Cos (th2), 0, semiMinor * Mathf.Sin (th2));
+			}
+
+			mesh.vertices = vertices;
+
+			int[] triangles = new int[triangleCount * 3]; 
+			
+			for (int i = 0; i < triangleCount * 3; i++) 
+				triangles [i] = i;
+			
+			Vector3[] normals = new Vector3[mesh.vertices.Length];
+			
+			for (int n = 0; n < normals.Length; n++)
+				normals[n] = Vector3.back;
+			
+			Vector2[] uvs = new Vector2[mesh.vertices.Length];
+			
+			for (int u = 0; u < uvs.Length; u++) 
+				uvs[u] = Vector2.zero;
+			
+			mesh.normals = normals;
+			mesh.uv = uvs;
+			mesh.triangles = triangles;
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			
+			ellipseObject.GetComponent<MeshCollider>().sharedMesh = mesh;
+			ellipseObject.GetComponent<MeshRenderer>().material.color = bo.farbe;
+
+			bo.lassoObject = ellipseObject;
+		}
+
+		private GameObject CreateMesh(string name, Color color)
+		{
+			const string objectTag = "Blackout";
+			const string guiTextShader = "GUI/Text Shader";
+
+			var newObject = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer),
+				typeof(MeshCollider));
+
+			newObject.GetComponent<MeshRenderer>().material = instance.lassoPoint.GetComponent<MeshRenderer>().material;
+			newObject.GetComponent<MeshCollider>().convex = true;
+			newObject.layer = LayerMask.NameToLayer(objectTag);
+			newObject.tag = objectTag;
+			newObject.GetComponent<MeshRenderer>().material.shader = Shader.Find(guiTextShader);
+			newObject.GetComponent<MeshRenderer>().material.color = color == default ? Color.black : color;
+
+			return newObject;
 		}
 	}
 }
