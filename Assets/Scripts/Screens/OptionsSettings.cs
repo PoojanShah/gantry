@@ -12,15 +12,16 @@ namespace Screens
 		private const string ROTATION_KEY = "Rotation";
 		private const string SOUND_KEY = "Sound";
 		private const string CUE_CORE_KEY = "CueCore";
+		private const string DEBUG_PANEL_KEY = "DebugPanel";
 		
-		public bool IsSoundOn, IsRotationOn, IsCueCoreEnabled;
+		public bool IsSoundOn, IsRotationOn, IsCueCoreEnabled, IsDebugPanelOn;
 		public bool IsDuoOutput;
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
 
 		public OptionsSettings() => Load();
 
-		public void Save(bool sound, bool rotation, bool isDuo, string cuoCoreIp, int cuoCorePort, bool isCueCore)
+		public void Save(bool sound, bool rotation, bool isDuo, string cuoCoreIp, int cuoCorePort, bool isCueCore, bool isDebugOn)
 		{
 			IsSoundOn = sound;
 			IsRotationOn = rotation;
@@ -28,6 +29,7 @@ namespace Screens
 			CuoCoreIp = cuoCoreIp;
 			CuoCorePort = cuoCorePort;
 			IsCueCoreEnabled = isCueCore;
+			IsDebugPanelOn = isDebugOn;
 
 			SaveToPlayerPrefs();
 		}
@@ -40,6 +42,8 @@ namespace Screens
 			IsRotationOn = Convert.ToBoolean(PlayerPrefs.GetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn)));
 			IsSoundOn = Convert.ToBoolean(PlayerPrefs.GetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn)));
 			IsCueCoreEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled)));
+			IsDebugPanelOn = Convert.ToBoolean(PlayerPrefs.GetInt(DEBUG_PANEL_KEY, Convert.ToInt32(IsDebugPanelOn)));
+			
 
 			if (Projection.DisplaysAmount == 1)
 				IsDuoOutput = false;
@@ -53,6 +57,7 @@ namespace Screens
 			PlayerPrefs.SetInt(ROTATION_KEY, Convert.ToInt32(IsRotationOn));
 			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 			PlayerPrefs.SetInt(CUE_CORE_KEY, Convert.ToInt32(IsCueCoreEnabled));
+			PlayerPrefs.SetInt(DEBUG_PANEL_KEY, Convert.ToInt32(IsDebugPanelOn));
 		}
 
 		public void SwitchSound()

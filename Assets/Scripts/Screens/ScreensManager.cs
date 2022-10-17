@@ -22,12 +22,13 @@ namespace Screens
 		private readonly MediaController _mediaController;
 		private readonly OptionsSettings _optionsSettings;
 		private readonly ProjectionController _projectionController;
+		private readonly Transform _debugPanel;
 		private GameObject _currentScreen;
 
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 		public ScreensManager(ICommonFactory factory, MainConfig mainConfig, Transform canvasTransform,
 			Action<MediaContent> playAction, ContourEditorController contourEditorController,
-			MediaController mediaController, OptionsSettings optionsSettings, ProjectionController projectionController)
+			MediaController mediaController, OptionsSettings optionsSettings, ProjectionController projectionController, Transform debugPanel)
 		{
 			_factory = factory;
 			_mainConfig = mainConfig;
@@ -37,6 +38,7 @@ namespace Screens
 			_mediaController = mediaController;
 			_optionsSettings = optionsSettings;
 			_projectionController = projectionController;
+			_debugPanel = debugPanel;
 		}
 
 #elif UNITY_ANDROID
@@ -130,7 +132,7 @@ namespace Screens
 		private void InitSettingsScreen(GameObject screen)
 		{
 			var libraryOptions = screen.GetComponent<SettingScreen>();
-			libraryOptions.Init(_factory, () => OpenWindow(ScreenType.AdminMenu), _optionsSettings);
+			libraryOptions.Init(_factory, () => OpenWindow(ScreenType.AdminMenu), _optionsSettings, _debugPanel);
 		}
 
 		private void InitExitPopUp(GameObject screen)
