@@ -744,6 +744,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputBlocker
       objectReference: {fileID: 0}
+    - target: {fileID: 6449821578770295189, guid: e68feaf442904b045baacb1f24bc6c40,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6759970852126817050, guid: e68feaf442904b045baacb1f24bc6c40,
         type: 3}
       propertyPath: m_Pivot.x

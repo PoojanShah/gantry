@@ -12,6 +12,7 @@ namespace Screens
 		[SerializeField] private Transform _parent;
 		[SerializeField] private MediaContentController _contentController;
 		[SerializeField] private GameObject _duoOutput, _singleOutput;
+		[SerializeField] private ToggleGroupController _outputTypeRadioButtons;
 
 		private MediaController _mediaController;
 		private OptionsSettings _settings;
@@ -34,7 +35,8 @@ namespace Screens
 #endif
 			InitVersionTitle();
 
-			SetCurrentOutputType(settings.IsDuoOutput);
+			//SetCurrentOutputType(settings.IsDuoOutput);
+			_outputTypeRadioButtons.Init(settings);
 		}
 
 		private void SetCurrentOutputType(bool isDuo)

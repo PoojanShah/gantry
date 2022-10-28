@@ -17,6 +17,7 @@ namespace Screens
 		public bool IsDuoOutput;
 		public string CuoCoreIp = "192.168.1.10";
 		public int CuoCorePort = 7000;
+		public OutputType OutputType;
 
 		public OptionsSettings() => Load();
 
@@ -61,5 +62,7 @@ namespace Screens
 
 			PlayerPrefs.SetInt(SOUND_KEY, Convert.ToInt32(IsSoundOn));
 		}
+
+		public void SwitchOutputType(OutputType newValue) => OutputType = newValue;
 	}
 }

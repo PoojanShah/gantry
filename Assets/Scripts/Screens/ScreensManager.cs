@@ -110,8 +110,6 @@ namespace Screens
 			mainMenu.Init(_mediaController, PlayVideo,
 				() => OpenPasswordPopUp(() => OpenWindow(ScreenType.AdminMenu)), 
 				Application.Quit, _mainConfig.MediaItemPrefab, _factory, _optionsSettings);
-
-			_projectionController.InitOutputType();
 #elif UNITY_ANDROID
 			var mainMenu = screen.GetComponent<MainMenuAndroid>();
 			mainMenu.Init(_mainConfig.MediaItemPrefab, _factory, 

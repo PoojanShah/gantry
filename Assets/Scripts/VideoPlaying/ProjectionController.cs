@@ -47,6 +47,8 @@ namespace VideoPlaying
 
 		public void Play(MediaContent content)
 		{
+			OutputType = _optionsSettings.OutputType;
+			
 			if (_projectionView != null)
 			{
 				_projectionView.SetActive(true);
