@@ -20,6 +20,7 @@ namespace Common
 		[SerializeField] private MainConfig _mainConfig;
 		[SerializeField] private Transform _canvasTransform;
 		[SerializeField] private CoroutineRunner _coroutineRunner;
+		[SerializeField] private Transform _debugPanel;
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
@@ -52,7 +53,7 @@ namespace Common
 				_mainConfig.ContourEditorUiPrefab, _settings);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController, _mediaController, _settings, _projectionController);
+				_contourEditorController, _mediaController, _settings, _projectionController, _debugPanel);
 #endif
 			InitNetwork();
 
@@ -60,6 +61,8 @@ namespace Common
 				_screensManager.OpenWindow(ScreenType.MainMenu);
 			
 			_mediaController.LoadMediaFromServer();
+			
+			_debugPanel.gameObject.SetActive(_settings.IsDebugPanelOn);
 		}
 
 		private bool WasCrashed(Action<MediaContent> playVideoAction)
