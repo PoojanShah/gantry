@@ -20,9 +20,9 @@ namespace Media
 		public event Action OnDownloadCompleted, OnMediaChanged;
 
 		private const string QTS_URL =
-			"https://8eba-37-73-91-76.eu.ngrok.io/api/media?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df";
+            "https://api.comfort-health.net/api/media?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df"; //https://8eba-37-73-91-76.eu.ngrok.io | https://ed99-37-73-146-24.eu.ngrok.io
 
-		private const string QTS_IMAGE_EXTENSION = ".jpg";
+        private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
 		private static readonly string[] AllowedExtensions = { QTS_IMAGE_EXTENSION, QTS_VIDEO_EXTENSION };
 		private readonly ProjectionController _projectionController;
@@ -93,12 +93,12 @@ namespace Media
 
 		public async void LoadMediaFromServer()
 		{
-			var isConnectionAvailable = NetworkHelper.IsConnectionAvailable();
+			//var isConnectionAvailable = NetworkHelper.IsConnectionAvailable();
 
-			Debug.Log("Connection status: " + isConnectionAvailable);
+			//Debug.Log("Connection status: " + isConnectionAvailable);
 
-			if(!isConnectionAvailable)
-				return;
+			//if(!isConnectionAvailable)
+				//return;
 
 			try
 			{
