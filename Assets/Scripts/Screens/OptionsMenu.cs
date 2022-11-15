@@ -23,7 +23,7 @@ namespace Screens
 			
 			InitDebugToggle(debugPanel);
 
-			//InitIpTitle();
+			InitIpTitle();
 
 			InitDeviceId();
 		}

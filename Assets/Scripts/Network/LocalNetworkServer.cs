@@ -117,7 +117,7 @@ namespace Network
 
 			var myIpAddress = NetworkHelper.GetMyIp();
 
-			if(myIpAddress == null)
+            if (myIpAddress == null)
 				return;
 
 			_listenerThread = new Thread(ListenThread);
@@ -129,8 +129,8 @@ namespace Network
 
 		private static void ListenThread()
 		{
-			_server = new TcpListener(NetworkHelper.GetMyIp(), NetworkHelper.PORT);
-			_server.Start();
+			_server = new TcpListener(IPAddress.Any, NetworkHelper.PORT); //NetworkHelper.GetMyIp()
+            _server.Start();
 			_isServerRunning = true;
 
 			while (_isServerRunning)
@@ -139,7 +139,7 @@ namespace Network
 				{
 					var newClient = _server.AcceptTcpClient();
 
-					lock (_clients)
+                    lock (_clients)
 					{
 						_clients.Add(new ConnectedClient(newClient));
 
