@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using Configs;
@@ -7,7 +8,9 @@ using Core;
 using Media;
 using Network;
 using Screens;
+using Subscription;
 using UnityEngine;
+using UnityEngine.Networking;
 using VideoPlaying;
 
 namespace Common
@@ -16,6 +19,8 @@ namespace Common
 	{
 		[SerializeField] private MainConfig _mainConfig;
 		[SerializeField] private Transform _canvasTransform;
+		[SerializeField] private CoroutineRunner _coroutineRunner;
+		[SerializeField] private Transform _debugPanel;
 
 		private ICommonFactory _factory;
 		private ScreensManager _screensManager;
@@ -24,6 +29,7 @@ namespace Common
 		private MediaController _mediaController;
 		private NetworkController _networkController;
 		private OptionsSettings _settings;
+		private SubscriptionController _subscriptionController;
 
 		private void Awake()
 		{
@@ -33,8 +39,10 @@ namespace Common
 
 			InitSettings();
 
+			_coroutineRunner.Init();
 			_factory = new CommonFactory();
 			_settings = new OptionsSettings();
+			_subscriptionController = new SubscriptionController();
 
 			_projectionController = new ProjectionController(_factory, _mainConfig.ProjectionSetup,
 				() => _screensManager.OpenWindow(ScreenType.MainMenu), _settings);
@@ -45,15 +53,16 @@ namespace Common
 				_mainConfig.ContourEditorUiPrefab, _settings);
 #if UNITY_STANDALONE || (UNITY_EDITOR && !UNITY_ANDROID)
 			_screensManager = new ScreensManager(_factory, _mainConfig, _canvasTransform, _projectionController.Play,
-				_contourEditorController, _mediaController, _settings, _projectionController);
+				_contourEditorController, _mediaController, _settings, _projectionController, _debugPanel);
 #endif
-
 			InitNetwork();
 
 			if(!WasCrashed(_screensManager.PlayVideo))
 				_screensManager.OpenWindow(ScreenType.MainMenu);
 			
 			_mediaController.LoadMediaFromServer();
+			
+			_debugPanel.gameObject.SetActive(_settings.IsDebugPanelOn);
 		}
 
 		private bool WasCrashed(Action<MediaContent> playVideoAction)
@@ -115,8 +124,6 @@ namespace Common
 		{
 #if UNITY_STANDALONE_WIN // not working on MAC
 			_networkController = new NetworkController(_mediaController, _settings);
-
-			//NetworkHelper.GetMessage();
 #endif
 		}
 
