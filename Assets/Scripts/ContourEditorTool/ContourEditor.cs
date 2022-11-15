@@ -1996,6 +1996,7 @@ namespace ContourEditorTool
 			
 		}
 
+        [GUITargetAttribute(0,1)]
 		private void OnGUI()
 		{
 			if (HideGUI)
