@@ -159,8 +159,8 @@ namespace Network
 				{
 					foreach (var connectedClient in _clients)
 					{
-						if (!SubscriptionController.IsSubscriptionActive)
-							return;
+						//if (!SubscriptionController.IsSubscriptionActive)
+							//return;
 
 						var stream = connectedClient.client.GetStream();
 

@@ -150,8 +150,8 @@ namespace Network
 
 		public static void SendMessage(string message)
 		{ 
-			if(!SubscriptionController.IsSubscriptionActive)
-				return;
+			//if(!SubscriptionController.IsSubscriptionActive)
+				//return;
 
 			Debug.Log("sending message: " + message);
 			var bytes = Encoding.ASCII.GetBytes(message);
