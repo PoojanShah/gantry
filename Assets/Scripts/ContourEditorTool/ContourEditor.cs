@@ -2313,7 +2313,7 @@ namespace ContourEditorTool
 
 			var x = pos.x + width;
 			var y = pos.y;
-			var z = pos.z + height;
+			var z = pos.z - height;
 
 			var ellipseObject = CreateMesh(rectObjectName, bo.farbe);
 			
