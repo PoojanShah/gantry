@@ -20,7 +20,7 @@ namespace Media
 		public event Action OnDownloadCompleted, OnMediaChanged;
 
 		private const string QTS_URL =
-            "https://api.comfort-health.net/api/media?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df"; //https://8eba-37-73-91-76.eu.ngrok.io | https://ed99-37-73-146-24.eu.ngrok.io
+			"https://api.comfort-health.net/api/media?token=30b1ebfd3225b7b0454854ad59135df86d78372d70bb0a553d1e417c3f7bb3df"; //" | https://ed99-37-73-146-24.eu.ngrok.io";
 
         private const string QTS_IMAGE_EXTENSION = ".jpg";
 		private const string QTS_VIDEO_EXTENSION = ".mp4";
@@ -131,7 +131,7 @@ namespace Media
 			MediaFile[] media = null;
 
 			var request = WebRequest.Create(QTS_URL);
-			request.Headers.Add("InstallationId", "AndrewTest");
+			request.Headers.Add("InstallationId", "Andrewtest1000");
 
 			try
 			{
@@ -254,9 +254,7 @@ namespace Media
 
 			foreach (var url in urls)
 			{
-				var fileNameInWeb = Path.GetFileName(url).Trim();
-				var fileName = fileNameInWeb.Split(Constants.Underscore).Last();
-				var downloadPath = Path.Combine(path, fileName);
+				var downloadPath = GetFileNameFromLink(url, path);
 				
 				if(File.Exists(downloadPath))
 					continue;
@@ -277,9 +275,7 @@ namespace Media
 				
 				foreach (var url in urls)
 				{
-					var fileNameInWeb = Path.GetFileName(url).Trim();
-					fileNameInWeb = fileNameInWeb.Split(Constants.Underscore).Last();
-					var downloadPath = Path.Combine(path, fileNameInWeb);
+					var downloadPath = GetFileNameFromLink(url, path);
 					
 					if (downloadPath == file)
 					{
@@ -307,13 +303,26 @@ namespace Media
 					Debug.Log(www.error);
 				else
 				{
-					var fileNameInWeb = Path.GetFileName(url);
-					var fileName = fileNameInWeb.Split(Constants.Underscore).Last();
-					var savePath = Path.Combine(path, fileName);
+					var savePath = GetFileNameFromLink(url, path);
 
 					await File.WriteAllBytesAsync(savePath, www.downloadHandler.data);
 				}
 			}
+		}
+
+		private string GetFileNameFromLink(string url, string path)
+		{
+
+			var fileNameInWeb = Path.GetFileName(url);
+			var fileNameParts = fileNameInWeb.Split(Constants.Underscore);
+			var fileName = "";
+
+			for (int i = 1; i < fileNameParts.Length; i++)
+				fileName += $"{fileNameParts[i]} ";
+
+			var savePath = Path.Combine(path, fileName[..^1]);
+
+			return savePath;
 		}
 		
 		private static bool IsExtensionMatched(string path) =>
