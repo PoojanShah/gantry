@@ -280,7 +280,7 @@ namespace ContourEditorTool
 
 					int b;
 					for (b = blackouts.Count - 1; b > -1; b--)
-						if (blackouts[b].Contains(SRSUtilities.adjustedFlipped))
+						if (blackouts[b].Contains(SRSUtilities.adjustedFlipped) && lassoBlackout == null)
 						{
 							Blackout.Select(b);
 							break;
@@ -401,7 +401,7 @@ namespace ContourEditorTool
 
 					int b;
 					for (b = blackouts.Count - 1; b > -1; b--)
-						if ( /*!blackouts[i].deleted&&*/blackouts[b].Contains(SRSUtilities.adjustedFlipped))
+						if (blackouts[b].Contains(SRSUtilities.adjustedFlipped) && lassoBlackout == null)
 						{
 							Blackout.Select(b);
 							break;
