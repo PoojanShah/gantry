@@ -39,27 +39,35 @@ namespace Subscription
 	    public async Task GetSubscriptionTask()
 	    {
             using var www = UnityWebRequest.Get(URL_SUBSCRIPTION);
-            www.SetRequestHeader(HEADER_KEY, "AndrewTest"); //this is test. in prod use SystemInfo.deviceUniqueIdentifier as value instead of AndrewTest
+            www.SetRequestHeader(HEADER_KEY, SystemInfo.deviceUniqueIdentifier); //this is test. in prod use SystemInfo.deviceUniqueIdentifier as value instead of AndrewTest
             await www.SendWebRequest();
 
-            var data = JsonUtility.FromJson<SubscriptionData>(www.downloadHandler.text);
-            Debug.Log(data.subscription_status);
-            var isActive = data.subscription_status is SUBSCRIPTION_ACTIVE or SUBSCRIPTION_TRIAL;
+            try
+            {
+	            var data = JsonUtility.FromJson<SubscriptionData>(www.downloadHandler.text);
+	            Debug.Log(data.subscription_status);
+	            var isActive = data.subscription_status is SUBSCRIPTION_ACTIVE or SUBSCRIPTION_TRIAL;
 
-            IsSubscriptionActive = isActive;
-
-            if (isActive)
-                InputBlocker.Unblock();
-            else
-                InputBlocker.Block(SUBSCRIPTION_INACTIVE_MESSAGE);
-
+	            IsSubscriptionActive = isActive;
+	            
+	            if (isActive)
+		            InputBlocker.Unblock();
+	            else
+		            InputBlocker.Block(SUBSCRIPTION_INACTIVE_MESSAGE);
+            }
+            catch
+            {
+	            InputBlocker.Block(SUBSCRIPTION_INACTIVE_MESSAGE);
+	            Debug.LogError("Id is not exist or another problem");
+            }
+            
             www.Dispose();
         }
 
 		public IEnumerator GetSubscription()
 		{
 			using var www = UnityWebRequest.Get(URL_SUBSCRIPTION);
-			www.SetRequestHeader(HEADER_KEY, "AndrewTest"); //this is test. in prod use SystemInfo.deviceUniqueIdentifier as value instead of AndrewTest
+			www.SetRequestHeader(HEADER_KEY, SystemInfo.deviceUniqueIdentifier); //this is test. in prod use SystemInfo.deviceUniqueIdentifier as value instead of AndrewTest
 
 			yield return www.SendWebRequest();
 

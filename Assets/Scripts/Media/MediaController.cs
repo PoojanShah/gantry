@@ -131,7 +131,7 @@ namespace Media
 			MediaFile[] media = null;
 
 			var request = WebRequest.Create(QTS_URL);
-			request.Headers.Add("InstallationId", "Andrewtest1000");
+			request.Headers.Add("InstallationId", SystemInfo.deviceUniqueIdentifier);
 
 			try
 			{

@@ -21,7 +21,7 @@ namespace Core
 		public static void Block(string message)
 		{
 			_blocker.SetActive(true);
-			_message.text = message;
+			_message.text = message + $"\nID: {SystemInfo.deviceUniqueIdentifier}";
 
 			_transform.SetAsLastSibling();
 		}
