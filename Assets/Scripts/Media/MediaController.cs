@@ -93,24 +93,19 @@ namespace Media
 
 		public async void LoadMediaFromServer()
 		{
-			//var isConnectionAvailable = NetworkHelper.IsConnectionAvailable();
-
-			//Debug.Log("Connection status: " + isConnectionAvailable);
-
-			//if(!isConnectionAvailable)
-				//return;
-
 			try
 			{
 				var mediaFiles = GetMediaListFromServer();
-				var mediaUrls = new List<string>();
-				var thumbnailUrls = new List<string>();
+				var mediaUrls = new List<MediaUrl>();
+				var thumbnailUrls = new List<MediaUrl>();
 
 				foreach (var f in mediaFiles)
 					if (IsExtensionMatched(f.media))
 					{
-						mediaUrls.Add(f.media);
-						thumbnailUrls.Add(f.thumbnail);
+						var mediaUrl = new MediaUrl(f.media, f.title);
+						var thumbnailUrl = new MediaUrl(f.thumbnail, (Constants.ThumbnailsPrefix + f.title));
+						mediaUrls.Add(mediaUrl);
+						thumbnailUrls.Add(thumbnailUrl);
 					}
 
 				await ValidateContentAsync(mediaUrls, thumbnailUrls);
@@ -152,8 +147,8 @@ namespace Media
 			}
 		}
 
-		private async Task ValidateContentAsync(IReadOnlyCollection<string> mediaUrls,
-			IReadOnlyCollection<string> thumbnailUrls)
+		private async Task ValidateContentAsync(IReadOnlyCollection<MediaUrl> mediaUrls,
+			IReadOnlyCollection<MediaUrl> thumbnailUrls)
 		{
 			await ValidateContent(mediaUrls, Settings.MediaPath);
 			await ValidateContent(thumbnailUrls, Settings.ThumbnailsPath);
@@ -180,14 +175,16 @@ namespace Media
 				await Task.Delay(CheckMediaDelayMs);
 				Debug.Log("updates check");
 				var mediaListFromServer = GetMediaListFromServer();
-				var mediaUrls = new List<string>();
-				var thumbnailUrls = new List<string>();
+				var mediaUrls = new List<MediaUrl>();
+				var thumbnailUrls = new List<MediaUrl>();
 
 				foreach (var f in mediaListFromServer)
 					if (IsExtensionMatched(f.media))
 					{
-						mediaUrls.Add(f.media);
-						thumbnailUrls.Add(f.thumbnail);
+						var mediaUrl = new MediaUrl(f.media, f.title);
+						var thumbnailUrl = new MediaUrl( f.thumbnail, (Constants.ThumbnailsPrefix + f.title));
+						mediaUrls.Add(mediaUrl);
+						thumbnailUrls.Add(thumbnailUrl);
 					}
 
 				var mediaWasRemoved = false;
@@ -237,7 +234,7 @@ namespace Media
 			IsDownloading = false;
 		}
 
-		private async Task ValidateContent(IReadOnlyCollection<string> urls, string path)
+		private async Task ValidateContent(IReadOnlyCollection<MediaUrl> urls, string path)
 		{
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
@@ -248,9 +245,9 @@ namespace Media
 			await DownloadAndSaveFiles(mediaToDownload, path);
 		}
 
-		private List<string> GetFilesForDownload(IReadOnlyCollection<string> urls, string path)
+		private List<MediaUrl> GetFilesForDownload(IReadOnlyCollection<MediaUrl> urls, string path)
 		{
-			var mediaToDownload = new List<string>(urls.Count);
+			var mediaToDownload = new List<MediaUrl>(urls.Count);
 
 			foreach (var url in urls)
 			{
@@ -265,7 +262,7 @@ namespace Media
 			return mediaToDownload;
 		}
 
-		private void CheckFilesForDelete(IReadOnlyCollection<string> urls, string path)
+		private void CheckFilesForDelete(IReadOnlyCollection<MediaUrl> urls, string path)
 		{
 			var files = Directory.GetFiles(path);
 
@@ -289,11 +286,11 @@ namespace Media
 			}
 		}
 
-		private async Task DownloadAndSaveFiles(IEnumerable<string> urls, string path)
+		private async Task DownloadAndSaveFiles(IEnumerable<MediaUrl> urls, string path)
 		{
 			foreach (var url in urls)
 			{
-				using var www = UnityWebRequest.Get(url);
+				using var www = UnityWebRequest.Get(url.Url);
 				www.SendWebRequest();
 
 				while (!www.isDone)
@@ -310,17 +307,11 @@ namespace Media
 			}
 		}
 
-		private string GetFileNameFromLink(string url, string path)
+		private string GetFileNameFromLink(MediaUrl media, string path)
 		{
+			var fileName = media.Title + '.' + media.Url.Split('.').Last();
 
-			var fileNameInWeb = Path.GetFileName(url);
-			var fileNameParts = fileNameInWeb.Split(Constants.Underscore);
-			var fileName = "";
-
-			for (int i = 1; i < fileNameParts.Length; i++)
-				fileName += $"{fileNameParts[i]} ";
-
-			var savePath = Path.Combine(path, fileName[..^1]);
+			var savePath = Path.Combine(path, fileName);
 
 			return savePath;
 		}
@@ -331,6 +322,18 @@ namespace Media
 		public void Clear()
 		{
 			_isMediaCheckRunning = false;
+		}
+	}
+	
+	public class MediaUrl
+	{
+		public string Url;
+		public string Title;
+
+		public MediaUrl(string url, string title)
+		{
+			Url = url;
+			Title = title;
 		}
 	}
 }

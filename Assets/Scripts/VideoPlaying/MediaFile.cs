@@ -6,6 +6,7 @@ namespace VideoPlaying
 	[Serializable]
 	public class MediaFile
 	{
+		public string title;
 		public string thumbnail;
 		public string media;
 	}
