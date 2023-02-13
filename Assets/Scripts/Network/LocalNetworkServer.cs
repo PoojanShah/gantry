@@ -326,7 +326,10 @@ namespace Network
 		private static void HandleReceivedMessage(string text)
 		{
 			if (text == NetworkHelper.NETWORK_MESSAGE_MUTE)
+			{
 				_settings.SwitchSound();
+				_mediaController.SwitchSound();
+			}
 			else if (int.TryParse(text.Split(Constants.Underscore)[1], out var mediaId))
 			{
 				if (mediaId < 0)

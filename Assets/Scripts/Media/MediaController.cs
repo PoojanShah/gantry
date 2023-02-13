@@ -81,6 +81,11 @@ namespace Media
 			return !File.Exists(realPath) ? null : LoadImageFromFile(realPath);
 		}
 
+		public void SwitchSound()
+		{
+			_projectionController.SwitchSound();
+		}
+		
 		private void LoadMediaFromLocalStorage()
 		{
 			if(!Directory.Exists(Settings.MediaPath))

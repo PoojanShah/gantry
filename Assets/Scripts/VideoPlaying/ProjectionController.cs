@@ -78,10 +78,16 @@ namespace VideoPlaying
 					_projectionView.Play(content, OutputType.Primary);
 
 					SetSoundSettings(OutputType.Primary);
+					OutputType = OutputType.Secondary;
 					break;
 			}
 
 			CurrentPlayingMediaName = content.Name;
+		}
+
+		public void SwitchSound()
+		{
+			SetSoundSettings(OutputType.Both);
 		}
 
 		private void CreateProjectionView()
